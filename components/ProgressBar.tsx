@@ -1,5 +1,9 @@
 'use client'
 
+import { useEffect, useRef } from 'react'
+import { gsap } from 'gsap'
+import { cn } from '@/lib/utils'
+
 interface ProgressBarProps {
   value: number
   max: number
@@ -9,48 +13,71 @@ interface ProgressBarProps {
   size?: 'sm' | 'md'
 }
 
-const colorClasses = {
-  blue: 'bg-blue-500',
+const colorBar: Record<string, string> = {
+  blue:    'bg-blue-500',
   emerald: 'bg-emerald-500',
-  amber: 'bg-amber-400',
+  amber:   'bg-amber-400',
+}
+const colorText: Record<string, string> = {
+  blue:    'text-blue-400',
+  emerald: 'text-emerald-400',
+  amber:   'text-amber-400',
 }
 
-export default function ProgressBar({
-  value,
-  max,
-  color = 'blue',
-  label,
-  showPercent = false,
-  size = 'md',
-}: ProgressBarProps) {
-  const pct = max === 0 ? 0 : Math.round((value / max) * 100)
+export default function ProgressBar({ value, max, color = 'blue', label, showPercent = false, size = 'md' }: ProgressBarProps) {
+  const pct    = max === 0 ? 0 : Math.round((value / max) * 100)
+  const barRef = useRef<HTMLDivElement>(null)
+  const numRef = useRef<HTMLSpanElement>(null)
+
+  useEffect(() => {
+    if (!barRef.current) return
+    gsap.fromTo(
+      barRef.current,
+      { width: '0%' },
+      { width: `${pct}%`, duration: 0.8, ease: 'power2.out', delay: 0.1 }
+    )
+    if (numRef.current) {
+      const obj = { val: 0 }
+      gsap.fromTo(
+        obj,
+        { val: 0 },
+        {
+          val: pct,
+          duration: 0.8,
+          ease: 'power2.out',
+          delay: 0.1,
+          onUpdate() { if (numRef.current) numRef.current.textContent = `${Math.round(obj.val)}%` },
+        }
+      )
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pct])
 
   return (
     <div className="w-full">
       {(label || showPercent) && (
-        <div className="flex justify-between items-center mb-1">
+        <div className="flex justify-between items-center mb-1.5">
           {label && (
-            <span className="font-mono text-[10px] uppercase tracking-widest text-slate-400">
-              {label}
-            </span>
+            <span className="font-mono text-[10px] uppercase tracking-widest text-[#475569]">{label}</span>
           )}
           {showPercent && (
-            <span className="font-mono text-[10px] uppercase tracking-widest text-slate-400 ml-auto">
+            <span ref={numRef} className={cn('font-mono text-[10px] uppercase tracking-widest ml-auto', colorText[color])}>
               {pct}%
             </span>
           )}
         </div>
       )}
       <div
-        className={`w-full bg-slate-100 rounded-full overflow-hidden ${size === 'sm' ? 'h-1.5' : 'h-2'}`}
+        className={cn('w-full bg-[#252836] rounded-full overflow-hidden', size === 'sm' ? 'h-1' : 'h-1.5')}
         role="progressbar"
         aria-valuenow={value}
         aria-valuemin={0}
         aria-valuemax={max}
       >
         <div
-          className={`h-full rounded-full transition-[width] duration-500 ease-out motion-reduce:transition-none ${colorClasses[color]}`}
-          style={{ width: `${pct}%` }}
+          ref={barRef}
+          className={cn('h-full rounded-full', colorBar[color])}
+          style={{ width: '0%' }}
         />
       </div>
     </div>

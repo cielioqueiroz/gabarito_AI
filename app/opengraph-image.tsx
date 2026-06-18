@@ -1,8 +1,8 @@
 import { ImageResponse } from 'next/og'
 
-export const runtime = 'edge'
-export const alt = 'gabarito_AI — console de estudos para concursos públicos'
-export const size = { width: 1200, height: 630 }
+export const runtime     = 'edge'
+export const alt         = 'gabarito_AI — console de estudos para concursos públicos'
+export const size        = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 
 export default function Image() {
@@ -10,76 +10,160 @@ export default function Image() {
     (
       <div
         style={{
-          background: '#0f172a',
+          background: '#0F1117',
           width: '100%',
           height: '100%',
           display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'flex-start',
-          justifyContent: 'center',
-          padding: '80px 96px',
-          fontFamily: 'monospace',
+          position: 'relative',
+          overflow: 'hidden',
         }}
       >
-        {/* Icon + wordmark */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '36px' }}>
-          <div
-            style={{
-              width: '80px',
-              height: '80px',
-              background: '#2563eb',
-              borderRadius: '18px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <div style={{ color: 'white', fontSize: '44px', lineHeight: 1 }}>✓</div>
+        {/* Grid pattern */}
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            backgroundImage: 'linear-gradient(#2A2D3E 1px, transparent 1px), linear-gradient(90deg, #2A2D3E 1px, transparent 1px)',
+            backgroundSize: '48px 48px',
+            opacity: 0.3,
+          }}
+        />
+
+        {/* Blue glow top-left */}
+        <div
+          style={{
+            position: 'absolute',
+            top: -120,
+            left: -80,
+            width: 500,
+            height: 500,
+            background: 'radial-gradient(circle, #2563EB22 0%, transparent 70%)',
+          }}
+        />
+
+        {/* Amber glow bottom-right */}
+        <div
+          style={{
+            position: 'absolute',
+            bottom: -100,
+            right: 100,
+            width: 400,
+            height: 400,
+            background: 'radial-gradient(circle, #F59E0B11 0%, transparent 70%)',
+          }}
+        />
+
+        {/* Top border accent */}
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: 2,
+            background: 'linear-gradient(90deg, transparent, #2563EB, #6366F1, transparent)',
+          }}
+        />
+
+        {/* Content */}
+        <div
+          style={{
+            position: 'relative',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            padding: '72px 80px',
+            width: '100%',
+          }}
+        >
+          {/* Logo row */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 20, marginBottom: 40 }}>
+            {/* Icon */}
+            <div
+              style={{
+                width: 72,
+                height: 72,
+                background: 'linear-gradient(135deg, #1C1F2E, #252836)',
+                borderRadius: 16,
+                border: '1px solid #2A2D3E',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 0 40px #2563EB33',
+              }}
+            >
+              <div style={{ color: '#3B82F6', fontSize: 36, fontWeight: 900 }}>G</div>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: 0 }}>
+                <span style={{ fontFamily: 'monospace', fontSize: 56, fontWeight: 800, color: '#F1F5F9', letterSpacing: -2 }}>gabarito</span>
+                <span style={{ fontFamily: 'monospace', fontSize: 56, fontWeight: 800, color: '#3B82F6', letterSpacing: -2 }}>_AI</span>
+              </div>
+              <span style={{ fontFamily: 'monospace', fontSize: 16, color: '#475569', letterSpacing: 4, textTransform: 'uppercase' }}>
+                CONSOLE DE ESTUDOS PARA CONCURSOS
+              </span>
+            </div>
           </div>
-          <div style={{ display: 'flex' }}>
-            <span style={{ fontSize: '64px', fontWeight: 700, color: '#f8fafc', letterSpacing: '-2px' }}>
-              gabarito
-            </span>
-            <span style={{ fontSize: '64px', fontWeight: 700, color: '#3b82f6', letterSpacing: '-2px' }}>
-              _AI
-            </span>
+
+          {/* Tagline */}
+          <p style={{ fontSize: 26, color: '#94A3B8', margin: '0 0 52px', lineHeight: 1.5, maxWidth: 680, fontFamily: 'sans-serif' }}>
+            Suba o edital — a IA organiza suas disciplinas,{'\n'}
+            gera flashcards e cria questões para você praticar.
+          </p>
+
+          {/* Feature chips */}
+          <div style={{ display: 'flex', gap: 14 }}>
+            {[
+              { label: 'Plano de Estudos', color: '#1e3a8a', border: '#2563EB33', text: '#60A5FA' },
+              { label: 'Flashcards Leitner', color: '#14532d', border: '#16a34a33', text: '#4ADE80' },
+              { label: 'Questões com IA', color: '#3b0764', border: '#7c3aed33', text: '#A78BFA' },
+              { label: 'Upload de Edital', color: '#7c2d12', border: '#ea580c33', text: '#FB923C' },
+            ].map(f => (
+              <div
+                key={f.label}
+                style={{
+                  background: f.color,
+                  borderRadius: 10,
+                  padding: '10px 18px',
+                  color: f.text,
+                  fontSize: 15,
+                  border: `1px solid ${f.border}`,
+                  fontFamily: 'monospace',
+                  letterSpacing: 0.5,
+                }}
+              >
+                {f.label}
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* Tagline */}
-        <p
+        {/* Right side decorative card */}
+        <div
           style={{
-            fontSize: '28px',
-            color: '#94a3b8',
-            margin: '0 0 52px',
-            lineHeight: 1.5,
-            maxWidth: '760px',
+            position: 'absolute',
+            right: 60,
+            top: '50%',
+            transform: 'translateY(-50%) rotate(6deg)',
+            width: 220,
+            background: '#1C1F2E',
+            border: '1px solid #2A2D3E',
+            borderRadius: 16,
+            padding: 20,
+            boxShadow: '0 20px 60px #00000066',
           }}
         >
-          Console de estudos para concursos públicos.{'\n'}Suba o edital — a IA monta seu plano.
-        </p>
-
-        {/* Feature chips */}
-        <div style={{ display: 'flex', gap: '16px' }}>
-          {[
-            { label: '📋 Plano de estudos', bg: '#1e3a8a' },
-            { label: '🃏 Flashcards', bg: '#14532d' },
-            { label: '❓ Questões com IA', bg: '#4c1d95' },
-          ].map(f => (
-            <div
-              key={f.label}
-              style={{
-                background: f.bg,
-                borderRadius: '12px',
-                padding: '14px 24px',
-                color: '#e2e8f0',
-                fontSize: '20px',
-                border: '1px solid rgba(255,255,255,0.1)',
-              }}
-            >
-              {f.label}
+          <div style={{ fontFamily: 'monospace', fontSize: 10, color: '#475569', marginBottom: 8, letterSpacing: 2, textTransform: 'uppercase' }}>Plano de estudos</div>
+          {['Direito Constitucional', 'Matemática', 'Informática', 'Raciocínio Lógico'].map((d, i) => (
+            <div key={d} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+              <div style={{ width: 14, height: 14, borderRadius: 4, background: i < 2 ? '#2563EB' : '#252836', border: '1px solid #2A2D3E', flexShrink: 0 }} />
+              <span style={{ fontFamily: 'sans-serif', fontSize: 12, color: i < 2 ? '#94A3B8' : '#475569', textDecoration: i < 2 ? 'line-through' : 'none' }}>{d}</span>
             </div>
           ))}
+          <div style={{ marginTop: 10, background: '#252836', borderRadius: 6, height: 4, overflow: 'hidden' }}>
+            <div style={{ width: '50%', height: '100%', background: '#2563EB', borderRadius: 6 }} />
+          </div>
+          <div style={{ fontFamily: 'monospace', fontSize: 10, color: '#3B82F6', marginTop: 4 }}>50% concluído</div>
         </div>
       </div>
     ),

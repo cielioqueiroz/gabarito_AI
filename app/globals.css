@@ -1,27 +1,64 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme inline {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
+/* ── Global cursor ── */
+button, a, [role="button"], label[for],
+select, input[type="checkbox"], input[type="radio"] {
+  cursor: pointer;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #2A2D3E; border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: #3D4158; }
+
+/* ── Focus ring ── */
+*:focus-visible {
+  outline: 2px solid #2563EB;
+  outline-offset: 2px;
+}
+
+/* ── Blink cursor ── */
 @keyframes blink {
   0%, 100% { opacity: 1; }
   50% { opacity: 0; }
 }
-
 .animate-blink {
   animation: blink 1s step-start infinite;
 }
-
 @media (prefers-reduced-motion: reduce) {
-  .animate-blink {
-    animation: none;
-    opacity: 1;
-  }
+  .animate-blink { animation: none; opacity: 1; }
 }
 
-*:focus-visible {
-  outline: 2px solid #2563eb;
-  outline-offset: 2px;
+/* ── Shimmer skeleton ── */
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+.animate-shimmer {
+  background: linear-gradient(90deg, #1C1F2E 25%, #252836 50%, #1C1F2E 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite linear;
+}
+
+/* ── Glow pulse ── */
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 20px #2563EB33; }
+  50%       { box-shadow: 0 0 40px #2563EB66; }
+}
+.animate-glow { animation: glow-pulse 3s ease-in-out infinite; }
+
+/* ── Three.js canvas ── */
+#three-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
 }
