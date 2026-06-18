@@ -45,5 +45,7 @@ export default async function HomePage() {
     }
   })
 
-  return <HomeClient stats={statsByConcurso} userEmail={user.email ?? ''} />
+  const userName = (user.user_metadata?.full_name ?? user.user_metadata?.name ?? '') as string
+
+  return <HomeClient stats={statsByConcurso} userEmail={user.email ?? ''} userName={userName} />
 }

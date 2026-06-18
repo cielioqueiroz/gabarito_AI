@@ -28,11 +28,11 @@ export default function ConcursoCard({ concurso, topicoTotal, topicoEstudados, f
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -8 }}
       whileHover={{ y: -2, transition: { duration: 0.15 } }}
-      className="group bg-[#1C1F2E] rounded-xl border border-[#2A2D3E] p-5 hover:border-blue-500/30 hover:shadow-lg hover:shadow-black/20 transition-colors duration-200"
+      className="group bg-[var(--c-surface)] rounded-xl border border-[var(--c-border)] p-5 hover:border-blue-500/30 hover:shadow-lg hover:shadow-black/10 transition-colors duration-200"
     >
       <div className="flex items-start justify-between mb-4">
         <Link href={`/concurso/${concurso.id}`} className="flex-1 min-w-0 cursor-pointer">
-          <h2 className="font-bold text-[#F1F5F9] text-base leading-tight tracking-tight truncate group-hover:text-blue-400 transition-colors duration-150">
+          <h2 className="font-bold text-[var(--c-text)] text-base leading-tight tracking-tight truncate group-hover:text-blue-500 transition-colors duration-150">
             {concurso.nome}
           </h2>
           <div className="flex flex-wrap gap-2 mt-2">
@@ -51,7 +51,7 @@ export default function ConcursoCard({ concurso, topicoTotal, topicoEstudados, f
           ) : (
             <button
               onClick={() => setConfirmDelete(true)}
-              className="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg text-[#2A2D3E] hover:text-red-400 hover:bg-red-500/10 transition-all duration-150 focus:opacity-100 cursor-pointer"
+              className="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg text-[var(--c-border)] hover:text-red-500 hover:bg-red-500/10 transition-all duration-150 focus:opacity-100 cursor-pointer"
               aria-label="Excluir concurso"
             >
               <Trash2 size={14} />

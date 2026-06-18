@@ -27,7 +27,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       lang="pt-BR"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
     >
-      <body className="min-h-full bg-[#0F1117] text-[#F1F5F9] transition-colors duration-200">
+      <body className="min-h-full bg-[var(--c-bg)] text-[var(--c-text)] transition-colors duration-200">
         <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>

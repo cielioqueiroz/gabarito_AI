@@ -7,6 +7,26 @@
   --font-mono: var(--font-geist-mono);
 }
 
+/* ── Design tokens — light default, dark override ── */
+:root {
+  --c-bg:       #F8FAFC;
+  --c-surface:  #FFFFFF;
+  --c-elevated: #F1F5F9;
+  --c-border:   #E2E8F0;
+  --c-text:     #0F172A;
+  --c-muted:    #64748B;
+  --c-dimmed:   #94A3B8;
+}
+html.dark {
+  --c-bg:       #0F1117;
+  --c-surface:  #1C1F2E;
+  --c-elevated: #252836;
+  --c-border:   #2A2D3E;
+  --c-text:     #F1F5F9;
+  --c-muted:    #94A3B8;
+  --c-dimmed:   #475569;
+}
+
 /* ── Global cursor ── */
 button, a, [role="button"], label[for],
 select, input[type="checkbox"], input[type="radio"] {

@@ -3,7 +3,7 @@
 import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Plus, Upload, X } from 'lucide-react'
+import { Plus, Upload, X, BookOpen } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -20,23 +20,7 @@ interface ConcursoStat {
   flashcardDominados: number
 }
 
-interface Props {
-  stats: ConcursoStat[]
-  userEmail: string
-  userName: string
-}
-
-const stagger = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.07 } },
-}
-
-function getFirstName(name: string, email: string): string {
-  const raw = name || email.split('@')[0] || 'estudante'
-  return raw.charAt(0).toUpperCase() + raw.slice(1).split(/[\s._-]/)[0]
-}
-
-export default function HomeClient({ stats, userEmail, userName }: Props) {
+export default function ConcursosClient({ stats }: { stats: ConcursoStat[] }) {
   const router = useRouter()
   const [showForm, setShowForm] = useState(false)
   const [nome, setNome]   = useState('')
@@ -44,9 +28,9 @@ export default function HomeClient({ stats, userEmail, userName }: Props) {
   const [banca, setBanca] = useState('')
   const [ano, setAno]     = useState('')
   const [file, setFile]   = useState<File | null>(null)
-  const [loading, setLoading]     = useState(false)
+  const [loading, setLoading]       = useState(false)
   const [loadingMsg, setLoadingMsg] = useState('')
-  const [error, setError]         = useState('')
+  const [error, setError]           = useState('')
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   function resetForm() {
@@ -94,10 +78,6 @@ export default function HomeClient({ stats, userEmail, userName }: Props) {
     router.refresh()
   }
 
-  const totalTopicos   = stats.reduce((a, s) => a + s.topicoEstudados, 0)
-  const totalDominados = stats.reduce((a, s) => a + s.flashcardDominados, 0)
-  const firstName = getFirstName(userName, userEmail)
-
   const headerRight = (
     <Button onClick={() => setShowForm(v => !v)} size="sm">
       <Plus size={14} />
@@ -106,53 +86,21 @@ export default function HomeClient({ stats, userEmail, userName }: Props) {
   )
 
   return (
-    <ShellLayout title="Dashboard" headerRight={headerRight}>
-      <div className="max-w-3xl mx-auto px-6 py-8">
+    <ShellLayout title="Meus Concursos" headerRight={headerRight}>
+      <div className="max-w-4xl mx-auto px-6 py-8">
 
-        {/* Greeting */}
-        <motion.div
-          initial={{ opacity: 0, y: -8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-          className="mb-6"
+        {/* Summary line */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-sm text-[var(--c-muted)] mb-6"
         >
-          <h2 className="text-xl font-bold text-[var(--c-text)]">
-            Olá, {firstName} 👋
-          </h2>
-          <p className="text-sm text-[var(--c-muted)] mt-0.5">
-            {stats.length === 0
-              ? 'Comece adicionando seu primeiro concurso.'
-              : `Você tem ${stats.length} concurso${stats.length > 1 ? 's' : ''} cadastrado${stats.length > 1 ? 's' : ''}.`}
-          </p>
-        </motion.div>
+          {stats.length === 0
+            ? 'Nenhum concurso cadastrado.'
+            : `${stats.length} concurso${stats.length > 1 ? 's' : ''} — clique em um para ver detalhes.`}
+        </motion.p>
 
-        {/* Stats row */}
-        <motion.div
-          variants={stagger}
-          initial="hidden"
-          animate="show"
-          className="grid grid-cols-3 gap-4 mb-8"
-        >
-          {[
-            { label: 'Concursos',         value: stats.length,    color: 'text-[var(--c-text)]' },
-            { label: 'Tópicos estudados', value: totalTopicos,    color: 'text-blue-500'        },
-            { label: 'Cards dominados',   value: totalDominados,  color: 'text-emerald-500'     },
-          ].map((s) => (
-            <motion.div
-              key={s.label}
-              variants={{ hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0 } }}
-            >
-              <Card className="hover:border-blue-500/30 transition-colors">
-                <CardContent className="pt-4 pb-4">
-                  <p className="font-mono text-[10px] uppercase tracking-widest text-[var(--c-dimmed)] mb-1.5">{s.label}</p>
-                  <p className={`text-2xl font-bold ${s.color}`}>{s.value}</p>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
-        </motion.div>
-
-        {/* Form */}
+        {/* Add form */}
         <AnimatePresence>
           {showForm && (
             <motion.div
@@ -189,8 +137,6 @@ export default function HomeClient({ stats, userEmail, userName }: Props) {
                         <Input value={ano} onChange={e => setAno(e.target.value)} placeholder="ex.: 2025" />
                       </div>
                     </div>
-
-                    {/* Upload area */}
                     <div>
                       <label className="block font-mono text-[10px] uppercase tracking-widest text-[var(--c-dimmed)] mb-1.5">Edital (PDF ou TXT) — opcional</label>
                       <div
@@ -213,16 +159,13 @@ export default function HomeClient({ stats, userEmail, userName }: Props) {
                           </div>
                         ) : (
                           <div>
-                            <Upload size={20} className="text-[var(--c-border)] mx-auto mb-1.5" />
+                            <Upload size={20} className="text-[var(--c-dimmed)] mx-auto mb-1.5" />
                             <p className="text-xs text-[var(--c-dimmed)]">Arraste o edital ou clique para selecionar</p>
-                            <p className="font-mono text-[10px] uppercase tracking-widest text-[var(--c-dimmed)] mt-0.5">PDF ou TXT</p>
                           </div>
                         )}
                       </div>
                       <input ref={fileInputRef} type="file" accept=".pdf,.txt,application/pdf,text/plain" className="hidden" onChange={e => setFile(e.target.files?.[0] ?? null)} />
-                      {file && <p className="text-[11px] text-blue-500 mt-1.5">A IA vai organizar o edital em disciplinas e tópicos ao criar</p>}
                     </div>
-
                     {error && (
                       <p className="text-red-500 text-sm rounded-lg bg-red-500/10 border border-red-500/20 px-3 py-2">{error}</p>
                     )}
@@ -235,10 +178,9 @@ export default function HomeClient({ stats, userEmail, userName }: Props) {
                         {loadingMsg}
                       </div>
                     )}
-
                     <div className="flex gap-2 pt-1">
                       <Button type="submit" disabled={loading} className="flex-1">
-                        {loading ? (file ? 'Processando edital…' : 'Salvando…') : (file ? 'Criar e gerar plano com IA' : 'Criar concurso')}
+                        {loading ? (file ? 'Processando…' : 'Salvando…') : (file ? 'Criar com IA' : 'Criar concurso')}
                       </Button>
                       <Button type="button" variant="outline" onClick={resetForm}>Cancelar</Button>
                     </div>
@@ -249,11 +191,11 @@ export default function HomeClient({ stats, userEmail, userName }: Props) {
           )}
         </AnimatePresence>
 
-        {/* Concurso list */}
+        {/* Grid */}
         {stats.length === 0 && !showForm ? (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-20">
             <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-[var(--c-surface)] border border-[var(--c-border)] mb-5">
-              <BookOpenIcon />
+              <BookOpen size={22} className="text-[var(--c-dimmed)]" />
             </div>
             <p className="text-[var(--c-dimmed)] text-sm mb-4">Nenhum concurso cadastrado ainda.</p>
             <button onClick={() => setShowForm(true)} className="text-blue-500 text-sm font-semibold hover:text-blue-400 transition-colors cursor-pointer">
@@ -261,29 +203,30 @@ export default function HomeClient({ stats, userEmail, userName }: Props) {
             </button>
           </motion.div>
         ) : (
-          <motion.div variants={stagger} initial="hidden" animate="show" className="space-y-3">
+          <motion.div
+            initial="hidden"
+            animate="show"
+            variants={{ hidden: {}, show: { transition: { staggerChildren: 0.06 } } }}
+            className="grid grid-cols-1 md:grid-cols-2 gap-4"
+          >
             {stats.map(s => (
-              <ConcursoCard
+              <motion.div
                 key={s.concurso.id}
-                concurso={s.concurso}
-                topicoTotal={s.topicoTotal}
-                topicoEstudados={s.topicoEstudados}
-                flashcardTotal={s.flashcardTotal}
-                flashcardDominados={s.flashcardDominados}
-                onDelete={handleDelete}
-              />
+                variants={{ hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0 } }}
+              >
+                <ConcursoCard
+                  concurso={s.concurso}
+                  topicoTotal={s.topicoTotal}
+                  topicoEstudados={s.topicoEstudados}
+                  flashcardTotal={s.flashcardTotal}
+                  flashcardDominados={s.flashcardDominados}
+                  onDelete={handleDelete}
+                />
+              </motion.div>
             ))}
           </motion.div>
         )}
       </div>
     </ShellLayout>
-  )
-}
-
-function BookOpenIcon() {
-  return (
-    <svg className="w-6 h-6 text-[var(--c-dimmed)]" viewBox="0 0 16 16" fill="currentColor">
-      <path d="M1 2.828c.885-.37 2.154-.769 3.388-.893 1.33-.134 2.458.063 3.112.752v9.746c-.935-.53-2.12-.603-3.213-.493-1.18.12-2.37.461-3.287.811zm7.5-.141c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783" />
-    </svg>
   )
 }

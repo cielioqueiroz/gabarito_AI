@@ -68,7 +68,7 @@ export default function ProgressBar({ value, max, color = 'blue', label, showPer
         </div>
       )}
       <div
-        className={cn('w-full bg-[#252836] rounded-full overflow-hidden', size === 'sm' ? 'h-1' : 'h-1.5')}
+        className={cn('w-full bg-[var(--c-elevated)] rounded-full overflow-hidden', size === 'sm' ? 'h-1' : 'h-1.5')}
         role="progressbar"
         aria-valuenow={value}
         aria-valuemin={0}

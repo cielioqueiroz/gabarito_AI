@@ -22,10 +22,10 @@ interface Props {
 }
 
 const navItems = [
-  { href: '/',            label: 'Dashboard',       icon: LayoutDashboard },
-  { href: '/concursos',   label: 'Meus Concursos',  icon: BookOpen },
-  { href: '/revisao',     label: 'Revisão do Dia',  icon: CalendarCheck },
-  { href: '/estatisticas',label: 'Estatísticas',    icon: BarChart3 },
+  { href: '/',             label: 'Dashboard',       icon: LayoutDashboard },
+  { href: '/concursos',    label: 'Meus Concursos',  icon: BookOpen },
+  { href: '/revisao',      label: 'Revisão do Dia',  icon: CalendarCheck },
+  { href: '/estatisticas', label: 'Estatísticas',    icon: BarChart3 },
 ]
 
 export default function Sidebar({ onMobileClose }: Props) {
@@ -44,10 +44,10 @@ export default function Sidebar({ onMobileClose }: Props) {
   }
 
   return (
-    <aside className="flex flex-col h-full w-60 bg-[#1C1F2E] border-r border-[#2A2D3E]">
+    <aside className="flex flex-col h-full w-60 bg-[var(--c-surface)] border-r border-[var(--c-border)]">
       {/* Logo */}
-      <div className="h-14 flex items-center px-5 border-b border-[#2A2D3E] flex-shrink-0">
-        <Link href="/" className="font-mono text-base font-bold text-[#F1F5F9] tracking-tight">
+      <div className="h-14 flex items-center px-5 border-b border-[var(--c-border)] flex-shrink-0">
+        <Link href="/" className="font-mono text-base font-bold text-[var(--c-text)] tracking-tight">
           gabarito<span className="text-blue-500">_AI</span>
           <span className="inline-block w-1.5 h-3.5 bg-blue-500 ml-0.5 align-middle animate-blink" />
         </Link>
@@ -66,8 +66,8 @@ export default function Sidebar({ onMobileClose }: Props) {
               className={cn(
                 'group relative flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150',
                 active
-                  ? 'text-blue-400 bg-blue-500/10'
-                  : 'text-[#94A3B8] hover:text-[#F1F5F9] hover:bg-[#252836]'
+                  ? 'text-blue-500 bg-blue-500/10'
+                  : 'text-[var(--c-muted)] hover:text-[var(--c-text)] hover:bg-[var(--c-elevated)]'
               )}
             >
               {active && (
@@ -81,7 +81,7 @@ export default function Sidebar({ onMobileClose }: Props) {
                 size={16}
                 className={cn(
                   'flex-shrink-0 transition-colors',
-                  active ? 'text-blue-400' : 'text-[#475569] group-hover:text-[#94A3B8]'
+                  active ? 'text-blue-500' : 'text-[var(--c-dimmed)] group-hover:text-[var(--c-muted)]'
                 )}
               />
               <motion.span
@@ -96,18 +96,18 @@ export default function Sidebar({ onMobileClose }: Props) {
       </nav>
 
       {/* Secondary actions */}
-      <div className="border-t border-[#2A2D3E] py-4 px-3 space-y-0.5 flex-shrink-0">
+      <div className="border-t border-[var(--c-border)] py-4 px-3 space-y-0.5 flex-shrink-0">
         <button
           onClick={toggle}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-[#94A3B8] hover:bg-[#252836] hover:text-[#F1F5F9] transition-all duration-150 cursor-pointer group"
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-[var(--c-muted)] hover:bg-[var(--c-elevated)] hover:text-[var(--c-text)] transition-all duration-150 cursor-pointer group"
         >
           <motion.div
             animate={{ rotate: theme === 'dark' ? 0 : 180 }}
             transition={{ duration: 0.3 }}
           >
             {theme === 'dark'
-              ? <Sun size={16} className="flex-shrink-0 text-[#475569] group-hover:text-amber-400 transition-colors" />
-              : <Moon size={16} className="flex-shrink-0 text-[#475569] group-hover:text-blue-400 transition-colors" />
+              ? <Sun  size={16} className="flex-shrink-0 text-[var(--c-dimmed)] group-hover:text-amber-500 transition-colors" />
+              : <Moon size={16} className="flex-shrink-0 text-[var(--c-dimmed)] group-hover:text-blue-500 transition-colors" />
             }
           </motion.div>
           {theme === 'dark' ? 'Modo claro' : 'Modo escuro'}
@@ -116,17 +116,17 @@ export default function Sidebar({ onMobileClose }: Props) {
         <Link
           href="/configuracoes"
           onClick={onMobileClose}
-          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-[#94A3B8] hover:bg-[#252836] hover:text-[#F1F5F9] transition-all duration-150 cursor-pointer group"
+          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-[var(--c-muted)] hover:bg-[var(--c-elevated)] hover:text-[var(--c-text)] transition-all duration-150 cursor-pointer group"
         >
-          <Settings size={16} className="flex-shrink-0 text-[#475569] group-hover:text-[#94A3B8] transition-colors" />
+          <Settings size={16} className="flex-shrink-0 text-[var(--c-dimmed)] group-hover:text-[var(--c-muted)] transition-colors" />
           Configurações
         </Link>
 
         <button
           onClick={handleSignOut}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-[#94A3B8] hover:bg-red-500/10 hover:text-red-400 transition-all duration-150 cursor-pointer group"
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-[var(--c-muted)] hover:bg-red-500/10 hover:text-red-500 transition-all duration-150 cursor-pointer group"
         >
-          <LogOut size={16} className="flex-shrink-0 text-[#475569] group-hover:text-red-400 transition-colors" />
+          <LogOut size={16} className="flex-shrink-0 text-[var(--c-dimmed)] group-hover:text-red-500 transition-colors" />
           Sair
         </button>
       </div>
