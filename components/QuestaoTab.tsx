@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { createClient } from '@/lib/supabase/client'
+import { useToast } from '@/lib/toast'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -15,10 +16,10 @@ interface QuestaoState { selected: string | null; revealed: boolean }
 
 export default function QuestaoTab({ disciplinas, questoes, concursoId }: Props) {
   const router = useRouter()
+  const toast  = useToast()
   const [states, setStates]         = useState<Record<string, QuestaoState>>({})
   const [selectedDisc, setSelectedDisc] = useState<string | null>(null)
   const [generating, setGenerating] = useState<string | null>(null)
-  const [genError, setGenError]     = useState('')
 
   const filtered = selectedDisc ? questoes.filter(q => q.disciplina_id === selectedDisc) : questoes
 
@@ -34,16 +35,17 @@ export default function QuestaoTab({ disciplinas, questoes, concursoId }: Props)
   }
 
   async function handleGerar(discId: string, discNome: string) {
-    setGenerating(discId); setGenError('')
+    setGenerating(discId)
     try {
       const res = await fetch('/api/gerar-questoes', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ disciplinaId: discId, disciplinaNome: discNome }),
       })
       if (!res.ok) throw new Error(await res.text())
+      toast.success('Questões geradas!', `Novas questões de ${discNome} disponíveis.`)
       router.refresh()
     } catch (err: unknown) {
-      setGenError(err instanceof Error ? err.message : 'Erro ao gerar questões')
+      toast.error('Erro ao gerar questões', err instanceof Error ? err.message : 'Tente novamente.')
     }
     setGenerating(null)
   }
@@ -56,7 +58,6 @@ export default function QuestaoTab({ disciplinas, questoes, concursoId }: Props)
 
   return (
     <div className="space-y-4">
-      {genError && <p className="text-red-400 text-sm rounded-lg bg-red-500/10 border border-red-500/20 px-3 py-2">{genError}</p>}
 
       {/* Discipline filters */}
       <div className="flex items-center gap-2 flex-wrap">

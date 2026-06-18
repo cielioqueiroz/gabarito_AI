@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronRight, Sparkles } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
+import { useToast } from '@/lib/toast'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import ProgressBar from './ProgressBar'
@@ -18,11 +19,11 @@ interface Props {
 
 export default function PlanoTab({ disciplinas, topicos: initialTopicos, concursoId }: Props) {
   const router = useRouter()
+  const toast  = useToast()
   const [topicos, setTopicos]     = useState<Topico[]>(initialTopicos)
   const [generating, setGenerating] = useState(false)
   const [editaisText, setEditaisText] = useState('')
   const [showImport, setShowImport]   = useState(false)
-  const [genError, setGenError]       = useState('')
   const [expanded, setExpanded] = useState<Set<string>>(new Set(disciplinas.map(d => d.id)))
 
   async function toggleTopico(topico: Topico) {
@@ -33,8 +34,11 @@ export default function PlanoTab({ disciplinas, topicos: initialTopicos, concurs
 
   async function handleGerarPlano(e: React.FormEvent) {
     e.preventDefault()
-    if (!editaisText.trim()) return
-    setGenerating(true); setGenError('')
+    if (!editaisText.trim()) {
+      toast.warning('Cole o edital', 'Adicione o conteúdo programático antes de gerar.')
+      return
+    }
+    setGenerating(true)
     try {
       const res = await fetch('/api/gerar-plano', {
         method: 'POST',
@@ -42,9 +46,10 @@ export default function PlanoTab({ disciplinas, topicos: initialTopicos, concurs
         body: JSON.stringify({ texto: editaisText, concursoId }),
       })
       if (!res.ok) throw new Error(await res.text())
+      toast.success('Plano gerado!', 'A IA organizou o edital em disciplinas e tópicos.')
       setEditaisText(''); setShowImport(false); router.refresh()
     } catch (err: unknown) {
-      setGenError(err instanceof Error ? err.message : 'Erro ao gerar plano')
+      toast.error('Erro ao gerar plano', err instanceof Error ? err.message : 'Tente novamente.')
     }
     setGenerating(false)
   }
@@ -71,7 +76,7 @@ export default function PlanoTab({ disciplinas, topicos: initialTopicos, concurs
         <AnimatePresence>
           {showImport && (
             <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}>
-              <ImportEditalForm value={editaisText} onChange={setEditaisText} onSubmit={handleGerarPlano} onCancel={() => setShowImport(false)} loading={generating} error={genError} />
+              <ImportEditalForm value={editaisText} onChange={setEditaisText} onSubmit={handleGerarPlano} onCancel={() => setShowImport(false)} loading={generating} />
             </motion.div>
           )}
         </AnimatePresence>
@@ -91,7 +96,7 @@ export default function PlanoTab({ disciplinas, topicos: initialTopicos, concurs
       <AnimatePresence>
         {showImport && (
           <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}>
-            <ImportEditalForm value={editaisText} onChange={setEditaisText} onSubmit={handleGerarPlano} onCancel={() => setShowImport(false)} loading={generating} error={genError} />
+            <ImportEditalForm value={editaisText} onChange={setEditaisText} onSubmit={handleGerarPlano} onCancel={() => setShowImport(false)} loading={generating} />
           </motion.div>
         )}
       </AnimatePresence>
@@ -157,9 +162,9 @@ export default function PlanoTab({ disciplinas, topicos: initialTopicos, concurs
   )
 }
 
-function ImportEditalForm({ value, onChange, onSubmit, onCancel, loading, error }: {
+function ImportEditalForm({ value, onChange, onSubmit, onCancel, loading }: {
   value: string; onChange: (v: string) => void; onSubmit: (e: React.FormEvent) => void
-  onCancel: () => void; loading: boolean; error: string
+  onCancel: () => void; loading: boolean
 }) {
   return (
     <Card className="border-blue-500/30">
@@ -174,7 +179,6 @@ function ImportEditalForm({ value, onChange, onSubmit, onCancel, loading, error 
             placeholder="Cole aqui o conteúdo programático do edital…"
             className="w-full rounded-lg border border-border bg-elevated px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition resize-none font-mono"
           />
-          {error && <p className="text-red-400 text-xs">{error}</p>}
           <div className="flex gap-2">
             <Button type="submit" disabled={loading || !value.trim()} className="flex-1">
               {loading ? 'Gerando plano…' : 'Gerar plano com IA'}

@@ -5,8 +5,9 @@ import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Plus, Upload, X, BookOpen } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
+import { useToast } from '@/lib/toast'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import { Input, FieldError } from '@/components/ui/input'
 import { Card, CardContent } from '@/components/ui/card'
 import ConcursoCard from './ConcursoCard'
 import ShellLayout from './ShellLayout'
@@ -22,6 +23,7 @@ interface ConcursoStat {
 
 export default function ConcursosClient({ stats }: { stats: ConcursoStat[] }) {
   const router = useRouter()
+  const toast  = useToast()
   const [showForm, setShowForm] = useState(false)
   const [nome, setNome]   = useState('')
   const [cargo, setCargo] = useState('')
@@ -30,18 +32,22 @@ export default function ConcursosClient({ stats }: { stats: ConcursoStat[] }) {
   const [file, setFile]   = useState<File | null>(null)
   const [loading, setLoading]       = useState(false)
   const [loadingMsg, setLoadingMsg] = useState('')
-  const [error, setError]           = useState('')
+  const [nomeError, setNomeError]   = useState('')
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   function resetForm() {
     setNome(''); setCargo(''); setBanca(''); setAno(''); setFile(null)
-    setShowForm(false); setError('')
+    setShowForm(false); setNomeError('')
   }
 
   async function handleCreate(e: React.FormEvent) {
     e.preventDefault()
-    if (!nome.trim()) return
-    setLoading(true); setError('')
+    if (!nome.trim()) {
+      setNomeError('Informe o nome do concurso.')
+      toast.warning('Nome obrigatório', 'Dê um nome ao concurso antes de criar.')
+      return
+    }
+    setLoading(true); setNomeError('')
     try {
       if (file) {
         setLoadingMsg('Extraindo texto do edital…')
@@ -54,6 +60,7 @@ export default function ConcursosClient({ stats }: { stats: ConcursoStat[] }) {
         const res  = await fetch('/api/criar-com-edital', { method: 'POST', body: fd })
         const data = await res.json()
         if (!res.ok) throw new Error(data.error ?? 'Erro ao criar concurso')
+        toast.success('Concurso criado!', 'A IA organizou o edital em disciplinas.')
         resetForm()
         router.push(`/concurso/${data.id}`)
       } else {
@@ -65,10 +72,11 @@ export default function ConcursosClient({ stats }: { stats: ConcursoStat[] }) {
           user_id: user!.id,
         })
         if (error) throw new Error(error.message)
+        toast.success('Concurso criado!')
         resetForm(); router.refresh()
       }
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Erro desconhecido')
+      toast.error('Erro ao criar concurso', err instanceof Error ? err.message : 'Tente novamente.')
     }
     setLoading(false); setLoadingMsg('')
   }
@@ -118,10 +126,16 @@ export default function ConcursosClient({ stats }: { stats: ConcursoStat[] }) {
                       <X size={16} />
                     </button>
                   </div>
-                  <form onSubmit={handleCreate} className="space-y-3">
+                  <form onSubmit={handleCreate} noValidate className="space-y-3">
                     <div>
                       <label className="block font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5">Nome *</label>
-                      <Input value={nome} onChange={e => setNome(e.target.value)} required placeholder="ex.: Banco do Brasil 2025" />
+                      <Input
+                        value={nome}
+                        onChange={e => { setNome(e.target.value); if (nomeError) setNomeError('') }}
+                        aria-invalid={!!nomeError}
+                        placeholder="ex.: Banco do Brasil 2025"
+                      />
+                      <FieldError>{nomeError}</FieldError>
                     </div>
                     <div className="grid grid-cols-3 gap-3">
                       <div>
@@ -166,9 +180,6 @@ export default function ConcursosClient({ stats }: { stats: ConcursoStat[] }) {
                       </div>
                       <input ref={fileInputRef} type="file" accept=".pdf,.txt,application/pdf,text/plain" className="hidden" onChange={e => setFile(e.target.files?.[0] ?? null)} />
                     </div>
-                    {error && (
-                      <p className="text-red-500 text-sm rounded-lg bg-red-500/10 border border-red-500/20 px-3 py-2">{error}</p>
-                    )}
                     {loading && loadingMsg && (
                       <div className="flex items-center gap-2 text-blue-500 text-sm">
                         <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">

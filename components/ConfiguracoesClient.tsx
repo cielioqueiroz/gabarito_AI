@@ -5,8 +5,9 @@ import { motion } from 'framer-motion'
 import { User, Palette, Sun, Moon, Check, Loader2 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { useTheme } from '@/lib/theme'
+import { useToast } from '@/lib/toast'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import { Input, FieldError } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import ShellLayout from './ShellLayout'
 
@@ -21,6 +22,7 @@ const fadeUp  = { hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0 } }
 
 export default function ConfiguracoesClient({ email, initialName }: Props) {
   const { theme, toggle } = useTheme()
+  const toast = useToast()
   const [displayName, setDisplayName] = useState(initialName)
   const [saving, setSaving]   = useState(false)
   const [saved, setSaved]     = useState(false)
@@ -28,7 +30,11 @@ export default function ConfiguracoesClient({ email, initialName }: Props) {
 
   async function handleSaveName(e: React.FormEvent) {
     e.preventDefault()
-    if (!displayName.trim()) return
+    if (!displayName.trim()) {
+      setNameError('Informe um nome de exibição.')
+      toast.warning('Nome obrigatório')
+      return
+    }
     setSaving(true); setNameError(''); setSaved(false)
     try {
       const supabase = createClient()
@@ -37,9 +43,10 @@ export default function ConfiguracoesClient({ email, initialName }: Props) {
       })
       if (error) throw new Error(error.message)
       setSaved(true)
+      toast.success('Perfil atualizado', 'Seu nome foi salvo com sucesso.')
       setTimeout(() => setSaved(false), 3000)
     } catch (err: unknown) {
-      setNameError(err instanceof Error ? err.message : 'Erro ao salvar')
+      toast.error('Erro ao salvar', err instanceof Error ? err.message : 'Tente novamente.')
     }
     setSaving(false)
   }
@@ -69,16 +76,18 @@ export default function ConfiguracoesClient({ email, initialName }: Props) {
                 </div>
               </CardHeader>
               <CardContent>
-                <form onSubmit={handleSaveName} className="space-y-4">
+                <form onSubmit={handleSaveName} noValidate className="space-y-4">
                   <div>
                     <label className="block font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5">
                       Nome de exibição
                     </label>
                     <Input
                       value={displayName}
-                      onChange={e => setDisplayName(e.target.value)}
+                      onChange={e => { setDisplayName(e.target.value); if (nameError) setNameError('') }}
+                      aria-invalid={!!nameError}
                       placeholder="Como quer ser chamado?"
                     />
+                    <FieldError>{nameError}</FieldError>
                   </div>
                   <div>
                     <label className="block font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5">
@@ -87,9 +96,6 @@ export default function ConfiguracoesClient({ email, initialName }: Props) {
                     <Input value={email} disabled className="opacity-60 cursor-not-allowed" />
                     <p className="text-[11px] text-muted-foreground mt-1">O e-mail não pode ser alterado aqui.</p>
                   </div>
-                  {nameError && (
-                    <p className="text-red-500 text-sm bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">{nameError}</p>
-                  )}
                   <div className="flex items-center gap-3">
                     <Button type="submit" disabled={saving} size="sm">
                       {saving
@@ -98,16 +104,6 @@ export default function ConfiguracoesClient({ email, initialName }: Props) {
                         ? <><Check size={14} /> Salvo</>
                         : 'Salvar nome'}
                     </Button>
-                    {saved && (
-                      <motion.span
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="text-emerald-500 text-sm"
-                      >
-                        Nome atualizado com sucesso.
-                      </motion.span>
-                    )}
                   </div>
                 </form>
               </CardContent>
