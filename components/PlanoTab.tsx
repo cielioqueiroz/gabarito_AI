@@ -62,7 +62,7 @@ export default function PlanoTab({ disciplinas, topicos: initialTopicos, concurs
       <div className="space-y-4">
         <Card className="text-center py-10">
           <CardContent className="pt-0">
-            <p className="text-[#475569] text-sm mb-3">Nenhuma disciplina ainda.</p>
+            <p className="text-muted-foreground text-sm mb-3">Nenhuma disciplina ainda.</p>
             <button onClick={() => setShowImport(true)} className="text-blue-400 text-sm font-semibold hover:text-blue-300 transition-colors cursor-pointer">
               Importar edital com IA →
             </button>
@@ -82,7 +82,7 @@ export default function PlanoTab({ disciplinas, topicos: initialTopicos, concurs
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <p className="text-[#475569] text-sm">{disciplinas.length} disciplinas</p>
+        <p className="text-muted-foreground text-sm">{disciplinas.length} disciplinas</p>
         <button onClick={() => setShowImport(v => !v)} className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-blue-400 hover:text-blue-300 transition-colors cursor-pointer">
           <Sparkles size={11} /> Reimportar edital
         </button>
@@ -105,16 +105,16 @@ export default function PlanoTab({ disciplinas, topicos: initialTopicos, concurs
           <Card key={disc.id} className="overflow-hidden">
             <button
               onClick={() => toggleExpand(disc.id)}
-              className="w-full flex items-center justify-between px-4 py-3.5 hover:bg-[#252836] transition-colors cursor-pointer"
+              className="w-full flex items-center justify-between px-4 py-3.5 hover:bg-elevated transition-colors cursor-pointer"
             >
               <div className="flex items-center gap-3 min-w-0">
                 <motion.div animate={{ rotate: isOpen ? 90 : 0 }} transition={{ duration: 0.2 }}>
-                  <ChevronRight size={14} className="text-[#475569] flex-shrink-0" />
+                  <ChevronRight size={14} className="text-muted-foreground flex-shrink-0" />
                 </motion.div>
-                <span className="font-semibold text-[#F1F5F9] text-sm truncate text-left">{disc.nome}</span>
+                <span className="font-semibold text-foreground text-sm truncate text-left">{disc.nome}</span>
               </div>
               <div className="flex items-center gap-3 ml-3 flex-shrink-0">
-                <span className="font-mono text-[10px] uppercase tracking-widest text-[#475569]">
+                <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
                   {estudados}/{discTopicos.length}
                 </span>
                 <div className="w-16">
@@ -130,18 +130,18 @@ export default function PlanoTab({ disciplinas, topicos: initialTopicos, concurs
                   animate={{ height: 'auto', opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
                   transition={{ duration: 0.2 }}
-                  className="overflow-hidden border-t border-[#252836] divide-y divide-[#252836]"
+                  className="overflow-hidden border-t border-elevated divide-y divide-border"
                 >
                   {discTopicos.map(topico => (
                     <li key={topico.id}>
-                      <label className="flex items-start gap-3 px-4 py-3 hover:bg-[#252836] cursor-pointer transition-colors">
+                      <label className="flex items-start gap-3 px-4 py-3 hover:bg-elevated cursor-pointer transition-colors">
                         <input
                           type="checkbox"
                           checked={topico.estudado}
                           onChange={() => toggleTopico(topico)}
-                          className="mt-0.5 w-4 h-4 rounded border-[#2A2D3E] bg-[#252836] text-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-[#1C1F2E] cursor-pointer flex-shrink-0 accent-blue-500"
+                          className="mt-0.5 w-4 h-4 rounded border-border bg-elevated text-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-surface cursor-pointer flex-shrink-0 accent-blue-500"
                         />
-                        <span className={`text-sm leading-relaxed transition-colors ${topico.estudado ? 'text-[#475569] line-through' : 'text-[#94A3B8]'}`}>
+                        <span className={`text-sm leading-relaxed transition-colors ${topico.estudado ? 'text-muted-foreground line-through' : 'text-muted'}`}>
                           {topico.texto}
                         </span>
                       </label>
@@ -164,15 +164,15 @@ function ImportEditalForm({ value, onChange, onSubmit, onCancel, loading, error 
   return (
     <Card className="border-blue-500/30">
       <CardContent className="pt-4">
-        <h3 className="font-semibold text-[#F1F5F9] mb-1 text-sm">Importar edital com IA</h3>
-        <p className="text-[#475569] text-xs mb-3">Cole o conteúdo programático do edital. A IA vai organizar em disciplinas e tópicos.</p>
+        <h3 className="font-semibold text-foreground mb-1 text-sm">Importar edital com IA</h3>
+        <p className="text-muted-foreground text-xs mb-3">Cole o conteúdo programático do edital. A IA vai organizar em disciplinas e tópicos.</p>
         <form onSubmit={onSubmit} className="space-y-3">
           <textarea
             value={value}
             onChange={e => onChange(e.target.value)}
             rows={6}
             placeholder="Cole aqui o conteúdo programático do edital…"
-            className="w-full rounded-lg border border-[#2A2D3E] bg-[#252836] px-3 py-2 text-sm text-[#F1F5F9] placeholder-[#475569] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition resize-none font-mono"
+            className="w-full rounded-lg border border-border bg-elevated px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition resize-none font-mono"
           />
           {error && <p className="text-red-400 text-xs">{error}</p>}
           <div className="flex gap-2">

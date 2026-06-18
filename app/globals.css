@@ -5,6 +5,15 @@
 @theme inline {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Semantic color tokens — resolved from CSS vars below */
+  --color-background:       var(--c-bg);
+  --color-surface:          var(--c-surface);
+  --color-elevated:         var(--c-elevated);
+  --color-border:           var(--c-border);
+  --color-foreground:       var(--c-text);
+  --color-muted:            var(--c-muted);
+  --color-muted-foreground: var(--c-dimmed);
 }
 
 /* ── Design tokens — light default, dark override ── */

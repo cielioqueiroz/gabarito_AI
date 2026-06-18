@@ -38,7 +38,7 @@ export default function ConcursoDetail({ concurso, disciplinas, topicos, flashca
   ]
 
   const headerRight = (
-    <Link href="/" className="flex items-center gap-1.5 text-[#475569] hover:text-[#94A3B8] transition-colors cursor-pointer text-sm">
+    <Link href="/" className="flex items-center gap-1.5 text-muted-foreground hover:text-muted transition-colors cursor-pointer text-sm">
       <ArrowLeft size={14} />
       Voltar
     </Link>
@@ -59,7 +59,7 @@ export default function ConcursoDetail({ concurso, disciplinas, topicos, flashca
           <Card>
             <CardContent className="pt-4">
               <ProgressBar value={estudados} max={totalTopicos} color="blue" label="Plano de estudos" showPercent />
-              <p className="font-mono text-[10px] uppercase tracking-widest text-[#475569] mt-2">
+              <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mt-2">
                 {estudados}/{totalTopicos} tópicos
               </p>
             </CardContent>
@@ -67,7 +67,7 @@ export default function ConcursoDetail({ concurso, disciplinas, topicos, flashca
           <Card>
             <CardContent className="pt-4">
               <ProgressBar value={dominados} max={totalFlashcards} color="emerald" label="Domínio" showPercent />
-              <p className="font-mono text-[10px] uppercase tracking-widest text-[#475569] mt-2">
+              <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mt-2">
                 {dominados}/{totalFlashcards} cards ≥ caixa 4
               </p>
             </CardContent>
@@ -75,18 +75,18 @@ export default function ConcursoDetail({ concurso, disciplinas, topicos, flashca
         </div>
 
         {/* Tabs */}
-        <div className="relative flex border-b border-[#2A2D3E] -mx-6 px-6 gap-1 mb-6">
+        <div className="relative flex border-b border-border -mx-6 px-6 gap-1 mb-6">
           {tabs.map(t => (
             <button
               key={t.key}
               onClick={() => setTab(t.key)}
               className={`relative pb-3 px-3 text-sm font-semibold transition-colors duration-150 cursor-pointer ${
-                tab === t.key ? 'text-blue-400' : 'text-[#475569] hover:text-[#94A3B8]'
+                tab === t.key ? 'text-blue-400' : 'text-muted-foreground hover:text-muted'
               }`}
             >
               {t.label}
               {t.count > 0 && (
-                <span className={`ml-1.5 font-mono text-[10px] ${tab === t.key ? 'text-blue-500' : 'text-[#2A2D3E]'}`}>
+                <span className={`ml-1.5 font-mono text-[10px] ${tab === t.key ? 'text-blue-500' : 'text-border'}`}>
                   {t.count}
                 </span>
               )}

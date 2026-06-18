@@ -15,7 +15,7 @@ export default function ShellLayout({ children, title, headerRight }: Props) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   return (
-    <div className="flex h-screen bg-[var(--c-bg)] overflow-hidden">
+    <div className="flex h-screen bg-background overflow-hidden">
       {/* Desktop sidebar */}
       <div className="hidden md:flex flex-col flex-shrink-0">
         <Sidebar />
@@ -49,20 +49,17 @@ export default function ShellLayout({ children, title, headerRight }: Props) {
       {/* Main area */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Header */}
-        <header
-          className="h-14 flex-shrink-0 flex items-center justify-between px-5 border-b border-[var(--c-border)] backdrop-blur-sm sticky top-0 z-10"
-          style={{ backgroundColor: 'color-mix(in oklab, var(--c-bg) 85%, transparent)' }}
-        >
+        <header className="h-14 flex-shrink-0 flex items-center justify-between px-5 border-b border-border bg-background/85 backdrop-blur-sm sticky top-0 z-10">
           <div className="flex items-center gap-3">
             <button
-              className="md:hidden p-1.5 rounded-lg text-[var(--c-muted)] hover:bg-[var(--c-elevated)] hover:text-[var(--c-text)] transition-colors cursor-pointer"
+              className="md:hidden p-1.5 rounded-lg text-muted hover:bg-elevated hover:text-foreground transition-colors cursor-pointer"
               onClick={() => setSidebarOpen(true)}
               aria-label="Abrir menu"
             >
               <Menu size={18} />
             </button>
             {title && (
-              <h1 className="text-sm font-semibold text-[var(--c-text)] tracking-tight">{title}</h1>
+              <h1 className="text-sm font-semibold text-foreground tracking-tight">{title}</h1>
             )}
           </div>
           {headerRight && (
@@ -81,8 +78,8 @@ export default function ShellLayout({ children, title, headerRight }: Props) {
         </motion.main>
 
         {/* Footer */}
-        <footer className="flex-shrink-0 h-9 flex items-center justify-center border-t border-[var(--c-border)]">
-          <span className="font-mono text-[10px] uppercase tracking-widest text-[var(--c-dimmed)]">
+        <footer className="flex-shrink-0 h-9 flex items-center justify-center border-t border-border">
+          <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
             gabarito_AI · concursos públicos
           </span>
         </footer>

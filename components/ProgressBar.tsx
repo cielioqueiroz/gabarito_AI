@@ -58,7 +58,7 @@ export default function ProgressBar({ value, max, color = 'blue', label, showPer
       {(label || showPercent) && (
         <div className="flex justify-between items-center mb-1.5">
           {label && (
-            <span className="font-mono text-[10px] uppercase tracking-widest text-[#475569]">{label}</span>
+            <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">{label}</span>
           )}
           {showPercent && (
             <span ref={numRef} className={cn('font-mono text-[10px] uppercase tracking-widest ml-auto', colorText[color])}>
@@ -68,7 +68,7 @@ export default function ProgressBar({ value, max, color = 'blue', label, showPer
         </div>
       )}
       <div
-        className={cn('w-full bg-[var(--c-elevated)] rounded-full overflow-hidden', size === 'sm' ? 'h-1' : 'h-1.5')}
+        className={cn('w-full bg-elevated rounded-full overflow-hidden', size === 'sm' ? 'h-1' : 'h-1.5')}
         role="progressbar"
         aria-valuenow={value}
         aria-valuemin={0}

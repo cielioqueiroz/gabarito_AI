@@ -4,29 +4,26 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-semibold ring-offset-[#0F1117] transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 cursor-pointer active:scale-[0.98] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
+  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-semibold ring-offset-background transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 cursor-pointer active:scale-[0.98] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
   {
     variants: {
       variant: {
-        default: 'bg-blue-600 text-white hover:bg-blue-500 shadow-sm',
-        destructive: 'bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20',
-        outline: 'border border-[#2A2D3E] bg-transparent text-[#94A3B8] hover:bg-[#252836] hover:text-[#F1F5F9]',
-        secondary: 'bg-[#252836] text-[#94A3B8] hover:bg-[#2A2D3E] hover:text-[#F1F5F9]',
-        ghost: 'text-[#94A3B8] hover:bg-[#252836] hover:text-[#F1F5F9]',
-        link: 'text-blue-400 underline-offset-4 hover:underline hover:text-blue-300',
-        amber: 'bg-amber-500 text-white hover:bg-amber-400 shadow-sm',
+        default:     'bg-blue-600 text-white hover:bg-blue-500 shadow-sm',
+        destructive: 'bg-red-500/10 text-red-500 border border-red-500/20 hover:bg-red-500/20',
+        outline:     'border border-border bg-transparent text-muted hover:bg-elevated hover:text-foreground',
+        secondary:   'bg-elevated text-muted hover:bg-border hover:text-foreground',
+        ghost:       'text-muted hover:bg-elevated hover:text-foreground',
+        link:        'text-blue-500 underline-offset-4 hover:underline hover:text-blue-400',
+        amber:       'bg-amber-500 text-white hover:bg-amber-400 shadow-sm',
       },
       size: {
         default: 'h-9 px-4 py-2',
-        sm: 'h-7 rounded-md px-3 text-xs',
-        lg: 'h-11 rounded-lg px-6',
-        icon: 'h-9 w-9',
+        sm:      'h-7 rounded-md px-3 text-xs',
+        lg:      'h-11 rounded-lg px-6',
+        icon:    'h-9 w-9',
       },
     },
-    defaultVariants: {
-      variant: 'default',
-      size: 'default',
-    },
+    defaultVariants: { variant: 'default', size: 'default' },
   }
 )
 

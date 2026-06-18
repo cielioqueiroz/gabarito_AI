@@ -93,7 +93,7 @@ export default function ConcursosClient({ stats }: { stats: ConcursoStat[] }) {
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="text-sm text-[var(--c-muted)] mb-6"
+          className="text-sm text-muted mb-6"
         >
           {stats.length === 0
             ? 'Nenhum concurso cadastrado.'
@@ -113,32 +113,32 @@ export default function ConcursosClient({ stats }: { stats: ConcursoStat[] }) {
               <Card>
                 <CardContent className="pt-5">
                   <div className="flex items-center justify-between mb-4">
-                    <h2 className="font-semibold text-[var(--c-text)]">Novo concurso</h2>
-                    <button onClick={resetForm} className="text-[var(--c-dimmed)] hover:text-[var(--c-muted)] cursor-pointer transition-colors">
+                    <h2 className="font-semibold text-foreground">Novo concurso</h2>
+                    <button onClick={resetForm} className="text-muted-foreground hover:text-muted cursor-pointer transition-colors">
                       <X size={16} />
                     </button>
                   </div>
                   <form onSubmit={handleCreate} className="space-y-3">
                     <div>
-                      <label className="block font-mono text-[10px] uppercase tracking-widest text-[var(--c-dimmed)] mb-1.5">Nome *</label>
+                      <label className="block font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5">Nome *</label>
                       <Input value={nome} onChange={e => setNome(e.target.value)} required placeholder="ex.: Banco do Brasil 2025" />
                     </div>
                     <div className="grid grid-cols-3 gap-3">
                       <div>
-                        <label className="block font-mono text-[10px] uppercase tracking-widest text-[var(--c-dimmed)] mb-1.5">Cargo</label>
+                        <label className="block font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5">Cargo</label>
                         <Input value={cargo} onChange={e => setCargo(e.target.value)} placeholder="ex.: Agente de TI" />
                       </div>
                       <div>
-                        <label className="block font-mono text-[10px] uppercase tracking-widest text-[var(--c-dimmed)] mb-1.5">Banca</label>
+                        <label className="block font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5">Banca</label>
                         <Input value={banca} onChange={e => setBanca(e.target.value)} placeholder="ex.: Cesgranrio" />
                       </div>
                       <div>
-                        <label className="block font-mono text-[10px] uppercase tracking-widest text-[var(--c-dimmed)] mb-1.5">Ano</label>
+                        <label className="block font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5">Ano</label>
                         <Input value={ano} onChange={e => setAno(e.target.value)} placeholder="ex.: 2025" />
                       </div>
                     </div>
                     <div>
-                      <label className="block font-mono text-[10px] uppercase tracking-widest text-[var(--c-dimmed)] mb-1.5">Edital (PDF ou TXT) — opcional</label>
+                      <label className="block font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5">Edital (PDF ou TXT) — opcional</label>
                       <div
                         onClick={() => fileInputRef.current?.click()}
                         onDragOver={e => e.preventDefault()}
@@ -146,21 +146,21 @@ export default function ConcursosClient({ stats }: { stats: ConcursoStat[] }) {
                         className={`w-full rounded-lg border-2 border-dashed px-4 py-5 text-center cursor-pointer transition-all duration-150 ${
                           file
                             ? 'border-blue-500/50 bg-blue-500/5'
-                            : 'border-[var(--c-border)] hover:border-blue-500/30 hover:bg-[var(--c-elevated)]'
+                            : 'border-border hover:border-blue-500/30 hover:bg-elevated'
                         }`}
                       >
                         {file ? (
                           <div className="flex items-center justify-center gap-2">
                             <Upload size={14} className="text-blue-500 flex-shrink-0" />
                             <span className="text-sm text-blue-500 font-medium truncate max-w-xs">{file.name}</span>
-                            <button type="button" onClick={ev => { ev.stopPropagation(); setFile(null) }} className="text-[var(--c-dimmed)] hover:text-red-500 ml-1 cursor-pointer transition-colors">
+                            <button type="button" onClick={ev => { ev.stopPropagation(); setFile(null) }} className="text-muted-foreground hover:text-red-500 ml-1 cursor-pointer transition-colors">
                               <X size={14} />
                             </button>
                           </div>
                         ) : (
                           <div>
-                            <Upload size={20} className="text-[var(--c-dimmed)] mx-auto mb-1.5" />
-                            <p className="text-xs text-[var(--c-dimmed)]">Arraste o edital ou clique para selecionar</p>
+                            <Upload size={20} className="text-muted-foreground mx-auto mb-1.5" />
+                            <p className="text-xs text-muted-foreground">Arraste o edital ou clique para selecionar</p>
                           </div>
                         )}
                       </div>
@@ -194,10 +194,10 @@ export default function ConcursosClient({ stats }: { stats: ConcursoStat[] }) {
         {/* Grid */}
         {stats.length === 0 && !showForm ? (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-20">
-            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-[var(--c-surface)] border border-[var(--c-border)] mb-5">
-              <BookOpen size={22} className="text-[var(--c-dimmed)]" />
+            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-surface border border-border mb-5">
+              <BookOpen size={22} className="text-muted-foreground" />
             </div>
-            <p className="text-[var(--c-dimmed)] text-sm mb-4">Nenhum concurso cadastrado ainda.</p>
+            <p className="text-muted-foreground text-sm mb-4">Nenhum concurso cadastrado ainda.</p>
             <button onClick={() => setShowForm(true)} className="text-blue-500 text-sm font-semibold hover:text-blue-400 transition-colors cursor-pointer">
               Criar o primeiro concurso →
             </button>

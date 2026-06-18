@@ -71,7 +71,7 @@ export default function ConfiguracoesClient({ email, initialName }: Props) {
               <CardContent>
                 <form onSubmit={handleSaveName} className="space-y-4">
                   <div>
-                    <label className="block font-mono text-[10px] uppercase tracking-widest text-[var(--c-dimmed)] mb-1.5">
+                    <label className="block font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5">
                       Nome de exibição
                     </label>
                     <Input
@@ -81,11 +81,11 @@ export default function ConfiguracoesClient({ email, initialName }: Props) {
                     />
                   </div>
                   <div>
-                    <label className="block font-mono text-[10px] uppercase tracking-widest text-[var(--c-dimmed)] mb-1.5">
+                    <label className="block font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5">
                       E-mail
                     </label>
                     <Input value={email} disabled className="opacity-60 cursor-not-allowed" />
-                    <p className="text-[11px] text-[var(--c-dimmed)] mt-1">O e-mail não pode ser alterado aqui.</p>
+                    <p className="text-[11px] text-muted-foreground mt-1">O e-mail não pode ser alterado aqui.</p>
                   </div>
                   {nameError && (
                     <p className="text-red-500 text-sm bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">{nameError}</p>
@@ -136,7 +136,7 @@ export default function ConfiguracoesClient({ email, initialName }: Props) {
                     className={`relative rounded-xl border-2 p-4 cursor-pointer transition-all duration-150 text-left ${
                       theme === 'dark'
                         ? 'border-blue-500 bg-blue-500/5'
-                        : 'border-[var(--c-border)] hover:border-blue-500/40'
+                        : 'border-border hover:border-blue-500/40'
                     }`}
                   >
                     <div className="w-full aspect-video rounded-lg bg-[#0F1117] mb-3 overflow-hidden p-2">
@@ -145,8 +145,8 @@ export default function ConfiguracoesClient({ email, initialName }: Props) {
                       <div className="h-1.5 w-3/4 rounded-full bg-[#1C1F2E] mt-1" />
                     </div>
                     <div className="flex items-center gap-2">
-                      <Moon size={14} className="text-[var(--c-muted)]" />
-                      <span className="text-sm font-medium text-[var(--c-text)]">Modo escuro</span>
+                      <Moon size={14} className="text-muted" />
+                      <span className="text-sm font-medium text-foreground">Modo escuro</span>
                     </div>
                     {theme === 'dark' && (
                       <div className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center">
@@ -161,7 +161,7 @@ export default function ConfiguracoesClient({ email, initialName }: Props) {
                     className={`relative rounded-xl border-2 p-4 cursor-pointer transition-all duration-150 text-left ${
                       theme === 'light'
                         ? 'border-blue-500 bg-blue-500/5'
-                        : 'border-[var(--c-border)] hover:border-blue-500/40'
+                        : 'border-border hover:border-blue-500/40'
                     }`}
                   >
                     <div className="w-full aspect-video rounded-lg bg-white mb-3 overflow-hidden p-2 border border-slate-100">
@@ -170,8 +170,8 @@ export default function ConfiguracoesClient({ email, initialName }: Props) {
                       <div className="h-1.5 w-3/4 rounded-full bg-slate-100 mt-1" />
                     </div>
                     <div className="flex items-center gap-2">
-                      <Sun size={14} className="text-[var(--c-muted)]" />
-                      <span className="text-sm font-medium text-[var(--c-text)]">Modo claro</span>
+                      <Sun size={14} className="text-muted" />
+                      <span className="text-sm font-medium text-foreground">Modo claro</span>
                     </div>
                     {theme === 'light' && (
                       <div className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center">

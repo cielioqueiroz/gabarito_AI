@@ -7,35 +7,26 @@ import { useTheme } from '@/lib/theme'
 import { createClient } from '@/lib/supabase/client'
 import { cn } from '@/lib/utils'
 import {
-  LayoutDashboard,
-  BookOpen,
-  CalendarCheck,
-  BarChart3,
-  Settings,
-  Sun,
-  Moon,
-  LogOut,
+  LayoutDashboard, BookOpen, CalendarCheck,
+  BarChart3, Settings, Sun, Moon, LogOut,
 } from 'lucide-react'
 
-interface Props {
-  onMobileClose?: () => void
-}
+interface Props { onMobileClose?: () => void }
 
 const navItems = [
-  { href: '/',             label: 'Dashboard',       icon: LayoutDashboard },
-  { href: '/concursos',    label: 'Meus Concursos',  icon: BookOpen },
-  { href: '/revisao',      label: 'Revisão do Dia',  icon: CalendarCheck },
-  { href: '/estatisticas', label: 'Estatísticas',    icon: BarChart3 },
+  { href: '/',             label: 'Dashboard',      icon: LayoutDashboard },
+  { href: '/concursos',    label: 'Meus Concursos', icon: BookOpen },
+  { href: '/revisao',      label: 'Revisão do Dia', icon: CalendarCheck },
+  { href: '/estatisticas', label: 'Estatísticas',   icon: BarChart3 },
 ]
 
 export default function Sidebar({ onMobileClose }: Props) {
-  const pathname = usePathname()
-  const router   = useRouter()
+  const pathname         = usePathname()
+  const router           = useRouter()
   const { theme, toggle } = useTheme()
 
   async function handleSignOut() {
-    const supabase = createClient()
-    await supabase.auth.signOut()
+    await createClient().auth.signOut()
     router.push('/login')
   }
 
@@ -44,10 +35,10 @@ export default function Sidebar({ onMobileClose }: Props) {
   }
 
   return (
-    <aside className="flex flex-col h-full w-60 bg-[var(--c-surface)] border-r border-[var(--c-border)]">
+    <aside className="flex flex-col h-full w-60 bg-surface border-r border-border">
       {/* Logo */}
-      <div className="h-14 flex items-center px-5 border-b border-[var(--c-border)] flex-shrink-0">
-        <Link href="/" className="font-mono text-base font-bold text-[var(--c-text)] tracking-tight">
+      <div className="h-14 flex items-center px-5 border-b border-border flex-shrink-0">
+        <Link href="/" className="font-mono text-base font-bold text-foreground tracking-tight">
           gabarito<span className="text-blue-500">_AI</span>
           <span className="inline-block w-1.5 h-3.5 bg-blue-500 ml-0.5 align-middle animate-blink" />
         </Link>
@@ -57,7 +48,7 @@ export default function Sidebar({ onMobileClose }: Props) {
       <nav className="flex-1 py-4 px-3 space-y-0.5 overflow-y-auto">
         {navItems.map((item) => {
           const active = isActive(item.href)
-          const Icon = item.icon
+          const Icon   = item.icon
           return (
             <Link
               key={item.href}
@@ -67,7 +58,7 @@ export default function Sidebar({ onMobileClose }: Props) {
                 'group relative flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150',
                 active
                   ? 'text-blue-500 bg-blue-500/10'
-                  : 'text-[var(--c-muted)] hover:text-[var(--c-text)] hover:bg-[var(--c-elevated)]'
+                  : 'text-muted hover:text-foreground hover:bg-elevated'
               )}
             >
               {active && (
@@ -81,7 +72,7 @@ export default function Sidebar({ onMobileClose }: Props) {
                 size={16}
                 className={cn(
                   'flex-shrink-0 transition-colors',
-                  active ? 'text-blue-500' : 'text-[var(--c-dimmed)] group-hover:text-[var(--c-muted)]'
+                  active ? 'text-blue-500' : 'text-muted-foreground group-hover:text-muted'
                 )}
               />
               <motion.span
@@ -96,18 +87,15 @@ export default function Sidebar({ onMobileClose }: Props) {
       </nav>
 
       {/* Secondary actions */}
-      <div className="border-t border-[var(--c-border)] py-4 px-3 space-y-0.5 flex-shrink-0">
+      <div className="border-t border-border py-4 px-3 space-y-0.5 flex-shrink-0">
         <button
           onClick={toggle}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-[var(--c-muted)] hover:bg-[var(--c-elevated)] hover:text-[var(--c-text)] transition-all duration-150 cursor-pointer group"
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-muted hover:bg-elevated hover:text-foreground transition-all duration-150 cursor-pointer group"
         >
-          <motion.div
-            animate={{ rotate: theme === 'dark' ? 0 : 180 }}
-            transition={{ duration: 0.3 }}
-          >
+          <motion.div animate={{ rotate: theme === 'dark' ? 0 : 180 }} transition={{ duration: 0.3 }}>
             {theme === 'dark'
-              ? <Sun  size={16} className="flex-shrink-0 text-[var(--c-dimmed)] group-hover:text-amber-500 transition-colors" />
-              : <Moon size={16} className="flex-shrink-0 text-[var(--c-dimmed)] group-hover:text-blue-500 transition-colors" />
+              ? <Sun  size={16} className="flex-shrink-0 text-muted-foreground group-hover:text-amber-500 transition-colors" />
+              : <Moon size={16} className="flex-shrink-0 text-muted-foreground group-hover:text-blue-500 transition-colors" />
             }
           </motion.div>
           {theme === 'dark' ? 'Modo claro' : 'Modo escuro'}
@@ -116,17 +104,17 @@ export default function Sidebar({ onMobileClose }: Props) {
         <Link
           href="/configuracoes"
           onClick={onMobileClose}
-          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-[var(--c-muted)] hover:bg-[var(--c-elevated)] hover:text-[var(--c-text)] transition-all duration-150 cursor-pointer group"
+          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-muted hover:bg-elevated hover:text-foreground transition-all duration-150 cursor-pointer group"
         >
-          <Settings size={16} className="flex-shrink-0 text-[var(--c-dimmed)] group-hover:text-[var(--c-muted)] transition-colors" />
+          <Settings size={16} className="flex-shrink-0 text-muted-foreground group-hover:text-muted transition-colors" />
           Configurações
         </Link>
 
         <button
           onClick={handleSignOut}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-[var(--c-muted)] hover:bg-red-500/10 hover:text-red-500 transition-all duration-150 cursor-pointer group"
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-muted hover:bg-red-500/10 hover:text-red-500 transition-all duration-150 cursor-pointer group"
         >
-          <LogOut size={16} className="flex-shrink-0 text-[var(--c-dimmed)] group-hover:text-red-500 transition-colors" />
+          <LogOut size={16} className="flex-shrink-0 text-muted-foreground group-hover:text-red-500 transition-colors" />
           Sair
         </button>
       </div>

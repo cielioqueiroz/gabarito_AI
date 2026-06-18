@@ -84,8 +84,8 @@ export default function FlashcardTab({ disciplinas, flashcards: initialCards, co
               <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z" />
             </svg>
           </div>
-          <h2 className="font-bold text-[#F1F5F9] text-lg">Sessão concluída!</h2>
-          <p className="text-[#475569] text-sm mt-1">Todos os cards revisados.</p>
+          <h2 className="font-bold text-foreground text-lg">Sessão concluída!</h2>
+          <p className="text-muted-foreground text-sm mt-1">Todos os cards revisados.</p>
           <Button className="mt-5" onClick={() => setMode('list')}>Voltar</Button>
         </div>
       )
@@ -96,10 +96,10 @@ export default function FlashcardTab({ disciplinas, flashcards: initialCards, co
     return (
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <button onClick={() => setMode('list')} className="font-mono text-[10px] uppercase tracking-widest text-[#475569] hover:text-[#94A3B8] transition-colors cursor-pointer">
+          <button onClick={() => setMode('list')} className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground hover:text-muted transition-colors cursor-pointer">
             ← Sair
           </button>
-          <span className="font-mono text-[10px] uppercase tracking-widest text-[#475569]">
+          <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
             {studyIndex + 1}/{studyQueue.length}
           </span>
         </div>
@@ -115,17 +115,17 @@ export default function FlashcardTab({ disciplinas, flashcards: initialCards, co
           initial={{ rotateY: -90, opacity: 0 }}
           animate={{ rotateY: 0, opacity: 1 }}
           transition={{ duration: 0.25 }}
-          className="bg-[#1C1F2E] rounded-2xl border border-[#2A2D3E] min-h-48 cursor-pointer flex flex-col items-center justify-center p-6 hover:border-[#3D4158] hover:shadow-xl hover:shadow-black/20 transition-colors select-none"
+          className="bg-surface rounded-2xl border border-border min-h-48 cursor-pointer flex flex-col items-center justify-center p-6 hover:border-[#3D4158] hover:shadow-xl hover:shadow-black/20 transition-colors select-none"
           onClick={() => setFlipped(v => !v)}
           role="button"
           tabIndex={0}
           onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && setFlipped(v => !v)}
         >
-          <p className="font-mono text-[10px] uppercase tracking-widest text-[#475569] mb-3">
+          <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-3">
             {flipped ? 'Verso' : 'Frente'} · {discNome}
           </p>
-          <p className="text-[#F1F5F9] text-center text-base leading-relaxed">{flipped ? currentCard.verso : currentCard.frente}</p>
-          {!flipped && <p className="font-mono text-[10px] uppercase tracking-widest text-[#2A2D3E] mt-4">Clique para revelar</p>}
+          <p className="text-foreground text-center text-base leading-relaxed">{flipped ? currentCard.verso : currentCard.frente}</p>
+          {!flipped && <p className="font-mono text-[10px] uppercase tracking-widest text-border mt-4">Clique para revelar</p>}
         </motion.div>
 
         <AnimatePresence mode="wait">
@@ -164,7 +164,7 @@ export default function FlashcardTab({ disciplinas, flashcards: initialCards, co
       {genError && <p className="text-red-400 text-sm rounded-lg bg-red-500/10 border border-red-500/20 px-3 py-2">{genError}</p>}
 
       {disciplinas.length === 0 ? (
-        <p className="text-center text-[#475569] text-sm py-8">Crie um plano de estudos primeiro.</p>
+        <p className="text-center text-muted-foreground text-sm py-8">Crie um plano de estudos primeiro.</p>
       ) : (
         disciplinas.map(disc => {
           const discCards = cards.filter(c => c.disciplina_id === disc.id)
@@ -176,8 +176,8 @@ export default function FlashcardTab({ disciplinas, flashcards: initialCards, co
               <CardContent className="pt-4">
                 <div className="flex items-start justify-between mb-3">
                   <div className="min-w-0">
-                    <h3 className="font-semibold text-[#F1F5F9] text-sm truncate">{disc.nome}</h3>
-                    <p className="font-mono text-[10px] uppercase tracking-widest text-[#475569] mt-0.5">
+                    <h3 className="font-semibold text-foreground text-sm truncate">{disc.nome}</h3>
+                    <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mt-0.5">
                       {discCards.length} cards · {discDue.length} para revisar
                     </p>
                   </div>

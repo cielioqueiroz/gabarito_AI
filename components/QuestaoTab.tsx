@@ -64,7 +64,7 @@ export default function QuestaoTab({ disciplinas, questoes, concursoId }: Props)
           onClick={() => setSelectedDisc(null)}
           className={cn(
             'rounded-full px-3 py-1 text-xs font-semibold transition-all duration-150 cursor-pointer',
-            !selectedDisc ? 'bg-blue-600 text-white' : 'bg-[#252836] text-[#94A3B8] hover:bg-[#2A2D3E]'
+            !selectedDisc ? 'bg-blue-600 text-white' : 'bg-elevated text-muted hover:bg-border'
           )}
         >
           Todas ({questoes.length})
@@ -75,7 +75,7 @@ export default function QuestaoTab({ disciplinas, questoes, concursoId }: Props)
             onClick={() => setSelectedDisc(disc.id)}
             className={cn(
               'rounded-full px-3 py-1 text-xs font-semibold transition-all duration-150 cursor-pointer',
-              selectedDisc === disc.id ? 'bg-blue-600 text-white' : 'bg-[#252836] text-[#94A3B8] hover:bg-[#2A2D3E]'
+              selectedDisc === disc.id ? 'bg-blue-600 text-white' : 'bg-elevated text-muted hover:bg-border'
             )}
           >
             {disc.nome} ({questoes.filter(q => q.disciplina_id === disc.id).length})
@@ -89,16 +89,16 @@ export default function QuestaoTab({ disciplinas, questoes, concursoId }: Props)
           <CardContent className="pt-4 pb-4">
             <div className="flex items-center gap-6">
               <div>
-                <span className="font-mono text-[10px] uppercase tracking-widest text-[#475569]">Respondidas</span>
-                <p className="font-bold text-[#F1F5F9] text-lg leading-none mt-0.5">{answered}</p>
+                <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">Respondidas</span>
+                <p className="font-bold text-foreground text-lg leading-none mt-0.5">{answered}</p>
               </div>
               <div>
-                <span className="font-mono text-[10px] uppercase tracking-widest text-[#475569]">Corretas</span>
+                <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">Corretas</span>
                 <p className="font-bold text-emerald-400 text-lg leading-none mt-0.5">{correct}</p>
               </div>
               <div>
-                <span className="font-mono text-[10px] uppercase tracking-widest text-[#475569]">Taxa</span>
-                <p className="font-bold text-[#F1F5F9] text-lg leading-none mt-0.5">{Math.round((correct / answered) * 100)}%</p>
+                <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">Taxa</span>
+                <p className="font-bold text-foreground text-lg leading-none mt-0.5">{Math.round((correct / answered) * 100)}%</p>
               </div>
             </div>
           </CardContent>
@@ -111,13 +111,13 @@ export default function QuestaoTab({ disciplinas, questoes, concursoId }: Props)
         return (
           <div key={disc.id} className="space-y-3">
             <div className="flex items-center justify-between">
-              <h3 className="font-semibold text-[#F1F5F9] text-sm">{disc.nome}</h3>
+              <h3 className="font-semibold text-foreground text-sm">{disc.nome}</h3>
               <Button size="sm" variant="outline" onClick={() => handleGerar(disc.id, disc.nome)} disabled={generating === disc.id}>
                 {generating === disc.id ? 'Gerando…' : '+ Gerar com IA'}
               </Button>
             </div>
             {discQuestoes.length === 0
-              ? <p className="text-[#475569] text-sm italic px-1">Nenhuma questão ainda.</p>
+              ? <p className="text-muted-foreground text-sm italic px-1">Nenhuma questão ainda.</p>
               : discQuestoes.map((questao, idx) => (
                   <QuestaoCard key={questao.id} questao={questao} index={idx + 1} state={getState(questao.id)} onSelect={letra => handleSelect(questao, letra)} />
                 ))
@@ -134,10 +134,10 @@ function QuestaoCard({ questao, index, state, onSelect }: { questao: Questao; in
 
   function altClass(alt: Alternativa) {
     const base = 'flex items-start gap-3 w-full rounded-lg px-3 py-2.5 text-sm text-left transition-all duration-150 '
-    if (!revealed) return base + 'border border-[#2A2D3E] hover:border-blue-500/40 hover:bg-blue-500/5 cursor-pointer'
+    if (!revealed) return base + 'border border-border hover:border-blue-500/40 hover:bg-blue-500/5 cursor-pointer'
     if (alt.letra === questao.correta) return base + 'border border-emerald-500 bg-emerald-500/10 text-emerald-400 cursor-default'
     if (alt.letra === selected) return base + 'border border-red-500 bg-red-500/10 text-red-400 cursor-default'
-    return base + 'border border-[#252836] text-[#475569] cursor-default'
+    return base + 'border border-elevated text-muted-foreground cursor-default'
   }
 
   return (
@@ -145,20 +145,20 @@ function QuestaoCard({ questao, index, state, onSelect }: { questao: Questao; in
       <Card>
         <CardContent className="pt-4">
           <Badge variant="secondary" className="mb-2">Questão {index}</Badge>
-          <p className="text-[#94A3B8] text-sm leading-relaxed mb-4">{questao.enunciado}</p>
+          <p className="text-muted text-sm leading-relaxed mb-4">{questao.enunciado}</p>
           <div className="space-y-2">
             {questao.alternativas.map(alt => (
               <button key={alt.letra} onClick={() => onSelect(alt.letra)} disabled={revealed} className={altClass(alt)}>
-                <span className="font-mono font-bold text-[11px] flex-shrink-0 mt-0.5 w-4 text-[#475569]">{alt.letra}</span>
+                <span className="font-mono font-bold text-[11px] flex-shrink-0 mt-0.5 w-4 text-muted-foreground">{alt.letra}</span>
                 <span className="leading-relaxed">{alt.texto}</span>
               </button>
             ))}
           </div>
 
           {revealed && questao.explicacao && (
-            <div className="mt-4 bg-[#252836] rounded-lg border border-[#2A2D3E] px-3 py-2.5">
-              <p className="font-mono text-[10px] uppercase tracking-widest text-[#475569] mb-1">Explicação</p>
-              <p className="text-[#94A3B8] text-sm leading-relaxed">{questao.explicacao}</p>
+            <div className="mt-4 bg-elevated rounded-lg border border-border px-3 py-2.5">
+              <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-1">Explicação</p>
+              <p className="text-muted text-sm leading-relaxed">{questao.explicacao}</p>
             </div>
           )}
 

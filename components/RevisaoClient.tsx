@@ -48,10 +48,10 @@ export default function RevisaoClient({ flashcards: initial, disciplinaMap }: Pr
                 <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
               </svg>
             </div>
-            <h2 className="font-bold text-[#F1F5F9] text-xl mb-2">
+            <h2 className="font-bold text-foreground text-xl mb-2">
               {done ? 'Sessão concluída!' : 'Nada para revisar hoje'}
             </h2>
-            <p className="text-[#475569] text-sm mb-8">
+            <p className="text-muted-foreground text-sm mb-8">
               {done
                 ? `Você revisou ${cards.length} card${cards.length !== 1 ? 's' : ''} hoje. Continue assim!`
                 : 'Todos os flashcards estão em dia. Volte amanhã!'}
@@ -71,10 +71,10 @@ export default function RevisaoClient({ flashcards: initial, disciplinaMap }: Pr
       <div className="max-w-lg mx-auto px-6 py-8">
         {/* Progress */}
         <div className="flex items-center gap-3 mb-8">
-          <span className="font-mono text-[10px] uppercase tracking-widest text-[#475569] flex-shrink-0">
+          <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground flex-shrink-0">
             {index + 1}/{cards.length}
           </span>
-          <div className="flex-1 bg-[#252836] rounded-full h-1 overflow-hidden">
+          <div className="flex-1 bg-elevated rounded-full h-1 overflow-hidden">
             <motion.div
               className="h-full bg-blue-500 rounded-full"
               initial={{ width: 0 }}
@@ -93,17 +93,17 @@ export default function RevisaoClient({ flashcards: initial, disciplinaMap }: Pr
             animate={{ rotateY: 0, opacity: 1 }}
             exit={{ rotateY: 90, opacity: 0 }}
             transition={{ duration: 0.22 }}
-            className="bg-[#1C1F2E] rounded-2xl border border-[#2A2D3E] min-h-56 cursor-pointer flex flex-col items-center justify-center p-8 hover:border-[#3D4158] hover:shadow-xl hover:shadow-black/20 transition-colors duration-200 select-none mb-6"
+            className="bg-surface rounded-2xl border border-border min-h-56 cursor-pointer flex flex-col items-center justify-center p-8 hover:border-[#3D4158] hover:shadow-xl hover:shadow-black/20 transition-colors duration-200 select-none mb-6"
             onClick={() => setFlipped(v => !v)}
             role="button"
             tabIndex={0}
             onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && setFlipped(v => !v)}
           >
-            <p className="font-mono text-[10px] uppercase tracking-widest text-[#475569] mb-4">
+            <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-4">
               {flipped ? 'Verso' : 'Frente'} · {discNome}
             </p>
-            <p className="text-[#F1F5F9] text-center text-base leading-relaxed">{flipped ? current.verso : current.frente}</p>
-            {!flipped && <p className="font-mono text-[10px] uppercase tracking-widest text-[#2A2D3E] mt-6">Clique para revelar</p>}
+            <p className="text-foreground text-center text-base leading-relaxed">{flipped ? current.verso : current.frente}</p>
+            {!flipped && <p className="font-mono text-[10px] uppercase tracking-widest text-border mt-6">Clique para revelar</p>}
           </motion.div>
         </AnimatePresence>
 
