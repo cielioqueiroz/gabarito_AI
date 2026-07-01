@@ -1,9 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import { FileText, ChevronDown, Sparkles } from 'lucide-react'
+import { FileText, ChevronDown, Sparkles, Volume2, Square } from 'lucide-react'
 import { useToast } from '@/lib/toast'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -22,6 +22,57 @@ function renderInline(text: string, k: string) {
     p.startsWith('**') && p.endsWith('**')
       ? <strong key={`${k}-${i}`} className="font-semibold text-foreground">{p.slice(2, -2)}</strong>
       : <span key={`${k}-${i}`}>{p}</span>
+  )
+}
+
+function stripMarkdown(md: string): string {
+  return md
+    .replace(/^#{1,6}\s*/gm, '')     // headings
+    .replace(/\*\*([^*]+)\*\*/g, '$1') // bold
+    .replace(/^[-*]\s*/gm, '')        // bullets
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+// "Ouvir" — narração via Web Speech API do navegador (grátis, sem chave, sem
+// backend). Uma prévia do futuro "podcast" com TTS de estúdio.
+function ListenButton({ text }: { text: string }) {
+  const [speaking, setSpeaking] = useState(false)
+  const [supported, setSupported] = useState(false)
+
+  useEffect(() => {
+    setSupported(typeof window !== 'undefined' && 'speechSynthesis' in window)
+    return () => { if (typeof window !== 'undefined' && 'speechSynthesis' in window) window.speechSynthesis.cancel() }
+  }, [])
+
+  function toggle() {
+    const synth = window.speechSynthesis
+    if (speaking) { synth.cancel(); setSpeaking(false); return }
+    synth.cancel()
+    const u = new SpeechSynthesisUtterance(text)
+    u.lang = 'pt-BR'
+    u.rate = 1
+    const ptVoice = synth.getVoices().find(v => v.lang?.toLowerCase().startsWith('pt'))
+    if (ptVoice) u.voice = ptVoice
+    u.onend = () => setSpeaking(false)
+    u.onerror = () => setSpeaking(false)
+    setSpeaking(true)
+    synth.speak(u)
+  }
+
+  if (!supported) return null
+  return (
+    <button
+      onClick={toggle}
+      className={`inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 font-mono text-[10px] uppercase tracking-widest transition-colors cursor-pointer ${
+        speaking
+          ? 'border-blue-500/40 bg-blue-500/10 text-blue-300'
+          : 'border-border text-muted-foreground hover:border-blue-500/30 hover:text-blue-400'
+      }`}
+      title={speaking ? 'Parar narração' : 'Ouvir resumo'}
+    >
+      {speaking ? <><Square size={11} /> Parar</> : <><Volume2 size={12} /> Ouvir</>}
+    </button>
   )
 }
 
@@ -139,6 +190,9 @@ export default function ResumoTab({ disciplinas, resumos, topicos = [] }: Props)
                               className="overflow-hidden"
                             >
                               <div className="border-t border-border px-4 py-3">
+                                <div className="mb-3 flex justify-end">
+                                  <ListenButton text={stripMarkdown(r.conteudo)} />
+                                </div>
                                 <Markdown content={r.conteudo} />
                               </div>
                             </motion.div>
