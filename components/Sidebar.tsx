@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
@@ -13,10 +14,11 @@ import {
 
 interface Props { onMobileClose?: () => void }
 
-const navItems = [
+type BadgeKey = 'revisao'
+const navItems: { href: string; label: string; icon: typeof LayoutDashboard; badge?: BadgeKey }[] = [
   { href: '/',             label: 'Dashboard',      icon: LayoutDashboard },
   { href: '/concursos',    label: 'Meus Concursos', icon: BookOpen },
-  { href: '/revisao',      label: 'Revisão do Dia', icon: CalendarCheck },
+  { href: '/revisao',      label: 'Revisão do Dia', icon: CalendarCheck, badge: 'revisao' },
   { href: '/estatisticas', label: 'Estatísticas',   icon: BarChart3 },
 ]
 
@@ -24,6 +26,38 @@ export default function Sidebar({ onMobileClose }: Props) {
   const pathname         = usePathname()
   const router           = useRouter()
   const { theme, toggle } = useTheme()
+  const [badges, setBadges] = useState<Record<BadgeKey, number>>({ revisao: 0 })
+
+  useEffect(() => {
+    let alive = true
+    let previous = 0
+    async function refresh() {
+      try {
+        const res = await fetch('/api/revisao-count', { cache: 'no-store' })
+        if (!res.ok) return
+        const data = await res.json() as { count: number }
+        if (!alive) return
+        setBadges({ revisao: data.count })
+        // Fire notification only when count crossed from 0 to >0.
+        if (
+          previous === 0 && data.count > 0 &&
+          typeof window !== 'undefined' && 'Notification' in window &&
+          Notification.permission === 'granted'
+        ) {
+          try {
+            new Notification('Cards para revisar', {
+              body: `${data.count} card${data.count === 1 ? '' : 's'} vencidos aguardando revisão.`,
+              tag: 'gab-revisao',
+            })
+          } catch {}
+        }
+        previous = data.count
+      } catch {}
+    }
+    refresh()
+    const iv = setInterval(refresh, 60_000)
+    return () => { alive = false; clearInterval(iv) }
+  }, [pathname])
 
   async function handleSignOut() {
     await createClient().auth.signOut()
@@ -78,9 +112,15 @@ export default function Sidebar({ onMobileClose }: Props) {
               <motion.span
                 animate={{ x: active ? 2 : 0 }}
                 transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                className="flex-1"
               >
                 {item.label}
               </motion.span>
+              {item.badge && badges[item.badge] > 0 && (
+                <span className="ml-auto font-mono text-[10px] px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-500 border border-amber-500/30" aria-label={`${badges[item.badge]} pendentes`}>
+                  {badges[item.badge]}
+                </span>
+              )}
             </Link>
           )
         })}

@@ -1,18 +1,35 @@
 'use client'
 
+import { useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
 import { BarChart3 } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import ShellLayout from './ShellLayout'
 import ProgressBar from './ProgressBar'
+import { EmptyIllustration } from './ui/EmptyIllustration'
 
-interface Resposta { acertou: boolean; respondido_em: string }
-interface DiscStat { disciplina_id: string; nome: string; respostas_total: number; respostas_corretas: number }
+interface Resposta { acertou: boolean; respondido_em: string; concurso_id: string | null }
+interface DiscStat { disciplina_id: string; concurso_id?: string; nome: string; respostas_total: number; respostas_corretas: number }
 interface ConcursoStat { concurso_id: string; topicos_total: number; topicos_estudados: number; flashcards_total: number; flashcards_dominados: number }
+interface Concurso { id: string; nome: string }
 
-interface Props { respostas: Resposta[]; disciplinaStats: DiscStat[]; concursoStats: ConcursoStat[] }
+interface Props { respostas: Resposta[]; disciplinaStats: DiscStat[]; concursoStats: ConcursoStat[]; concursos: Concurso[] }
 
-export default function EstatisticasClient({ respostas, disciplinaStats, concursoStats }: Props) {
+export default function EstatisticasClient({ respostas: allResp, disciplinaStats: allDisc, concursoStats: allConcursoStats, concursos }: Props) {
+  const [filterConcurso, setFilterConcurso] = useState<string | null>(null)
+
+  const respostas = useMemo(() =>
+    filterConcurso ? allResp.filter(r => r.concurso_id === filterConcurso) : allResp,
+  [allResp, filterConcurso])
+
+  const disciplinaStats = useMemo(() =>
+    filterConcurso ? allDisc.filter(d => d.concurso_id === filterConcurso) : allDisc,
+  [allDisc, filterConcurso])
+
+  const concursoStats = useMemo(() =>
+    filterConcurso ? allConcursoStats.filter(c => c.concurso_id === filterConcurso) : allConcursoStats,
+  [allConcursoStats, filterConcurso])
+
   const totalResp = respostas.length
   const corretas = respostas.filter(r => r.acertou).length
   const taxa = totalResp === 0 ? 0 : Math.round((corretas / totalResp) * 100)
@@ -31,13 +48,11 @@ export default function EstatisticasClient({ respostas, disciplinaStats, concurs
   const totCards      = concursoStats.reduce((a, c) => a + Number(c.flashcards_total), 0)
   const totDominados  = concursoStats.reduce((a, c) => a + Number(c.flashcards_dominados), 0)
 
-  if (totalResp === 0 && concursoStats.length === 0) {
+  if (totalResp === 0 && allConcursoStats.length === 0) {
     return (
       <ShellLayout title="Estatísticas">
         <div className="max-w-lg mx-auto px-6 py-16 text-center">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-surface border border-border mb-5">
-            <BarChart3 size={24} className="text-muted-foreground" />
-          </div>
+          <EmptyIllustration variant="chart" className="mb-5 text-muted-foreground" />
           <h2 className="font-bold text-foreground text-lg mb-2">Sem dados ainda</h2>
           <p className="text-muted-foreground text-sm">Estude flashcards e responda questões para ver estatísticas aqui.</p>
         </div>
@@ -48,6 +63,26 @@ export default function EstatisticasClient({ respostas, disciplinaStats, concurs
   return (
     <ShellLayout title="Estatísticas">
       <div className="max-w-3xl mx-auto px-6 py-6 space-y-6">
+        {concursos.length > 0 && (
+          <div className="flex items-center gap-2 flex-wrap">
+            <button
+              onClick={() => setFilterConcurso(null)}
+              className={`rounded-full px-3 py-1 text-xs font-semibold transition-all duration-150 cursor-pointer ${!filterConcurso ? 'bg-blue-600 text-white' : 'bg-elevated text-muted hover:bg-border'}`}
+            >
+              Todos ({concursos.length})
+            </button>
+            {concursos.map(c => (
+              <button
+                key={c.id}
+                onClick={() => setFilterConcurso(c.id)}
+                className={`rounded-full px-3 py-1 text-xs font-semibold transition-all duration-150 cursor-pointer ${filterConcurso === c.id ? 'bg-blue-600 text-white' : 'bg-elevated text-muted hover:bg-border'}`}
+              >
+                {c.nome}
+              </button>
+            ))}
+          </div>
+        )}
+
         {/* KPIs */}
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="grid grid-cols-3 gap-4">
           <Card><CardContent className="pt-4 pb-4">

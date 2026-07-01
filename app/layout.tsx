@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { ThemeProvider } from '@/lib/theme'
 import { ToastProvider } from '@/lib/toast'
+import { MotionProvider } from '@/lib/motion'
+import { ShortcutsProvider } from '@/lib/shortcuts'
 import './globals.css'
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] })
@@ -44,7 +46,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="min-h-full bg-background text-foreground transition-colors duration-200">
         <ThemeProvider>
-          <ToastProvider>{children}</ToastProvider>
+          <MotionProvider>
+            <ShortcutsProvider>
+              <ToastProvider>{children}</ToastProvider>
+            </ShortcutsProvider>
+          </MotionProvider>
         </ThemeProvider>
       </body>
     </html>

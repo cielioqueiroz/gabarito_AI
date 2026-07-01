@@ -127,8 +127,16 @@ create table questoes (
   alternativas   jsonb       not null,
   correta        text        not null,
   explicacao     text,
+  dificuldade    text        check (dificuldade in ('facil', 'medio', 'dificil')) default 'medio',
+  tags           text[]      default '{}',
   created_at     timestamptz default now()
 );
+
+-- Migration: add columns if the table pre-existed
+alter table questoes add column if not exists dificuldade text default 'medio';
+alter table questoes add column if not exists tags text[] default '{}';
+create index if not exists questoes_tags_idx on questoes using gin (tags);
+create index if not exists questoes_dificuldade_idx on questoes (dificuldade);
 alter table questoes enable row level security;
 create policy "questoes: own rows" on questoes
   for all

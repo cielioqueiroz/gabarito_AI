@@ -45,6 +45,8 @@ export interface Questao {
   disciplina_id: string
   enunciado: string
   alternativas: Alternativa[]
+  dificuldade?: 'facil' | 'medio' | 'dificil'
+  tags?: string[]
   created_at: string
 }
 

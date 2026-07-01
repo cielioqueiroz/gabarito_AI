@@ -14,7 +14,7 @@ const SCHEMA = {
       type: 'array',
       items: {
         type: 'object',
-        required: ['enunciado', 'alternativas', 'correta', 'explicacao'],
+        required: ['enunciado', 'alternativas', 'correta', 'explicacao', 'dificuldade'],
         properties: {
           enunciado: { type: 'string' },
           alternativas: {
@@ -27,6 +27,8 @@ const SCHEMA = {
           },
           correta: { type: 'string' },
           explicacao: { type: 'string' },
+          dificuldade: { type: 'string', enum: ['facil', 'medio', 'dificil'] },
+          tags: { type: 'array', items: { type: 'string' } },
         },
       },
     },
@@ -57,6 +59,8 @@ export async function POST(req: NextRequest) {
       alternativas: { letra: string; texto: string }[]
       correta: string
       explicacao: string
+      dificuldade: 'facil' | 'medio' | 'dificil'
+      tags?: string[]
     }[]
   }
   try {
@@ -77,6 +81,8 @@ export async function POST(req: NextRequest) {
       disciplina_id: disciplinaId,
       enunciado: q.enunciado, alternativas: q.alternativas,
       correta: q.correta, explicacao: q.explicacao ?? null,
+      dificuldade: q.dificuldade ?? 'medio',
+      tags: q.tags ?? [],
     }))
   )
 

@@ -2,29 +2,33 @@
 
 import { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
 import { useToast } from '@/lib/toast'
 import { isDue } from '@/lib/leitner'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import ProgressBar from './ProgressBar'
 import FlashcardStudy from './FlashcardStudy'
-import type { Disciplina, Flashcard } from '@/types'
+import { AiGenerateDialog } from './AiGenerateDialog'
+import { FlashcardManualDialog } from './FlashcardManualDialog'
+import type { Disciplina, Flashcard, Topico } from '@/types'
 
 interface Props {
   disciplinas: Disciplina[]
   flashcards: Flashcard[]
+  topicos?: Topico[]
 }
 
 type Mode = 'list' | 'study'
 
-export default function FlashcardTab({ disciplinas, flashcards: initialCards }: Props) {
+export default function FlashcardTab({ disciplinas, flashcards: initialCards, topicos = [] }: Props) {
   const router = useRouter()
   const toast  = useToast()
   const [cards, setCards] = useState<Flashcard[]>(initialCards)
   const [mode, setMode] = useState<Mode>('list')
   const [selectedDisc, setSelectedDisc] = useState<string | null>(null)
   const [generating, setGenerating] = useState<string | null>(null)
+  const [previewDisc, setPreviewDisc] = useState<Disciplina | null>(null)
+  const [manualDisc, setManualDisc] = useState<Disciplina | null>(null)
 
   const dueCards = useMemo(() => cards.filter(c => isDue(c.prox_revisao)), [cards])
   const studyQueue = useMemo(() => {
@@ -47,7 +51,9 @@ export default function FlashcardTab({ disciplinas, flashcards: initialCards }: 
       })
       if (res.status === 429) throw new Error('Muitas requisições. Aguarde alguns segundos.')
       if (!res.ok) throw new Error(await res.text())
-      toast.success('Flashcards gerados!', `Novos cards de ${discNome} prontos para estudo.`)
+      toast.success('Flashcards gerados!', `${discNome} pronto para estudo.`, {
+        action: { label: 'Estudar agora', onClick: () => { setSelectedDisc(discId); setMode('study') } },
+      })
       router.refresh()
     } catch (err: unknown) {
       toast.error('Erro ao gerar flashcards', err instanceof Error ? err.message : 'Tente novamente.')
@@ -71,6 +77,7 @@ export default function FlashcardTab({ disciplinas, flashcards: initialCards }: 
       <FlashcardStudy
         cards={studyQueue}
         discNameOf={discNameOf}
+        sessionKey={selectedDisc ? `gab:study:disc:${selectedDisc}` : 'gab:study:all'}
         onAnswer={(_orig, updated) => {
           setCards(prev => prev.map(c => c.id === updated.id ? updated : c))
         }}
@@ -114,8 +121,11 @@ export default function FlashcardTab({ disciplinas, flashcards: initialCards }: 
                     {discDue.length > 0 && (
                       <Button size="sm" onClick={() => startStudy(disc.id)}>Estudar ({discDue.length})</Button>
                     )}
-                    <Button size="sm" variant="outline" onClick={() => handleGerar(disc.id, disc.nome)} disabled={generating === disc.id}>
-                      {generating === disc.id ? '…' : '+ IA'}
+                    <Button size="sm" variant="outline" onClick={() => setManualDisc(disc)} title="Adicionar card manual">
+                      +
+                    </Button>
+                    <Button size="sm" variant="outline" onClick={() => setPreviewDisc(disc)} disabled={generating === disc.id}>
+                      {generating === disc.id ? '…' : 'IA'}
                     </Button>
                   </div>
                 </div>
@@ -126,6 +136,25 @@ export default function FlashcardTab({ disciplinas, flashcards: initialCards }: 
             </Card>
           )
         })
+      )}
+
+      <AiGenerateDialog
+        open={!!previewDisc}
+        onClose={() => setPreviewDisc(null)}
+        onConfirm={async () => { if (previewDisc) await handleGerar(previewDisc.id, previewDisc.nome) }}
+        disciplinaNome={previewDisc?.nome ?? ''}
+        topicos={previewDisc ? topicos.filter(t => t.disciplina_id === previewDisc.id).map(t => t.texto) : []}
+        what="flashcards"
+      />
+
+      {manualDisc && (
+        <FlashcardManualDialog
+          open={!!manualDisc}
+          onClose={() => setManualDisc(null)}
+          disciplinaId={manualDisc.id}
+          disciplinaNome={manualDisc.nome}
+          onCreated={() => { router.refresh(); toast.success('Card criado!') }}
+        />
       )}
     </div>
   )

@@ -8,19 +8,24 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
-import type { Disciplina, Questao, Alternativa } from '@/types'
+import { AiGenerateDialog } from './AiGenerateDialog'
+import type { Disciplina, Questao, Alternativa, Topico } from '@/types'
 
-interface Props { disciplinas: Disciplina[]; questoes: Questao[] }
+interface Props { disciplinas: Disciplina[]; questoes: Questao[]; topicos?: Topico[] }
 interface QuestaoState { selected: string | null; revealed: boolean; correta?: string; explicacao?: string | null }
 
-export default function QuestaoTab({ disciplinas, questoes }: Props) {
+export default function QuestaoTab({ disciplinas, questoes, topicos = [] }: Props) {
   const router = useRouter()
   const toast  = useToast()
   const [states, setStates]         = useState<Record<string, QuestaoState>>({})
   const [selectedDisc, setSelectedDisc] = useState<string | null>(null)
   const [generating, setGenerating] = useState<string | null>(null)
+  const [previewDisc, setPreviewDisc] = useState<Disciplina | null>(null)
+  const [dificuldade, setDificuldade] = useState<'todas' | 'facil' | 'medio' | 'dificil'>('todas')
 
-  const filtered = selectedDisc ? questoes.filter(q => q.disciplina_id === selectedDisc) : questoes
+  const filtered = questoes
+    .filter(q => !selectedDisc || q.disciplina_id === selectedDisc)
+    .filter(q => dificuldade === 'todas' || q.dificuldade === dificuldade)
 
   function getState(id: string): QuestaoState { return states[id] ?? { selected: null, revealed: false } }
 
@@ -64,6 +69,27 @@ export default function QuestaoTab({ disciplinas, questoes }: Props) {
 
   return (
     <div className="space-y-4">
+
+      {/* Difficulty filters */}
+      <div className="flex items-center gap-2 flex-wrap">
+        {(['todas', 'facil', 'medio', 'dificil'] as const).map(d => (
+          <button
+            key={d}
+            onClick={() => setDificuldade(d)}
+            className={cn(
+              'rounded-full px-3 py-1 text-xs font-semibold transition-all duration-150 cursor-pointer capitalize',
+              dificuldade === d
+                ? d === 'facil'   ? 'bg-emerald-600 text-white'
+                : d === 'medio'   ? 'bg-amber-600 text-white'
+                : d === 'dificil' ? 'bg-red-600 text-white'
+                : 'bg-blue-600 text-white'
+                : 'bg-elevated text-muted hover:bg-border'
+            )}
+          >
+            {d}
+          </button>
+        ))}
+      </div>
 
       {/* Discipline filters */}
       <div className="flex items-center gap-2 flex-wrap">
@@ -119,7 +145,7 @@ export default function QuestaoTab({ disciplinas, questoes }: Props) {
           <div key={disc.id} className="space-y-3">
             <div className="flex items-center justify-between">
               <h3 className="font-semibold text-foreground text-sm">{disc.nome}</h3>
-              <Button size="sm" variant="outline" onClick={() => handleGerar(disc.id, disc.nome)} disabled={generating === disc.id}>
+              <Button size="sm" variant="outline" onClick={() => setPreviewDisc(disc)} disabled={generating === disc.id}>
                 {generating === disc.id ? 'Gerando…' : '+ Gerar com IA'}
               </Button>
             </div>
@@ -132,6 +158,15 @@ export default function QuestaoTab({ disciplinas, questoes }: Props) {
           </div>
         )
       })}
+
+      <AiGenerateDialog
+        open={!!previewDisc}
+        onClose={() => setPreviewDisc(null)}
+        onConfirm={async () => { if (previewDisc) await handleGerar(previewDisc.id, previewDisc.nome) }}
+        disciplinaNome={previewDisc?.nome ?? ''}
+        topicos={previewDisc ? topicos.filter(t => t.disciplina_id === previewDisc.id).map(t => t.texto) : []}
+        what="questoes"
+      />
     </div>
   )
 }
@@ -152,7 +187,15 @@ function QuestaoCard({ questao, index, state, onSelect }: { questao: Questao; in
     <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
       <Card>
         <CardContent className="pt-4">
-          <Badge variant="secondary" className="mb-2">Questão {index}</Badge>
+          <div className="flex flex-wrap items-center gap-2 mb-2">
+            <Badge variant="secondary">Questão {index}</Badge>
+            {questao.dificuldade && (
+              <Badge variant={questao.dificuldade === 'facil' ? 'emerald' : questao.dificuldade === 'dificil' ? 'destructive' : 'amber'}>
+                {questao.dificuldade}
+              </Badge>
+            )}
+            {questao.tags?.slice(0, 3).map(t => <Badge key={t} variant="outline">{t}</Badge>)}
+          </div>
           <p className="text-muted text-sm leading-relaxed mb-4">{questao.enunciado}</p>
           <div className="space-y-2">
             {questao.alternativas.map(alt => (

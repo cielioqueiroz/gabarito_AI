@@ -51,6 +51,7 @@ export default function RevisaoClient({ flashcards: initial, disciplinaMap }: Pr
         <FlashcardStudy
           cards={cards}
           discNameOf={discNameOf}
+          sessionKey="gab:revisao:index"
           onAnswer={(_orig, updated) => {
             setCards(prev => prev.map(c => c.id === updated.id ? updated : c))
           }}

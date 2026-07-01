@@ -1,12 +1,13 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import type { Flashcard } from '@/types'
 import { advanceBox } from '@/lib/leitner'
 import { createClient } from '@/lib/supabase/client'
+import { useMotion } from '@/lib/motion'
 
 type BoxVariant = 'destructive' | 'amber' | 'default' | 'emerald'
 const BOX_VARIANT: Record<number, BoxVariant> = {
@@ -23,20 +24,43 @@ interface Props {
   onExit?: () => void
   onFinish?: () => void
   showBoxLabel?: boolean
+  sessionKey?: string
 }
 
-export default function FlashcardStudy({ cards, discNameOf, onAnswer, onExit, onFinish, showBoxLabel = true }: Props) {
-  const [index, setIndex] = useState(0)
+function readSession(key?: string): number {
+  if (!key || typeof window === 'undefined') return 0
+  const raw = sessionStorage.getItem(key)
+  const n = raw ? parseInt(raw, 10) : 0
+  return Number.isFinite(n) && n >= 0 ? n : 0
+}
+
+function writeSession(key: string | undefined, index: number) {
+  if (!key || typeof window === 'undefined') return
+  sessionStorage.setItem(key, String(index))
+}
+
+function clearSession(key?: string) {
+  if (!key || typeof window === 'undefined') return
+  sessionStorage.removeItem(key)
+}
+
+export default function FlashcardStudy({ cards, discNameOf, onAnswer, onExit, onFinish, showBoxLabel = true, sessionKey }: Props) {
+  const [index, setIndex] = useState(() => Math.min(readSession(sessionKey), Math.max(0, cards.length - 1)))
   const [flipped, setFlipped] = useState(false)
   const [history, setHistory] = useState<Flashcard[]>([])
   const [busy, setBusy] = useState(false)
+  const { reduce } = useMotion()
   const current = cards[index]
-  const reduce = useReducedMotion()
+  const progress = cards.length === 0 ? 0 : ((index + (flipped ? 0.5 : 0)) / cards.length) * 100
+
+  useEffect(() => { writeSession(sessionKey, index) }, [index, sessionKey])
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
+      const tgt = e.target as HTMLElement | null
+      if (tgt && (tgt.tagName === 'INPUT' || tgt.tagName === 'TEXTAREA' || tgt.isContentEditable)) return
       if (!current) return
-      if (e.key === ' ') { e.preventDefault(); setFlipped(v => !v) }
+      if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); setFlipped(v => !v) }
       if (flipped && (e.key === '1' || e.key.toLowerCase() === 'j')) handleAnswer(false)
       if (flipped && (e.key === '2' || e.key.toLowerCase() === 'k')) handleAnswer(true)
       if ((e.key === 'u' || e.key === 'U') && history.length > 0) undo()
@@ -54,7 +78,7 @@ export default function FlashcardStudy({ cards, discNameOf, onAnswer, onExit, on
     await createClient().from('flashcards').update({ box, prox_revisao: proxRevisao.toISOString() }).eq('id', current.id)
     onAnswer(current, updated)
     setFlipped(false)
-    if (index + 1 >= cards.length) { onFinish?.() }
+    if (index + 1 >= cards.length) { clearSession(sessionKey); onFinish?.() }
     else setIndex(i => i + 1)
     setBusy(false)
   }
@@ -77,20 +101,29 @@ export default function FlashcardStudy({ cards, discNameOf, onAnswer, onExit, on
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      {/* Progress bar */}
+      <div className="flex items-center gap-3">
         {onExit
-          ? <button onClick={onExit} className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground hover:text-muted transition-colors cursor-pointer">← Sair</button>
+          ? <button onClick={() => { clearSession(sessionKey); onExit() }} className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground hover:text-muted transition-colors cursor-pointer">← Sair</button>
           : <span />}
-        <div className="flex items-center gap-3">
-          {history.length > 0 && (
-            <button onClick={undo} disabled={busy} className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground hover:text-muted transition-colors cursor-pointer disabled:opacity-40" aria-label="Desfazer última resposta">
-              ↶ Desfazer
-            </button>
-          )}
+        <div className="flex-1 flex items-center gap-3">
           <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
             {index + 1}/{cards.length}
           </span>
+          <div className="flex-1 bg-elevated rounded-full h-1 overflow-hidden">
+            <motion.div
+              className="h-full bg-blue-500 rounded-full"
+              initial={{ width: 0 }}
+              animate={{ width: `${progress}%` }}
+              transition={{ duration: reduce ? 0.1 : 0.4, ease: 'easeOut' }}
+            />
+          </div>
         </div>
+        {history.length > 0 && (
+          <button onClick={undo} disabled={busy} className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground hover:text-muted transition-colors cursor-pointer disabled:opacity-40" aria-label="Desfazer última resposta (U)">
+            ↶ U
+          </button>
+        )}
       </div>
 
       {showBoxLabel && (
@@ -101,25 +134,24 @@ export default function FlashcardStudy({ cards, discNameOf, onAnswer, onExit, on
         </div>
       )}
 
-      <motion.div
-        key={`${current.id}-${flipped ? 'back' : 'front'}`}
-        initial={reduce ? { opacity: 0 } : { rotateY: -90, opacity: 0 }}
-        animate={reduce ? { opacity: 1 } : { rotateY: 0, opacity: 1 }}
-        transition={{ duration: reduce ? 0.1 : 0.25 }}
-        className="bg-surface rounded-2xl border border-border min-h-48 cursor-pointer flex flex-col items-center justify-center p-6 hover:border-[#3D4158] hover:shadow-xl hover:shadow-black/20 transition-colors select-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-        onClick={() => setFlipped(v => !v)}
-        role="button"
-        aria-pressed={flipped}
-        aria-label={flipped ? 'Ver frente do card' : 'Ver verso do card'}
-        tabIndex={0}
-        onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && setFlipped(v => !v)}
-      >
-        <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-3">
-          {flipped ? 'Verso' : 'Frente'} · {discNome}
-        </p>
-        <p className="text-foreground text-center text-base leading-relaxed">{flipped ? current.verso : current.frente}</p>
-        {!flipped && <p className="font-mono text-[10px] uppercase tracking-widest text-border mt-4">Clique ou pressione espaço</p>}
-      </motion.div>
+      {/* 3D flip card */}
+      <div className="[perspective:1200px]">
+        <motion.div
+          key={current.id}
+          className="relative min-h-56 cursor-pointer [transform-style:preserve-3d]"
+          animate={reduce ? {} : { rotateY: flipped ? 180 : 0 }}
+          transition={{ duration: reduce ? 0.05 : 0.5, ease: [0.34, 1.24, 0.64, 1] }}
+          onClick={() => setFlipped(v => !v)}
+          role="button"
+          aria-pressed={flipped}
+          aria-label={flipped ? 'Ver frente do card' : 'Ver verso do card'}
+          tabIndex={0}
+          onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), setFlipped(v => !v))}
+        >
+          <CardFace side="front" text={current.frente} discNome={discNome} hint="Clique ou pressione espaço" />
+          <CardFace side="back"  text={current.verso}  discNome={discNome} />
+        </motion.div>
+      </div>
 
       <AnimatePresence mode="wait">
         {flipped ? (
@@ -129,13 +161,13 @@ export default function FlashcardStudy({ cards, discNameOf, onAnswer, onExit, on
               <button
                 onClick={() => handleAnswer(true)}
                 disabled={busy}
-                className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 py-3 text-sm font-semibold hover:bg-emerald-500/20 hover:border-emerald-500/50 transition-all duration-150 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 py-3 text-sm font-semibold hover:bg-emerald-500/20 hover:border-emerald-500/50 transition-all duration-150 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               >
                 Acertei (2)
               </button>
             </div>
             <p className="text-center font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-              Próxima revisão em {days} dia{days === 1 ? '' : 's'} · U para desfazer
+              Próxima revisão em {days} dia{days === 1 ? '' : 's'} · U para desfazer · ? para ajuda
             </p>
           </motion.div>
         ) : (
@@ -144,6 +176,21 @@ export default function FlashcardStudy({ cards, discNameOf, onAnswer, onExit, on
           </motion.div>
         )}
       </AnimatePresence>
+    </div>
+  )
+}
+
+function CardFace({ side, text, discNome, hint }: { side: 'front' | 'back'; text: string; discNome: string; hint?: string }) {
+  return (
+    <div
+      className={`absolute inset-0 bg-surface rounded-2xl border border-border flex flex-col items-center justify-center p-6 hover:border-[#3D4158] hover:shadow-xl hover:shadow-black/20 transition-colors select-none [backface-visibility:hidden]`}
+      style={side === 'back' ? { transform: 'rotateY(180deg)' } : undefined}
+    >
+      <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-3">
+        {side === 'front' ? 'Frente' : 'Verso'} · {discNome}
+      </p>
+      <p className="text-foreground text-center text-base leading-relaxed">{text}</p>
+      {hint && <p className="font-mono text-[10px] uppercase tracking-widest text-border mt-4">{hint}</p>}
     </div>
   )
 }

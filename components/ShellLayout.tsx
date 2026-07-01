@@ -1,9 +1,13 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu } from 'lucide-react'
+import { Menu, Keyboard } from 'lucide-react'
 import Sidebar from './Sidebar'
+import { useShortcuts } from '@/lib/shortcuts'
+import { useMotion } from '@/lib/motion'
+import { KeyboardShortcutsDialog } from './KeyboardShortcutsDialog'
+import { PwaPrompt } from './PwaPrompt'
 
 interface Props {
   children: React.ReactNode
@@ -13,10 +17,27 @@ interface Props {
 
 export default function ShellLayout({ children, title, headerRight }: Props) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const shortcuts = useShortcuts()
+  const { reduce } = useMotion()
+  const drawerRef = useRef<HTMLDivElement>(null)
+  const openerRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
     if (!sidebarOpen) return
-    function onKey(e: KeyboardEvent) { if (e.key === 'Escape') setSidebarOpen(false) }
+    const first = drawerRef.current?.querySelector<HTMLElement>('a, button, [tabindex]:not([tabindex="-1"])')
+    first?.focus()
+
+    function onKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') { setSidebarOpen(false); openerRef.current?.focus() }
+      if (e.key === 'Tab' && drawerRef.current) {
+        const focusables = drawerRef.current.querySelectorAll<HTMLElement>('a, button, [tabindex]:not([tabindex="-1"])')
+        if (focusables.length === 0) return
+        const start = focusables[0]
+        const end = focusables[focusables.length - 1]
+        if (e.shiftKey && document.activeElement === start) { e.preventDefault(); end.focus() }
+        else if (!e.shiftKey && document.activeElement === end) { e.preventDefault(); start.focus() }
+      }
+    }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [sidebarOpen])
@@ -44,10 +65,14 @@ export default function ShellLayout({ children, title, headerRight }: Props) {
               onClick={() => setSidebarOpen(false)}
             />
             <motion.div
-              initial={{ x: -240 }}
-              animate={{ x: 0 }}
-              exit={{ x: -240 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+              ref={drawerRef}
+              role="dialog"
+              aria-modal="true"
+              aria-label="Menu principal"
+              initial={reduce ? { opacity: 0 } : { x: -240 }}
+              animate={reduce ? { opacity: 1 } : { x: 0 }}
+              exit={reduce ? { opacity: 0 } : { x: -240 }}
+              transition={reduce ? { duration: 0.1 } : { type: 'spring', stiffness: 300, damping: 30 }}
               className="absolute left-0 top-0 bottom-0 w-60 z-50"
             >
               <Sidebar onMobileClose={() => setSidebarOpen(false)} />
@@ -62,9 +87,11 @@ export default function ShellLayout({ children, title, headerRight }: Props) {
         <header className="h-14 flex-shrink-0 flex items-center justify-between px-5 border-b border-border bg-background/85 backdrop-blur-sm sticky top-0 z-10">
           <div className="flex items-center gap-3">
             <button
+              ref={openerRef}
               className="md:hidden p-1.5 rounded-lg text-muted hover:bg-elevated hover:text-foreground transition-colors cursor-pointer"
               onClick={() => setSidebarOpen(true)}
               aria-label="Abrir menu"
+              aria-expanded={sidebarOpen}
             >
               <Menu size={18} />
             </button>
@@ -72,10 +99,20 @@ export default function ShellLayout({ children, title, headerRight }: Props) {
               <h1 className="text-sm font-semibold text-foreground tracking-tight">{title}</h1>
             )}
           </div>
-          {headerRight && (
-            <div className="flex items-center gap-2">{headerRight}</div>
-          )}
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={shortcuts.show}
+              aria-label="Ver atalhos de teclado"
+              title="Atalhos (?)"
+              className="hidden md:inline-flex p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-elevated cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+            >
+              <Keyboard size={16} />
+            </button>
+            {headerRight}
+          </div>
         </header>
+        <KeyboardShortcutsDialog open={shortcuts.open} onClose={shortcuts.hide} />
 
         {/* Content */}
         <motion.main
@@ -87,6 +124,8 @@ export default function ShellLayout({ children, title, headerRight }: Props) {
         >
           {children}
         </motion.main>
+
+        <PwaPrompt />
 
         {/* Footer */}
         <footer className="flex-shrink-0 h-9 flex items-center justify-center border-t border-border">
