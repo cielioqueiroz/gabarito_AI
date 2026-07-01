@@ -142,7 +142,7 @@ export default function HomeClient({ stats, userEmail, userName }: Props) {
           variants={stagger}
           initial="hidden"
           animate="show"
-          className="grid grid-cols-3 gap-4 mb-8"
+          className="grid grid-cols-3 gap-3 sm:gap-4 mb-8"
         >
           {[
             { label: 'Concursos',         value: stats.length,    color: 'text-foreground' },
@@ -192,7 +192,7 @@ export default function HomeClient({ stats, userEmail, userName }: Props) {
                       />
                       <FieldError>{nomeError}</FieldError>
                     </div>
-                    <div className="grid grid-cols-3 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                       <div>
                         <label className="block font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5">Cargo</label>
                         <Input value={cargo} onChange={e => setCargo(e.target.value)} placeholder="ex.: Agente de TI" />

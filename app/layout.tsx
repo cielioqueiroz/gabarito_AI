@@ -11,18 +11,38 @@ const geistMono = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin']
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://gabarito-ai.vercel.app'),
-  title: 'gabarito_AI — console de estudos',
-  description: 'Suba o edital e a IA monta seu plano de estudos, flashcards e questões para concursos públicos.',
+  title: {
+    default:  'gabarito_AI — console de estudos',
+    template: '%s · gabarito_AI',
+  },
+  description: 'Suba o edital em PDF e a IA monta seu plano de estudos, flashcards Leitner e questões comentadas para concursos públicos.',
   manifest: '/manifest.json',
+  applicationName: 'gabarito_AI',
+  keywords: ['concurso público', 'estudos', 'flashcards', 'leitner', 'IA', 'edital', 'Claude', 'repetição espaçada', 'gabarito'],
+  authors: [{ name: 'cielioqueiroz', url: 'https://github.com/cielioqueiroz' }],
+  creator: 'cielioqueiroz',
   openGraph: {
-    title: 'gabarito_AI',
-    description: 'Console de estudos para concursos públicos com inteligência artificial.',
+    title: 'gabarito_AI — console de estudos para concursos',
+    description: 'Suba o edital, a IA gera plano, flashcards e questões comentadas. Estude com repetição espaçada.',
     type: 'website',
+    url: '/',
+    siteName: 'gabarito_AI',
+    locale: 'pt_BR',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'gabarito_AI',
-    description: 'Console de estudos para concursos públicos com inteligência artificial.',
+    description: 'Console de estudos para concursos públicos com IA.',
+    creator: '@cielioqueiroz',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-image-preview': 'large',
+    },
   },
 }
 

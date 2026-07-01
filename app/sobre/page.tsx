@@ -1,7 +1,25 @@
 import Link from 'next/link'
+import type { Metadata } from 'next'
 import { Sparkles, BookOpen, Brain, BarChart3, Zap, Lock } from 'lucide-react'
 
-export const metadata = { title: 'gabarito_AI — estude concursos com IA' }
+export const metadata: Metadata = {
+  title: 'gabarito_AI — estude concursos com IA',
+  description: 'Suba o edital em PDF, a IA organiza tudo em disciplinas, flashcards e questões comentadas. Estude com repetição espaçada (Leitner).',
+  alternates: { canonical: '/sobre' },
+  openGraph: {
+    title: 'gabarito_AI — estude concursos com IA',
+    description: 'Console de estudos para concursos públicos com IA. Suba o edital e a IA monta seu plano.',
+    type: 'website',
+    url: '/sobre',
+    siteName: 'gabarito_AI',
+    locale: 'pt_BR',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'gabarito_AI',
+    description: 'Console de estudos para concursos públicos com IA.',
+  },
+}
 
 const features = [
   { icon: Sparkles, title: 'Suba o edital', description: 'PDF ou TXT. A IA extrai disciplinas e tópicos em segundos.' },
@@ -26,14 +44,14 @@ export default function SobrePage() {
         </div>
       </header>
 
-      <section className="max-w-3xl mx-auto px-6 py-24 text-center">
+      <section className="max-w-3xl mx-auto px-6 py-16 sm:py-24 text-center">
         <span className="inline-block font-mono text-[10px] uppercase tracking-widest px-2 py-1 rounded border border-blue-500/30 bg-blue-500/10 text-blue-400 mb-6">
           Console de estudos para concursos
         </span>
-        <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 leading-tight">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-4 leading-tight">
           Estude concurso público com <span className="text-blue-500">IA</span>.
         </h1>
-        <p className="text-lg text-[#94A3B8] max-w-xl mx-auto mb-8">
+        <p className="text-base sm:text-lg text-[#94A3B8] max-w-xl mx-auto mb-8">
           Suba o edital em PDF, a IA organiza tudo em disciplinas, flashcards e questões comentadas. Estude com repetição espaçada.
         </p>
         <div className="flex items-center justify-center gap-3 flex-wrap">
@@ -46,7 +64,7 @@ export default function SobrePage() {
         </div>
       </section>
 
-      <section className="max-w-5xl mx-auto px-6 pb-24 grid md:grid-cols-3 gap-6">
+      <section className="max-w-5xl mx-auto px-6 pb-16 sm:pb-24 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
         {features.map(f => {
           const Icon = f.icon
           return (
