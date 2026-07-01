@@ -1,0 +1,13 @@
+{
+  "name": "gabarito_AI",
+  "short_name": "gabarito_AI",
+  "description": "Console de estudos para concursos públicos com IA.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0F1117",
+  "theme_color": "#0F1117",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "/icon.svg", "type": "image/svg+xml", "sizes": "any", "purpose": "any maskable" }
+  ]
+}

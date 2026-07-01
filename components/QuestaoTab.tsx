@@ -11,10 +11,10 @@ import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 import type { Disciplina, Questao, Alternativa } from '@/types'
 
-interface Props { disciplinas: Disciplina[]; questoes: Questao[]; concursoId: string }
+interface Props { disciplinas: Disciplina[]; questoes: Questao[] }
 interface QuestaoState { selected: string | null; revealed: boolean }
 
-export default function QuestaoTab({ disciplinas, questoes, concursoId }: Props) {
+export default function QuestaoTab({ disciplinas, questoes }: Props) {
   const router = useRouter()
   const toast  = useToast()
   const [states, setStates]         = useState<Record<string, QuestaoState>>({})

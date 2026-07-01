@@ -111,8 +111,8 @@ export default function ConcursoDetail({ concurso, disciplinas, topicos, flashca
             transition={{ duration: 0.18 }}
           >
             {tab === 'plano'      && <PlanoTab    disciplinas={disciplinas} topicos={topicos} concursoId={concurso.id} />}
-            {tab === 'flashcards' && <FlashcardTab disciplinas={disciplinas} flashcards={flashcards} concursoId={concurso.id} />}
-            {tab === 'questoes'   && <QuestaoTab   disciplinas={disciplinas} questoes={questoes} concursoId={concurso.id} />}
+            {tab === 'flashcards' && <FlashcardTab disciplinas={disciplinas} flashcards={flashcards} />}
+            {tab === 'questoes'   && <QuestaoTab   disciplinas={disciplinas} questoes={questoes} />}
           </motion.div>
         </AnimatePresence>
       </div>
