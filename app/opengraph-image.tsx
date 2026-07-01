@@ -92,7 +92,16 @@ export default function Image() {
                 boxShadow: '0 0 40px #2563EB33',
               }}
             >
-              <div style={{ color: '#3B82F6', fontSize: 36, fontWeight: 900 }}>G</div>
+              <svg width="44" height="44" viewBox="0 0 64 64" fill="none">
+                <defs>
+                  <linearGradient id="ogcheck" x1="16" y1="20" x2="48" y2="46" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stopColor="#60A5FA" />
+                    <stop offset="100%" stopColor="#2563EB" />
+                  </linearGradient>
+                </defs>
+                <path d="M18 33.5 L28 43 L47 21.5" stroke="url(#ogcheck)" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" />
+                <rect x="18" y="49" width="16" height="3.5" rx="1.75" fill="#3B82F6" />
+              </svg>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
               <div style={{ display: 'flex', alignItems: 'baseline', gap: 0 }}>

@@ -2,7 +2,7 @@
 
 **Console de estudos para concursos públicos, alimentado por inteligência artificial.**
 
-🌐 **Live:** [gabarito-ai.vercel.app](https://gabarito-ai.vercel.app) · [Landing](https://gabarito-ai.vercel.app/sobre)
+🌐 **Live:** [gabarito-lyart.vercel.app](https://gabarito-lyart.vercel.app) · [Landing](https://gabarito-lyart.vercel.app/sobre)
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fcielioqueiroz%2Fgabarito_AI&env=NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY,SUPABASE_SERVICE_ROLE_KEY,ANTHROPIC_API_KEY&envDescription=Chaves%20do%20Supabase%20e%20da%20Anthropic&envLink=https%3A%2F%2Fgithub.com%2Fcielioqueiroz%2Fgabarito_AI%23instala%C3%A7%C3%A3o)
 

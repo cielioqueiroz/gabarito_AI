@@ -10,7 +10,7 @@ const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] })
 const geistMono = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://gabarito-ai.vercel.app'),
+  metadataBase: new URL('https://gabarito-lyart.vercel.app'),
   title: {
     default:  'gabarito_AI — console de estudos',
     template: '%s · gabarito_AI',
