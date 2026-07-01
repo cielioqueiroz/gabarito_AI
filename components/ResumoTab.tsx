@@ -3,11 +3,12 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import { FileText, ChevronDown, Sparkles } from 'lucide-react'
+import { FileText, ChevronDown, Sparkles, Wand2 } from 'lucide-react'
 import { useToast } from '@/lib/toast'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { AiGenerateDialog } from './AiGenerateDialog'
+import { SourceResumoDialog } from './SourceResumoDialog'
 import { PodcastPlayer } from './PodcastPlayer'
 import type { Disciplina, Resumo, Topico } from '@/types'
 
@@ -68,6 +69,7 @@ export default function ResumoTab({ disciplinas, resumos, topicos = [] }: Props)
   const [previewDisc, setPreviewDisc] = useState<Disciplina | null>(null)
   const [generating, setGenerating] = useState<string | null>(null)
   const [openId, setOpenId] = useState<string | null>(null)
+  const [sourceOpen, setSourceOpen] = useState(false)
 
   async function handleGerar(discId: string, discNome: string) {
     setGenerating(discId)
@@ -93,6 +95,13 @@ export default function ResumoTab({ disciplinas, resumos, topicos = [] }: Props)
 
   return (
     <div className="space-y-4">
+      <div className="flex items-center justify-between gap-3">
+        <p className="text-xs text-muted-foreground">Gere um resumo por disciplina, ou a partir de um texto, link ou vídeo.</p>
+        <Button size="sm" variant="outline" className="flex-shrink-0" onClick={() => setSourceOpen(true)}>
+          <Wand2 size={14} /> De uma fonte
+        </Button>
+      </div>
+
       {disciplinas.map(disc => {
         const discResumos = resumos.filter(r => r.disciplina_id === disc.id)
         return (
@@ -165,6 +174,13 @@ export default function ResumoTab({ disciplinas, resumos, topicos = [] }: Props)
         disciplinaNome={previewDisc?.nome ?? ''}
         topicos={previewDisc ? topicos.filter(t => t.disciplina_id === previewDisc.id).map(t => t.texto) : []}
         what="resumo"
+      />
+
+      <SourceResumoDialog
+        open={sourceOpen}
+        onClose={() => setSourceOpen(false)}
+        disciplinas={disciplinas}
+        onGenerated={() => router.refresh()}
       />
     </div>
   )
