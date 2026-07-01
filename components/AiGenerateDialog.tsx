@@ -11,11 +11,11 @@ interface Props {
   onConfirm: () => Promise<void>
   disciplinaNome: string
   topicos: string[]
-  what: 'flashcards' | 'questoes'
+  what: 'flashcards' | 'questoes' | 'resumo'
 }
 
-const COUNT = { flashcards: 6, questoes: 4 }
-const LABEL = { flashcards: 'flashcards', questoes: 'questões' }
+const COUNT = { flashcards: 6, questoes: 4, resumo: 1 }
+const LABEL = { flashcards: 'flashcards', questoes: 'questões', resumo: 'resumo' }
 
 export function AiGenerateDialog({ open, onClose, onConfirm, disciplinaNome, topicos, what }: Props) {
   const [busy, setBusy] = useState(false)

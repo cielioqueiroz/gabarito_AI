@@ -28,7 +28,7 @@ export default async function ConcursoPage({ params }: Props) {
 
   const disciplinaIds = (disciplinas ?? []).map(d => d.id)
 
-  const [topicosRes, flashcardsRes, questoesRes] = await Promise.all([
+  const [topicosRes, flashcardsRes, questoesRes, resumosRes] = await Promise.all([
     disciplinaIds.length
       ? supabase.from('topicos').select('*').in('disciplina_id', disciplinaIds).order('ordem')
       : Promise.resolve({ data: [] }),
@@ -37,6 +37,9 @@ export default async function ConcursoPage({ params }: Props) {
       : Promise.resolve({ data: [] }),
     disciplinaIds.length
       ? supabase.from('questoes').select('id, disciplina_id, enunciado, alternativas, dificuldade, tags, created_at').in('disciplina_id', disciplinaIds).order('created_at')
+      : Promise.resolve({ data: [] }),
+    disciplinaIds.length
+      ? supabase.from('resumos').select('*').in('disciplina_id', disciplinaIds).order('created_at', { ascending: false })
       : Promise.resolve({ data: [] }),
   ])
 
@@ -47,6 +50,7 @@ export default async function ConcursoPage({ params }: Props) {
       topicos={topicosRes.data ?? []}
       flashcards={flashcardsRes.data ?? []}
       questoes={questoesRes.data ?? []}
+      resumos={resumosRes.data ?? []}
     />
   )
 }

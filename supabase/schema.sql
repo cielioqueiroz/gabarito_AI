@@ -175,6 +175,36 @@ create index if not exists respostas_user_id_idx on respostas (user_id);
 create index if not exists respostas_questao_id_idx on respostas (questao_id);
 create index if not exists respostas_respondido_em_idx on respostas (respondido_em);
 
+-- ─── Resumos ──────────────────────────────────────────────────────────────────
+-- Bloco idempotente: pode rodar só ele no SQL Editor se as outras tabelas já existem.
+create table if not exists resumos (
+  id            uuid        primary key default gen_random_uuid(),
+  disciplina_id uuid        not null references disciplinas(id) on delete cascade,
+  titulo        text        not null,
+  conteudo      text        not null,   -- markdown gerado pela IA
+  created_at    timestamptz default now()
+);
+alter table resumos enable row level security;
+drop policy if exists "resumos: own rows" on resumos;
+create policy "resumos: own rows" on resumos
+  for all
+  using (
+    exists (
+      select 1 from disciplinas d
+      join concursos c on c.id = d.concurso_id
+      where d.id = resumos.disciplina_id and c.user_id = auth.uid()
+    )
+  )
+  with check (
+    exists (
+      select 1 from disciplinas d
+      join concursos c on c.id = d.concurso_id
+      where d.id = resumos.disciplina_id and c.user_id = auth.uid()
+    )
+  );
+
+create index if not exists resumos_disciplina_id_idx on resumos (disciplina_id);
+
 -- ─── Stats view ───────────────────────────────────────────────────────────────
 create or replace view concurso_stats
 with (security_invoker = true) as

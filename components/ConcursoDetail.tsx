@@ -4,12 +4,13 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowLeft, Download } from 'lucide-react'
-import type { Concurso, Disciplina, Topico, Flashcard, Questao } from '@/types'
+import type { Concurso, Disciplina, Topico, Flashcard, Questao, Resumo } from '@/types'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import PlanoTab    from './PlanoTab'
 import FlashcardTab from './FlashcardTab'
 import QuestaoTab  from './QuestaoTab'
+import ResumoTab   from './ResumoTab'
 import ProgressBar from './ProgressBar'
 import ShellLayout  from './ShellLayout'
 
@@ -19,11 +20,12 @@ interface Props {
   topicos:     Topico[]
   flashcards:  Flashcard[]
   questoes:    Questao[]
+  resumos:     Resumo[]
 }
 
-type Tab = 'plano' | 'flashcards' | 'questoes'
+type Tab = 'plano' | 'flashcards' | 'questoes' | 'resumos'
 
-export default function ConcursoDetail({ concurso, disciplinas, topicos, flashcards, questoes }: Props) {
+export default function ConcursoDetail({ concurso, disciplinas, topicos, flashcards, questoes, resumos }: Props) {
   const [tab, setTab] = useState<Tab>('plano')
 
   const totalTopicos  = topicos.length
@@ -35,6 +37,7 @@ export default function ConcursoDetail({ concurso, disciplinas, topicos, flashca
     { key: 'plano',      label: 'Plano',      count: totalTopicos },
     { key: 'flashcards', label: 'Flashcards', count: totalFlashcards },
     { key: 'questoes',   label: 'Questões',   count: questoes.length },
+    { key: 'resumos',    label: 'Resumos',    count: resumos.length },
   ]
 
   const headerRight = (
@@ -124,6 +127,7 @@ export default function ConcursoDetail({ concurso, disciplinas, topicos, flashca
             {tab === 'plano'      && <PlanoTab    disciplinas={disciplinas} topicos={topicos} concursoId={concurso.id} />}
             {tab === 'flashcards' && <FlashcardTab disciplinas={disciplinas} flashcards={flashcards} topicos={topicos} />}
             {tab === 'questoes'   && <QuestaoTab   disciplinas={disciplinas} questoes={questoes} topicos={topicos} />}
+            {tab === 'resumos'    && <ResumoTab    disciplinas={disciplinas} resumos={resumos} topicos={topicos} />}
           </motion.div>
         </AnimatePresence>
       </div>

@@ -58,6 +58,14 @@ export interface Resposta {
   respondido_em: string
 }
 
+export interface Resumo {
+  id: string
+  disciplina_id: string
+  titulo: string
+  conteudo: string
+  created_at: string
+}
+
 export interface DisciplinaComStats extends Disciplina {
   topicos: Topico[]
   flashcards: Flashcard[]

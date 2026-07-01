@@ -295,7 +295,14 @@ export default function LoginPage() {
             </div>
             {tab !== 'forgot' && (
               <div>
-                <label className="block font-mono text-[10px] uppercase tracking-widest text-[#475569] mb-1.5">Senha</label>
+                <div className="mb-1.5 flex items-center justify-between">
+                  <label className="font-mono text-[10px] uppercase tracking-widest text-[#475569]">Senha</label>
+                  {tab === 'login' && (
+                    <button type="button" onClick={() => switchTab('forgot')} className="cursor-pointer font-mono text-[10px] uppercase tracking-widest text-blue-400 transition-colors hover:text-blue-300">
+                      {t.auth.forgotPassword}
+                    </button>
+                  )}
+                </div>
                 <Input
                   type="password"
                   value={password}
@@ -307,11 +314,6 @@ export default function LoginPage() {
                 <FieldError>{errors.password}</FieldError>
                 {tab === 'signup' && !errors.password && (
                   <p className="text-[11px] text-[#475569] mt-1">Mínimo 6 caracteres.</p>
-                )}
-                {tab === 'login' && (
-                  <button type="button" onClick={() => switchTab('forgot')} className="text-[11px] text-blue-400 hover:text-blue-300 mt-1.5 cursor-pointer">
-                    {t.auth.forgotPassword}
-                  </button>
                 )}
               </div>
             )}
