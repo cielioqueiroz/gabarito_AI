@@ -29,6 +29,7 @@ export async function proxy(request: NextRequest) {
   const isPublic = path === '/login'
                   || path === '/sobre'
                   || path === '/redefinir-senha'
+                  || path.startsWith('/auth/')   // OAuth / email PKCE code exchange
                   || path.startsWith('/api/')
 
   if (!user && !isPublic) {

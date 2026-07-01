@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import dynamic from 'next/dynamic'
@@ -30,6 +30,17 @@ export default function LoginPage() {
 
   const [errors, setErrors]   = useState<Errors>({})
   const [loading, setLoading] = useState(false)
+
+  // Surface auth errors handed back by /auth/callback (?error=…) so a failed
+  // Google/reset/confirmação flow shows a reason instead of silently looping.
+  useEffect(() => {
+    const err = new URLSearchParams(window.location.search).get('error')
+    if (err) {
+      toast.error('Não foi possível entrar', decodeURIComponent(err))
+      window.history.replaceState({}, '', '/login')
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   function switchTab(t: Tab) {
     setTab(t); setErrors({})
@@ -68,7 +79,7 @@ export default function LoginPage() {
     const supabase = createClient()
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: `${window.location.origin}/` },
+      options: { redirectTo: `${window.location.origin}/auth/callback?next=/` },
     })
     if (error) toast.error('Erro ao entrar com Google', error.message)
     setLoading(false)
@@ -85,7 +96,7 @@ export default function LoginPage() {
 
     if (tab === 'forgot') {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/redefinir-senha`,
+        redirectTo: `${window.location.origin}/auth/callback?next=/redefinir-senha`,
       })
       if (error) toast.error('Erro', error.message)
       else {
@@ -109,6 +120,7 @@ export default function LoginPage() {
         email,
         password,
         options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback?next=/`,
           data: {
             full_name:  `${nome.trim()} ${sobrenome.trim()}`,
             first_name: nome.trim(),
