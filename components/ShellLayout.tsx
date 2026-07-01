@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu } from 'lucide-react'
 import Sidebar from './Sidebar'
@@ -14,8 +14,18 @@ interface Props {
 export default function ShellLayout({ children, title, headerRight }: Props) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
+  useEffect(() => {
+    if (!sidebarOpen) return
+    function onKey(e: KeyboardEvent) { if (e.key === 'Escape') setSidebarOpen(false) }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [sidebarOpen])
+
   return (
     <div className="flex h-screen bg-background overflow-hidden">
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[200] focus:bg-blue-600 focus:text-white focus:px-3 focus:py-1.5 focus:rounded-md focus:text-sm">
+        Pular para o conteúdo
+      </a>
       {/* Desktop sidebar */}
       <div className="hidden md:flex flex-col flex-shrink-0">
         <Sidebar />
@@ -69,6 +79,7 @@ export default function ShellLayout({ children, title, headerRight }: Props) {
 
         {/* Content */}
         <motion.main
+          id="main-content"
           className="flex-1 overflow-y-auto"
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}

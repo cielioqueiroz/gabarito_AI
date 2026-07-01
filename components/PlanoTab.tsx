@@ -45,6 +45,7 @@ export default function PlanoTab({ disciplinas, topicos: initialTopicos, concurs
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ texto: editaisText, concursoId }),
       })
+      if (res.status === 429) throw new Error('Muitas requisições. Aguarde alguns segundos.')
       if (!res.ok) throw new Error(await res.text())
       toast.success('Plano gerado!', 'A IA organizou o edital em disciplinas e tópicos.')
       setEditaisText(''); setShowImport(false); router.refresh()

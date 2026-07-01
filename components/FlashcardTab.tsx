@@ -45,6 +45,7 @@ export default function FlashcardTab({ disciplinas, flashcards: initialCards }: 
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ disciplinaId: discId, disciplinaNome: discNome }),
       })
+      if (res.status === 429) throw new Error('Muitas requisições. Aguarde alguns segundos.')
       if (!res.ok) throw new Error(await res.text())
       toast.success('Flashcards gerados!', `Novos cards de ${discNome} prontos para estudo.`)
       router.refresh()

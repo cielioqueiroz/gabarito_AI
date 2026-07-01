@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import type { Flashcard } from '@/types'
@@ -31,6 +31,7 @@ export default function FlashcardStudy({ cards, discNameOf, onAnswer, onExit, on
   const [history, setHistory] = useState<Flashcard[]>([])
   const [busy, setBusy] = useState(false)
   const current = cards[index]
+  const reduce = useReducedMotion()
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -102,9 +103,9 @@ export default function FlashcardStudy({ cards, discNameOf, onAnswer, onExit, on
 
       <motion.div
         key={`${current.id}-${flipped ? 'back' : 'front'}`}
-        initial={{ rotateY: -90, opacity: 0 }}
-        animate={{ rotateY: 0, opacity: 1 }}
-        transition={{ duration: 0.25 }}
+        initial={reduce ? { opacity: 0 } : { rotateY: -90, opacity: 0 }}
+        animate={reduce ? { opacity: 1 } : { rotateY: 0, opacity: 1 }}
+        transition={{ duration: reduce ? 0.1 : 0.25 }}
         className="bg-surface rounded-2xl border border-border min-h-48 cursor-pointer flex flex-col items-center justify-center p-6 hover:border-[#3D4158] hover:shadow-xl hover:shadow-black/20 transition-colors select-none focus:outline-none focus:ring-2 focus:ring-blue-500"
         onClick={() => setFlipped(v => !v)}
         role="button"

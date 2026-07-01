@@ -75,6 +75,7 @@ export default function HomeClient({ stats, userEmail, userName }: Props) {
         fd.append('edital', file)
         const res  = await fetch('/api/criar-com-edital', { method: 'POST', body: fd })
         const data = await res.json()
+        if (res.status === 429) throw new Error('Muitas requisições. Aguarde alguns segundos.')
         if (!res.ok) throw new Error(data.error ?? 'Erro ao criar concurso')
         toast.success('Concurso criado!', 'A IA organizou o edital em disciplinas.')
         resetForm()
