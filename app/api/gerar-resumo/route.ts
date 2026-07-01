@@ -135,7 +135,16 @@ export async function POST(req: NextRequest) {
     })
   } catch (err) {
     logger.error('gerar-resumo', 'claude', { err: String(err) })
-    return NextResponse.json({ error: 'Erro ao gerar resumo' }, { status: 502 })
+    const raw = String(err)
+    const friendly =
+      /credit balance|billing|insufficient|quota/i.test(raw)
+        ? 'Sem créditos na Anthropic. Adicione créditos em console.anthropic.com → Billing e tente de novo.'
+      : /rate.?limit|overloaded|429|529/i.test(raw)
+        ? 'A IA está sobrecarregada no momento. Tente novamente em instantes.'
+      : /api.?key|authentication|401/i.test(raw)
+        ? 'Chave da Anthropic inválida. Verifique a variável ANTHROPIC_API_KEY.'
+        : 'Erro ao gerar resumo. Tente novamente.'
+    return NextResponse.json({ error: friendly }, { status: 502 })
   }
 
   const { error } = await auth.supabase.from('resumos').insert({
