@@ -31,7 +31,7 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   devIndicators: false,
-  serverExternalPackages: ['pdf-parse'],
+  serverExternalPackages: ['pdf-parse', 'msedge-tts'],
   poweredByHeader: false,
   async headers() {
     return [{ source: '/(.*)', headers: securityHeaders }]
