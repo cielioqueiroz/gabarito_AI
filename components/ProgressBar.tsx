@@ -7,19 +7,23 @@ import { cn } from '@/lib/utils'
 interface ProgressBarProps {
   value: number
   max: number
-  color?: 'blue' | 'emerald' | 'amber'
+  color?: 'blue' | 'emerald' | 'amber' | 'cyan' | 'indigo'
   label?: string
   showPercent?: boolean
   size?: 'sm' | 'md'
 }
 
 const colorBar: Record<string, string> = {
-  blue:    'bg-blue-500',
-  emerald: 'bg-emerald-500',
+  blue:    'bg-cyan-500',
+  cyan:    'bg-gradient-to-r from-cyan-500 to-indigo-500',
+  indigo:  'bg-indigo-500',
+  emerald: 'bg-gradient-to-r from-emerald-500 to-cyan-500',
   amber:   'bg-amber-400',
 }
 const colorText: Record<string, string> = {
-  blue:    'text-blue-400',
+  blue:    'text-cyan-400',
+  cyan:    'text-cyan-400',
+  indigo:  'text-indigo-400',
   emerald: 'text-emerald-400',
   amber:   'text-amber-400',
 }

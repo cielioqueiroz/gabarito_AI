@@ -44,7 +44,7 @@ export default function ShellLayout({ children, title, headerRight }: Props) {
 
   return (
     <div className="flex h-screen bg-background overflow-hidden">
-      <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[200] focus:bg-blue-600 focus:text-white focus:px-3 focus:py-1.5 focus:rounded-md focus:text-sm">
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[200] focus:bg-emerald-600 focus:text-white focus:px-3 focus:py-1.5 focus:rounded-md focus:text-sm">
         Pular para o conteúdo
       </a>
       {/* Desktop sidebar */}
@@ -105,7 +105,7 @@ export default function ShellLayout({ children, title, headerRight }: Props) {
               onClick={shortcuts.show}
               aria-label="Ver atalhos de teclado"
               title="Atalhos (?)"
-              className="hidden md:inline-flex p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-elevated cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+              className="hidden md:inline-flex p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-elevated cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
             >
               <Keyboard size={16} />
             </button>

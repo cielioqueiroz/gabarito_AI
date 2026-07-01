@@ -9,7 +9,7 @@ import { createClient } from '@/lib/supabase/client'
 import { cn } from '@/lib/utils'
 import {
   LayoutDashboard, BookOpen, CalendarCheck,
-  BarChart3, Settings, Sun, Moon, LogOut,
+  BarChart3, Settings, Sun, Moon, LogOut, GraduationCap,
 } from 'lucide-react'
 
 interface Props { onMobileClose?: () => void }
@@ -71,12 +71,15 @@ export default function Sidebar({ onMobileClose }: Props) {
   }
 
   return (
-    <aside className="flex flex-col h-full w-60 bg-surface border-r border-border">
+    <aside className="flex flex-col h-full w-60 bg-slate-950/50 backdrop-blur-xl border-r border-border">
       {/* Logo */}
       <div className="h-14 flex items-center px-5 border-b border-border flex-shrink-0">
-        <Link href="/" className="font-mono text-base font-bold text-foreground tracking-tight">
-          gabarito<span className="text-blue-500">_AI</span>
-          <span className="inline-block w-1.5 h-3.5 bg-blue-500 ml-0.5 align-middle animate-blink" />
+        <Link href="/" className="flex items-center gap-2 font-mono text-base font-bold text-foreground tracking-tight">
+          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-500 to-cyan-500 shadow-sm shadow-emerald-500/25">
+            <GraduationCap size={15} className="text-white" />
+          </span>
+          gabarito<span className="text-emerald-400">_AI</span>
+          <span className="inline-block w-1.5 h-3.5 bg-emerald-400 ml-0.5 align-middle animate-blink" />
         </Link>
       </div>
 
@@ -93,14 +96,14 @@ export default function Sidebar({ onMobileClose }: Props) {
               className={cn(
                 'group relative flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150',
                 active
-                  ? 'text-blue-500 bg-blue-500/10'
+                  ? 'text-emerald-400 bg-gradient-to-r from-emerald-500/12 to-cyan-500/5'
                   : 'text-muted hover:text-foreground hover:bg-elevated'
               )}
             >
               {active && (
                 <motion.div
                   layoutId="sidebar-active"
-                  className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-blue-500 rounded-full"
+                  className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-6 bg-emerald-400 rounded-full"
                   transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                 />
               )}
@@ -108,7 +111,7 @@ export default function Sidebar({ onMobileClose }: Props) {
                 size={16}
                 className={cn(
                   'flex-shrink-0 transition-colors',
-                  active ? 'text-blue-500' : 'text-muted-foreground group-hover:text-muted'
+                  active ? 'text-emerald-400' : 'text-muted-foreground group-hover:text-muted'
                 )}
               />
               <motion.span
@@ -154,9 +157,9 @@ export default function Sidebar({ onMobileClose }: Props) {
 
         <button
           onClick={handleSignOut}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-muted hover:bg-red-500/10 hover:text-red-500 transition-all duration-150 cursor-pointer group"
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-muted hover:bg-rose-500/10 hover:text-rose-400 transition-all duration-150 cursor-pointer group"
         >
-          <LogOut size={16} className="flex-shrink-0 text-muted-foreground group-hover:text-red-500 transition-colors" />
+          <LogOut size={16} className="flex-shrink-0 text-muted-foreground group-hover:text-rose-400 transition-colors" />
           Sair
         </button>
       </div>

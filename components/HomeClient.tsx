@@ -3,7 +3,7 @@
 import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Plus, Upload, X } from 'lucide-react'
+import { Plus, Upload, X, BookOpen, Target, Award } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { useToast } from '@/lib/toast'
 import { Button } from '@/components/ui/button'
@@ -145,22 +145,32 @@ export default function HomeClient({ stats, userEmail, userName }: Props) {
           className="grid grid-cols-3 gap-3 sm:gap-4 mb-8"
         >
           {[
-            { label: 'Concursos',         value: stats.length,    color: 'text-foreground' },
-            { label: 'Tópicos estudados', value: totalTopicos,    color: 'text-blue-500'        },
-            { label: 'Cards dominados',   value: totalDominados,  color: 'text-emerald-500'     },
-          ].map((s) => (
-            <motion.div
-              key={s.label}
-              variants={{ hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0 } }}
-            >
-              <Card className="hover:border-blue-500/30 transition-colors">
-                <CardContent className="pt-4 pb-4">
-                  <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5">{s.label}</p>
-                  <p className={`text-2xl font-bold ${s.color}`}>{s.value}</p>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
+            { label: 'Concursos',         value: stats.length,   color: 'text-foreground', icon: BookOpen, iconCls: 'text-slate-300 bg-slate-500/10 border-slate-500/20' },
+            { label: 'Tópicos estudados', value: totalTopicos,   color: 'text-cyan-400',   icon: Target,   iconCls: 'text-cyan-400 bg-cyan-500/10 border-cyan-500/20' },
+            { label: 'Cards dominados',   value: totalDominados, color: 'text-emerald-400', icon: Award,   iconCls: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' },
+          ].map((s) => {
+            const Icon = s.icon
+            return (
+              <motion.div
+                key={s.label}
+                variants={{ hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0 } }}
+              >
+                <Card className="hover:border-emerald-500/30 transition-colors">
+                  <CardContent className="pt-4 pb-4">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5">{s.label}</p>
+                        <p className={`text-2xl font-bold ${s.color}`}>{s.value}</p>
+                      </div>
+                      <span className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg border ${s.iconCls}`}>
+                        <Icon size={15} />
+                      </span>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            )
+          })}
         </motion.div>
 
         {/* Form */}
@@ -216,14 +226,14 @@ export default function HomeClient({ stats, userEmail, userName }: Props) {
                         onDrop={e => { e.preventDefault(); const d = e.dataTransfer.files[0]; if (d) setFile(d) }}
                         className={`w-full rounded-lg border-2 border-dashed px-4 py-5 text-center cursor-pointer transition-all duration-150 ${
                           file
-                            ? 'border-blue-500/50 bg-blue-500/5'
-                            : 'border-border hover:border-blue-500/30 hover:bg-elevated'
+                            ? 'border-emerald-500/50 bg-emerald-500/5'
+                            : 'border-border hover:border-emerald-500/30 hover:bg-elevated'
                         }`}
                       >
                         {file ? (
                           <div className="flex items-center justify-center gap-2">
-                            <Upload size={14} className="text-blue-500 flex-shrink-0" />
-                            <span className="text-sm text-blue-500 font-medium truncate max-w-xs">{file.name}</span>
+                            <Upload size={14} className="text-emerald-500 flex-shrink-0" />
+                            <span className="text-sm text-emerald-500 font-medium truncate max-w-xs">{file.name}</span>
                             <button type="button" onClick={ev => { ev.stopPropagation(); setFile(null) }} className="text-muted-foreground hover:text-red-500 ml-1 cursor-pointer transition-colors">
                               <X size={14} />
                             </button>
@@ -237,11 +247,11 @@ export default function HomeClient({ stats, userEmail, userName }: Props) {
                         )}
                       </div>
                       <input ref={fileInputRef} type="file" accept=".pdf,.txt,application/pdf,text/plain" className="hidden" onChange={e => setFile(e.target.files?.[0] ?? null)} />
-                      {file && <p className="text-[11px] text-blue-500 mt-1.5">A IA vai organizar o edital em disciplinas e tópicos ao criar</p>}
+                      {file && <p className="text-[11px] text-emerald-500 mt-1.5">A IA vai organizar o edital em disciplinas e tópicos ao criar</p>}
                     </div>
 
                     {loading && loadingMsg && (
-                      <div className="flex items-center gap-2 text-blue-500 text-sm">
+                      <div className="flex items-center gap-2 text-emerald-500 text-sm">
                         <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
                           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
@@ -269,7 +279,7 @@ export default function HomeClient({ stats, userEmail, userName }: Props) {
             <EmptyIllustration variant="books" className="mb-5 text-muted-foreground" />
             <h3 className="font-semibold text-foreground text-base mb-1">Comece pelo edital</h3>
             <p className="text-muted-foreground text-sm mb-4 max-w-sm mx-auto">Suba o PDF do edital e a IA organiza tudo — disciplinas, tópicos, flashcards e questões.</p>
-            <button onClick={() => setShowForm(true)} className="inline-flex items-center gap-2 text-blue-500 text-sm font-semibold hover:text-blue-400 transition-colors cursor-pointer">
+            <button onClick={() => setShowForm(true)} className="inline-flex items-center gap-2 text-emerald-500 text-sm font-semibold hover:text-emerald-400 transition-colors cursor-pointer">
               Criar o primeiro concurso →
             </button>
           </motion.div>
