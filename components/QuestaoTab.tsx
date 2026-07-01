@@ -120,7 +120,7 @@ export default function QuestaoTab({ disciplinas, questoes, topicos = [] }: Prop
       {answered > 0 && (
         <Card>
           <CardContent className="pt-4 pb-4">
-            <div className="flex items-center gap-6">
+            <div className="flex flex-wrap items-center gap-4 sm:gap-6">
               <div>
                 <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">Respondidas</span>
                 <p className="font-bold text-foreground text-lg leading-none mt-0.5">{answered}</p>

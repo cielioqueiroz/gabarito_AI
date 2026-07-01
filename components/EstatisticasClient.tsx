@@ -84,7 +84,7 @@ export default function EstatisticasClient({ respostas: allResp, disciplinaStats
         )}
 
         {/* KPIs */}
-        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="grid grid-cols-3 gap-4">
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="grid grid-cols-3 gap-3 sm:gap-4">
           <Card><CardContent className="pt-4 pb-4">
             <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5">Questões</p>
             <p className="text-2xl font-bold text-foreground">{totalResp}</p>
