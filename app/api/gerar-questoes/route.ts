@@ -1,64 +1,90 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { anthropic } from '@/lib/anthropic'
-import { createClient } from '@/lib/supabase/server'
+import { callClaudeStructured } from '@/lib/anthropic'
+import { requireAuth, checkRateLimit, assertDisciplinaOwnership } from '@/lib/apiHelpers'
+import { logger } from '@/lib/logger'
 
-function parseJSON(raw: string) {
-  const cleaned = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/i, '').trim()
-  return JSON.parse(cleaned)
+export const runtime = 'nodejs'
+export const maxDuration = 60
+
+const SCHEMA = {
+  type: 'object',
+  required: ['questoes'],
+  properties: {
+    questoes: {
+      type: 'array',
+      items: {
+        type: 'object',
+        required: ['enunciado', 'alternativas', 'correta', 'explicacao', 'dificuldade'],
+        properties: {
+          enunciado: { type: 'string' },
+          alternativas: {
+            type: 'array',
+            items: {
+              type: 'object',
+              required: ['letra', 'texto'],
+              properties: { letra: { type: 'string' }, texto: { type: 'string' } },
+            },
+          },
+          correta: { type: 'string' },
+          explicacao: { type: 'string' },
+          dificuldade: { type: 'string', enum: ['facil', 'medio', 'dificil'] },
+          tags: { type: 'array', items: { type: 'string' } },
+        },
+      },
+    },
+  },
 }
 
 export async function POST(req: NextRequest) {
-  try {
-    const { disciplinaId, disciplinaNome } = await req.json()
-    if (!disciplinaId || !disciplinaNome) {
-      return NextResponse.json({ error: 'disciplinaId e disciplinaNome são obrigatórios' }, { status: 400 })
-    }
+  const auth = await requireAuth()
+  if (auth instanceof NextResponse) return auth
+  const rl = checkRateLimit(auth.userId, 'gerar-questoes', 10)
+  if (rl) return rl
 
-    const supabase = await createClient()
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
+  const { disciplinaId, disciplinaNome } = await req.json()
+  if (!disciplinaId || !disciplinaNome) {
+    return NextResponse.json({ error: 'disciplinaId e disciplinaNome são obrigatórios' }, { status: 400 })
+  }
+  if (!(await assertDisciplinaOwnership(auth.supabase, auth.userId, disciplinaId))) {
+    return NextResponse.json({ error: 'Disciplina não encontrada' }, { status: 404 })
+  }
 
-    const { data: topicos } = await supabase
-      .from('topicos')
-      .select('texto')
-      .eq('disciplina_id', disciplinaId)
-      .order('ordem')
+  const { data: topicos } = await auth.supabase
+    .from('topicos').select('texto').eq('disciplina_id', disciplinaId).order('ordem')
+  const topicosStr = (topicos ?? []).map(t => t.texto).join(', ')
 
-    const topicosStr = (topicos ?? []).map(t => t.texto).join(', ')
-
-    const message = await anthropic.messages.create({
-      model: 'claude-sonnet-4-6',
-      max_tokens: 4096,
-      system: 'Você cria questões de múltipla escolha estilo banca de concurso (5 alternativas, uma correta). Responda APENAS com JSON válido, sem markdown.',
-      messages: [
-        {
-          role: 'user',
-          content: `Crie 4 questões sobre "${disciplinaNome}" cobrindo: ${topicosStr}. Formato: [{"enunciado":"...","alternativas":[{"letra":"A","texto":"..."}, ...],"correta":"A","explicacao":"..."}]`,
-        },
-      ],
-    })
-
-    const raw = message.content[0].type === 'text' ? message.content[0].text : ''
-    const parsed: {
+  let parsed: {
+    questoes: {
       enunciado: string
       alternativas: { letra: string; texto: string }[]
       correta: string
       explicacao: string
-    }[] = parseJSON(raw)
-
-    await supabase.from('questoes').insert(
-      parsed.map(q => ({
-        disciplina_id: disciplinaId,
-        enunciado: q.enunciado,
-        alternativas: q.alternativas,
-        correta: q.correta,
-        explicacao: q.explicacao ?? null,
-      }))
-    )
-
-    return NextResponse.json({ ok: true, count: parsed.length })
-  } catch (err: unknown) {
-    console.error('gerar-questoes error:', err)
-    return NextResponse.json({ error: 'Erro interno' }, { status: 500 })
+      dificuldade: 'facil' | 'medio' | 'dificil'
+      tags?: string[]
+    }[]
   }
+  try {
+    parsed = await callClaudeStructured({
+      schema: SCHEMA,
+      toolName: 'gerar_questoes',
+      toolDescription: 'Gera questões de múltipla escolha estilo banca de concurso.',
+      system: 'Você cria questões de múltipla escolha estilo banca de concurso (5 alternativas, uma correta).',
+      user: `Crie 4 questões sobre "${disciplinaNome}" cobrindo: ${topicosStr}`,
+    })
+  } catch (err) {
+    logger.error('gerar-questoes', 'claude', { err: String(err) })
+    return NextResponse.json({ error: 'Erro ao gerar questões' }, { status: 502 })
+  }
+
+  await auth.supabase.from('questoes').insert(
+    parsed.questoes.map(q => ({
+      disciplina_id: disciplinaId,
+      enunciado: q.enunciado, alternativas: q.alternativas,
+      correta: q.correta, explicacao: q.explicacao ?? null,
+      dificuldade: q.dificuldade ?? 'medio',
+      tags: q.tags ?? [],
+    }))
+  )
+
+  return NextResponse.json({ ok: true, count: parsed.questoes.length })
 }

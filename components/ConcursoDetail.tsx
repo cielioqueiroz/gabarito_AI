@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Download } from 'lucide-react'
 import type { Concurso, Disciplina, Topico, Flashcard, Questao } from '@/types'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
@@ -38,10 +38,21 @@ export default function ConcursoDetail({ concurso, disciplinas, topicos, flashca
   ]
 
   const headerRight = (
-    <Link href="/" className="flex items-center gap-1.5 text-muted-foreground hover:text-muted transition-colors cursor-pointer text-sm">
-      <ArrowLeft size={14} />
-      Voltar
-    </Link>
+    <div className="flex items-center gap-3">
+      <a
+        href={`/api/export/${concurso.id}`}
+        download
+        className="flex items-center gap-1.5 text-muted-foreground hover:text-muted transition-colors cursor-pointer text-sm"
+        title="Baixar deck (Anki-compatível)"
+      >
+        <Download size={14} />
+        <span className="hidden sm:inline">Exportar</span>
+      </a>
+      <Link href="/" className="flex items-center gap-1.5 text-muted-foreground hover:text-muted transition-colors cursor-pointer text-sm">
+        <ArrowLeft size={14} />
+        Voltar
+      </Link>
+    </div>
   )
 
   return (
@@ -111,8 +122,8 @@ export default function ConcursoDetail({ concurso, disciplinas, topicos, flashca
             transition={{ duration: 0.18 }}
           >
             {tab === 'plano'      && <PlanoTab    disciplinas={disciplinas} topicos={topicos} concursoId={concurso.id} />}
-            {tab === 'flashcards' && <FlashcardTab disciplinas={disciplinas} flashcards={flashcards} concursoId={concurso.id} />}
-            {tab === 'questoes'   && <QuestaoTab   disciplinas={disciplinas} questoes={questoes} concursoId={concurso.id} />}
+            {tab === 'flashcards' && <FlashcardTab disciplinas={disciplinas} flashcards={flashcards} topicos={topicos} />}
+            {tab === 'questoes'   && <QuestaoTab   disciplinas={disciplinas} questoes={questoes} topicos={topicos} />}
           </motion.div>
         </AnimatePresence>
       </div>

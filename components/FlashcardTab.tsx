@@ -2,63 +2,44 @@
 
 import { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
-import { motion, AnimatePresence } from 'framer-motion'
-import { createClient } from '@/lib/supabase/client'
 import { useToast } from '@/lib/toast'
-import { advanceBox, isDue } from '@/lib/leitner'
+import { isDue } from '@/lib/leitner'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import ProgressBar from './ProgressBar'
-import type { Disciplina, Flashcard } from '@/types'
+import FlashcardStudy from './FlashcardStudy'
+import { AiGenerateDialog } from './AiGenerateDialog'
+import { FlashcardManualDialog } from './FlashcardManualDialog'
+import type { Disciplina, Flashcard, Topico } from '@/types'
 
 interface Props {
   disciplinas: Disciplina[]
   flashcards: Flashcard[]
-  concursoId: string
+  topicos?: Topico[]
 }
 
 type Mode = 'list' | 'study'
 
-const BOX_LABEL: Record<number, string> = {
-  1: 'Aprendendo', 2: 'Revisando', 3: 'Fixando', 4: 'Dominando', 5: 'Dominado',
-}
-const BOX_VARIANT: Record<number, 'destructive'|'amber'|'default'|'emerald'> = {
-  1: 'destructive', 2: 'amber', 3: 'default', 4: 'emerald', 5: 'emerald',
-}
-
-export default function FlashcardTab({ disciplinas, flashcards: initialCards, concursoId }: Props) {
+export default function FlashcardTab({ disciplinas, flashcards: initialCards, topicos = [] }: Props) {
   const router = useRouter()
   const toast  = useToast()
-  const [cards, setCards]             = useState<Flashcard[]>(initialCards)
-  const [mode, setMode]               = useState<Mode>('list')
+  const [cards, setCards] = useState<Flashcard[]>(initialCards)
+  const [mode, setMode] = useState<Mode>('list')
   const [selectedDisc, setSelectedDisc] = useState<string | null>(null)
-  const [studyIndex, setStudyIndex]   = useState(0)
-  const [flipped, setFlipped]         = useState(false)
-  const [generating, setGenerating]   = useState<string | null>(null)
+  const [generating, setGenerating] = useState<string | null>(null)
+  const [previewDisc, setPreviewDisc] = useState<Disciplina | null>(null)
+  const [manualDisc, setManualDisc] = useState<Disciplina | null>(null)
 
   const dueCards = useMemo(() => cards.filter(c => isDue(c.prox_revisao)), [cards])
   const studyQueue = useMemo(() => {
-    const disc = selectedDisc
+    const filtered = selectedDisc
       ? cards.filter(c => c.disciplina_id === selectedDisc && isDue(c.prox_revisao))
       : dueCards
-    return disc.sort((a, b) => new Date(a.prox_revisao).getTime() - new Date(b.prox_revisao).getTime())
+    return [...filtered].sort((a, b) => new Date(a.prox_revisao).getTime() - new Date(b.prox_revisao).getTime())
   }, [cards, selectedDisc, dueCards])
 
-  const currentCard = studyQueue[studyIndex]
-
   function startStudy(discId: string | null) {
-    setSelectedDisc(discId); setStudyIndex(0); setFlipped(false); setMode('study')
-  }
-
-  async function handleAnswer(acertou: boolean) {
-    if (!currentCard) return
-    const { box, proxRevisao } = advanceBox(currentCard.box, acertou)
-    setCards(prev => prev.map(c => c.id === currentCard.id ? { ...c, box, prox_revisao: proxRevisao.toISOString() } : c))
-    await createClient().from('flashcards').update({ box, prox_revisao: proxRevisao.toISOString() }).eq('id', currentCard.id)
-    setFlipped(false)
-    if (studyIndex + 1 >= studyQueue.length) { router.refresh(); setMode('list') }
-    else setStudyIndex(i => i + 1)
+    setSelectedDisc(discId); setMode('study')
   }
 
   async function handleGerar(discId: string, discNome: string) {
@@ -68,8 +49,11 @@ export default function FlashcardTab({ disciplinas, flashcards: initialCards, co
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ disciplinaId: discId, disciplinaNome: discNome }),
       })
+      if (res.status === 429) throw new Error('Muitas requisições. Aguarde alguns segundos.')
       if (!res.ok) throw new Error(await res.text())
-      toast.success('Flashcards gerados!', `Novos cards de ${discNome} prontos para estudo.`)
+      toast.success('Flashcards gerados!', `${discNome} pronto para estudo.`, {
+        action: { label: 'Estudar agora', onClick: () => { setSelectedDisc(discId); setMode('study') } },
+      })
       router.refresh()
     } catch (err: unknown) {
       toast.error('Erro ao gerar flashcards', err instanceof Error ? err.message : 'Tente novamente.')
@@ -77,77 +61,29 @@ export default function FlashcardTab({ disciplinas, flashcards: initialCards, co
     setGenerating(null)
   }
 
+  const discNameOf = (card: Flashcard) => disciplinas.find(d => d.id === card.disciplina_id)?.nome ?? ''
+
   if (mode === 'study') {
-    if (!currentCard) {
+    if (studyQueue.length === 0) {
       return (
         <div className="text-center py-16">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 mb-4">
-            <svg className="w-7 h-7 text-emerald-400" viewBox="0 0 16 16" fill="currentColor">
-              <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z" />
-            </svg>
-          </div>
           <h2 className="font-bold text-foreground text-lg">Sessão concluída!</h2>
           <p className="text-muted-foreground text-sm mt-1">Todos os cards revisados.</p>
           <Button className="mt-5" onClick={() => setMode('list')}>Voltar</Button>
         </div>
       )
     }
-
-    const discNome = disciplinas.find(d => d.id === currentCard.disciplina_id)?.nome ?? ''
-
     return (
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <button onClick={() => setMode('list')} className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground hover:text-muted transition-colors cursor-pointer">
-            ← Sair
-          </button>
-          <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-            {studyIndex + 1}/{studyQueue.length}
-          </span>
-        </div>
-
-        <div className="flex justify-center">
-          <Badge variant={BOX_VARIANT[currentCard.box] as any}>
-            Caixa {currentCard.box} — {BOX_LABEL[currentCard.box]}
-          </Badge>
-        </div>
-
-        <motion.div
-          key={`${currentCard.id}-${flipped ? 'back' : 'front'}`}
-          initial={{ rotateY: -90, opacity: 0 }}
-          animate={{ rotateY: 0, opacity: 1 }}
-          transition={{ duration: 0.25 }}
-          className="bg-surface rounded-2xl border border-border min-h-48 cursor-pointer flex flex-col items-center justify-center p-6 hover:border-[#3D4158] hover:shadow-xl hover:shadow-black/20 transition-colors select-none"
-          onClick={() => setFlipped(v => !v)}
-          role="button"
-          tabIndex={0}
-          onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && setFlipped(v => !v)}
-        >
-          <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-3">
-            {flipped ? 'Verso' : 'Frente'} · {discNome}
-          </p>
-          <p className="text-foreground text-center text-base leading-relaxed">{flipped ? currentCard.verso : currentCard.frente}</p>
-          {!flipped && <p className="font-mono text-[10px] uppercase tracking-widest text-border mt-4">Clique para revelar</p>}
-        </motion.div>
-
-        <AnimatePresence mode="wait">
-          {flipped ? (
-            <motion.div key="answer" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="grid grid-cols-2 gap-3">
-              <Button variant="destructive" size="lg" onClick={() => handleAnswer(false)}>Revisar</Button>
-              <button
-                onClick={() => handleAnswer(true)}
-                className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 py-3 text-sm font-semibold hover:bg-emerald-500/20 hover:border-emerald-500/50 transition-all duration-150 cursor-pointer"
-              >
-                Acertei
-              </button>
-            </motion.div>
-          ) : (
-            <motion.div key="reveal" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
-              <Button className="w-full" size="lg" onClick={() => setFlipped(true)}>Revelar resposta</Button>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+      <FlashcardStudy
+        cards={studyQueue}
+        discNameOf={discNameOf}
+        sessionKey={selectedDisc ? `gab:study:disc:${selectedDisc}` : 'gab:study:all'}
+        onAnswer={(_orig, updated) => {
+          setCards(prev => prev.map(c => c.id === updated.id ? updated : c))
+        }}
+        onExit={() => setMode('list')}
+        onFinish={() => { router.refresh(); setMode('list') }}
+      />
     )
   }
 
@@ -162,7 +98,6 @@ export default function FlashcardTab({ disciplinas, flashcards: initialCards, co
           <Button variant="amber" onClick={() => startStudy(null)}>Estudar agora</Button>
         </div>
       )}
-
 
       {disciplinas.length === 0 ? (
         <p className="text-center text-muted-foreground text-sm py-8">Crie um plano de estudos primeiro.</p>
@@ -186,8 +121,11 @@ export default function FlashcardTab({ disciplinas, flashcards: initialCards, co
                     {discDue.length > 0 && (
                       <Button size="sm" onClick={() => startStudy(disc.id)}>Estudar ({discDue.length})</Button>
                     )}
-                    <Button size="sm" variant="outline" onClick={() => handleGerar(disc.id, disc.nome)} disabled={generating === disc.id}>
-                      {generating === disc.id ? '…' : '+ IA'}
+                    <Button size="sm" variant="outline" onClick={() => setManualDisc(disc)} title="Adicionar card manual">
+                      +
+                    </Button>
+                    <Button size="sm" variant="outline" onClick={() => setPreviewDisc(disc)} disabled={generating === disc.id}>
+                      {generating === disc.id ? '…' : 'IA'}
                     </Button>
                   </div>
                 </div>
@@ -198,6 +136,25 @@ export default function FlashcardTab({ disciplinas, flashcards: initialCards, co
             </Card>
           )
         })
+      )}
+
+      <AiGenerateDialog
+        open={!!previewDisc}
+        onClose={() => setPreviewDisc(null)}
+        onConfirm={async () => { if (previewDisc) await handleGerar(previewDisc.id, previewDisc.nome) }}
+        disciplinaNome={previewDisc?.nome ?? ''}
+        topicos={previewDisc ? topicos.filter(t => t.disciplina_id === previewDisc.id).map(t => t.texto) : []}
+        what="flashcards"
+      />
+
+      {manualDisc && (
+        <FlashcardManualDialog
+          open={!!manualDisc}
+          onClose={() => setManualDisc(null)}
+          disciplinaId={manualDisc.id}
+          disciplinaNome={manualDisc.nome}
+          onCreated={() => { router.refresh(); toast.success('Card criado!') }}
+        />
       )}
     </div>
   )

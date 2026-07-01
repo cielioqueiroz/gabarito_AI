@@ -1,16 +1,32 @@
-import { BarChart3 } from 'lucide-react'
-import ShellLayout from '@/components/ShellLayout'
+import { redirect } from 'next/navigation'
+import { createClient } from '@/lib/supabase/server'
+import EstatisticasClient from '@/components/EstatisticasClient'
 
-export default function EstatisticasPage() {
+export default async function EstatisticasPage() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) redirect('/login')
+
+  const [{ data: respostas }, { data: discStats }, { data: concursoStats }, { data: concursos }] = await Promise.all([
+    supabase.from('respostas').select('acertou, respondido_em, questao_id, questoes(disciplina_id, disciplinas(concurso_id))').order('respondido_em', { ascending: false }).limit(500),
+    supabase.from('disciplina_stats').select('*'),
+    supabase.from('concurso_stats').select('*'),
+    supabase.from('concursos').select('id, nome').order('created_at', { ascending: false }),
+  ])
+
+  type Row = { acertou: boolean; respondido_em: string; questao_id: string; questoes: { disciplina_id: string; disciplinas: { concurso_id: string } | null } | null }
+  const resp = ((respostas ?? []) as unknown as Row[]).map(r => ({
+    acertou: r.acertou,
+    respondido_em: r.respondido_em,
+    concurso_id: r.questoes?.disciplinas?.concurso_id ?? null,
+  }))
+
   return (
-    <ShellLayout title="Estatísticas">
-      <div className="max-w-lg mx-auto px-6 py-16 text-center">
-        <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-surface border border-border mb-5">
-          <BarChart3 size={24} className="text-muted-foreground" />
-        </div>
-        <h2 className="font-bold text-foreground text-lg mb-2">Estatísticas</h2>
-        <p className="text-muted-foreground text-sm">Em breve — gráficos de progresso e desempenho por disciplina.</p>
-      </div>
-    </ShellLayout>
+    <EstatisticasClient
+      respostas={resp}
+      disciplinaStats={discStats ?? []}
+      concursoStats={concursoStats ?? []}
+      concursos={concursos ?? []}
+    />
   )
 }

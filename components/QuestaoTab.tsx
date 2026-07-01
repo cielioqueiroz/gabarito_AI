@@ -3,25 +3,29 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { createClient } from '@/lib/supabase/client'
 import { useToast } from '@/lib/toast'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
-import type { Disciplina, Questao, Alternativa } from '@/types'
+import { AiGenerateDialog } from './AiGenerateDialog'
+import type { Disciplina, Questao, Alternativa, Topico } from '@/types'
 
-interface Props { disciplinas: Disciplina[]; questoes: Questao[]; concursoId: string }
-interface QuestaoState { selected: string | null; revealed: boolean }
+interface Props { disciplinas: Disciplina[]; questoes: Questao[]; topicos?: Topico[] }
+interface QuestaoState { selected: string | null; revealed: boolean; correta?: string; explicacao?: string | null }
 
-export default function QuestaoTab({ disciplinas, questoes, concursoId }: Props) {
+export default function QuestaoTab({ disciplinas, questoes, topicos = [] }: Props) {
   const router = useRouter()
   const toast  = useToast()
   const [states, setStates]         = useState<Record<string, QuestaoState>>({})
   const [selectedDisc, setSelectedDisc] = useState<string | null>(null)
   const [generating, setGenerating] = useState<string | null>(null)
+  const [previewDisc, setPreviewDisc] = useState<Disciplina | null>(null)
+  const [dificuldade, setDificuldade] = useState<'todas' | 'facil' | 'medio' | 'dificil'>('todas')
 
-  const filtered = selectedDisc ? questoes.filter(q => q.disciplina_id === selectedDisc) : questoes
+  const filtered = questoes
+    .filter(q => !selectedDisc || q.disciplina_id === selectedDisc)
+    .filter(q => dificuldade === 'todas' || q.dificuldade === dificuldade)
 
   function getState(id: string): QuestaoState { return states[id] ?? { selected: null, revealed: false } }
 
@@ -29,9 +33,18 @@ export default function QuestaoTab({ disciplinas, questoes, concursoId }: Props)
     const st = getState(questao.id)
     if (st.revealed) return
     setStates(prev => ({ ...prev, [questao.id]: { selected: letra, revealed: true } }))
-    const sb = createClient()
-    const { data: { user } } = await sb.auth.getUser()
-    if (user) await sb.from('respostas').insert({ user_id: user.id, questao_id: questao.id, acertou: letra === questao.correta })
+    try {
+      const res = await fetch('/api/responder', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ questaoId: questao.id, letra }),
+      })
+      if (res.status === 429) throw new Error('Muitas requisições. Aguarde alguns segundos.')
+      if (!res.ok) throw new Error(await res.text())
+      const data = await res.json() as { acertou: boolean; correta: string; explicacao: string | null }
+      setStates(prev => ({ ...prev, [questao.id]: { selected: letra, revealed: true, correta: data.correta, explicacao: data.explicacao } }))
+    } catch {
+      toast.error('Erro ao registrar resposta')
+    }
   }
 
   async function handleGerar(discId: string, discNome: string) {
@@ -41,6 +54,7 @@ export default function QuestaoTab({ disciplinas, questoes, concursoId }: Props)
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ disciplinaId: discId, disciplinaNome: discNome }),
       })
+      if (res.status === 429) throw new Error('Muitas requisições. Aguarde alguns segundos.')
       if (!res.ok) throw new Error(await res.text())
       toast.success('Questões geradas!', `Novas questões de ${discNome} disponíveis.`)
       router.refresh()
@@ -51,13 +65,31 @@ export default function QuestaoTab({ disciplinas, questoes, concursoId }: Props)
   }
 
   const answered = Object.values(states).filter(s => s.revealed).length
-  const correct  = Object.entries(states).filter(([id, s]) => {
-    if (!s.revealed) return false
-    return questoes.find(q => q.id === id)?.correta === s.selected
-  }).length
+  const correct  = Object.values(states).filter(s => s.revealed && s.correta === s.selected).length
 
   return (
     <div className="space-y-4">
+
+      {/* Difficulty filters */}
+      <div className="flex items-center gap-2 flex-wrap">
+        {(['todas', 'facil', 'medio', 'dificil'] as const).map(d => (
+          <button
+            key={d}
+            onClick={() => setDificuldade(d)}
+            className={cn(
+              'rounded-full px-3 py-1 text-xs font-semibold transition-all duration-150 cursor-pointer capitalize',
+              dificuldade === d
+                ? d === 'facil'   ? 'bg-emerald-600 text-white'
+                : d === 'medio'   ? 'bg-amber-600 text-white'
+                : d === 'dificil' ? 'bg-red-600 text-white'
+                : 'bg-blue-600 text-white'
+                : 'bg-elevated text-muted hover:bg-border'
+            )}
+          >
+            {d}
+          </button>
+        ))}
+      </div>
 
       {/* Discipline filters */}
       <div className="flex items-center gap-2 flex-wrap">
@@ -113,7 +145,7 @@ export default function QuestaoTab({ disciplinas, questoes, concursoId }: Props)
           <div key={disc.id} className="space-y-3">
             <div className="flex items-center justify-between">
               <h3 className="font-semibold text-foreground text-sm">{disc.nome}</h3>
-              <Button size="sm" variant="outline" onClick={() => handleGerar(disc.id, disc.nome)} disabled={generating === disc.id}>
+              <Button size="sm" variant="outline" onClick={() => setPreviewDisc(disc)} disabled={generating === disc.id}>
                 {generating === disc.id ? 'Gerando…' : '+ Gerar com IA'}
               </Button>
             </div>
@@ -126,17 +158,27 @@ export default function QuestaoTab({ disciplinas, questoes, concursoId }: Props)
           </div>
         )
       })}
+
+      <AiGenerateDialog
+        open={!!previewDisc}
+        onClose={() => setPreviewDisc(null)}
+        onConfirm={async () => { if (previewDisc) await handleGerar(previewDisc.id, previewDisc.nome) }}
+        disciplinaNome={previewDisc?.nome ?? ''}
+        topicos={previewDisc ? topicos.filter(t => t.disciplina_id === previewDisc.id).map(t => t.texto) : []}
+        what="questoes"
+      />
     </div>
   )
 }
 
 function QuestaoCard({ questao, index, state, onSelect }: { questao: Questao; index: number; state: QuestaoState; onSelect: (l: string) => void }) {
-  const { selected, revealed } = state
+  const { selected, revealed, correta, explicacao } = state
+  const acertou = revealed && selected === correta
 
   function altClass(alt: Alternativa) {
     const base = 'flex items-start gap-3 w-full rounded-lg px-3 py-2.5 text-sm text-left transition-all duration-150 '
     if (!revealed) return base + 'border border-border hover:border-blue-500/40 hover:bg-blue-500/5 cursor-pointer'
-    if (alt.letra === questao.correta) return base + 'border border-emerald-500 bg-emerald-500/10 text-emerald-400 cursor-default'
+    if (alt.letra === correta) return base + 'border border-emerald-500 bg-emerald-500/10 text-emerald-400 cursor-default'
     if (alt.letra === selected) return base + 'border border-red-500 bg-red-500/10 text-red-400 cursor-default'
     return base + 'border border-elevated text-muted-foreground cursor-default'
   }
@@ -145,7 +187,15 @@ function QuestaoCard({ questao, index, state, onSelect }: { questao: Questao; in
     <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
       <Card>
         <CardContent className="pt-4">
-          <Badge variant="secondary" className="mb-2">Questão {index}</Badge>
+          <div className="flex flex-wrap items-center gap-2 mb-2">
+            <Badge variant="secondary">Questão {index}</Badge>
+            {questao.dificuldade && (
+              <Badge variant={questao.dificuldade === 'facil' ? 'emerald' : questao.dificuldade === 'dificil' ? 'destructive' : 'amber'}>
+                {questao.dificuldade}
+              </Badge>
+            )}
+            {questao.tags?.slice(0, 3).map(t => <Badge key={t} variant="outline">{t}</Badge>)}
+          </div>
           <p className="text-muted text-sm leading-relaxed mb-4">{questao.enunciado}</p>
           <div className="space-y-2">
             {questao.alternativas.map(alt => (
@@ -156,18 +206,18 @@ function QuestaoCard({ questao, index, state, onSelect }: { questao: Questao; in
             ))}
           </div>
 
-          {revealed && questao.explicacao && (
+          {revealed && explicacao && (
             <div className="mt-4 bg-elevated rounded-lg border border-border px-3 py-2.5">
               <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-1">Explicação</p>
-              <p className="text-muted text-sm leading-relaxed">{questao.explicacao}</p>
+              <p className="text-muted text-sm leading-relaxed">{explicacao}</p>
             </div>
           )}
 
-          {revealed && (
-            <div className={cn('mt-3 flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest', selected === questao.correta ? 'text-emerald-400' : 'text-red-400')}>
-              {selected === questao.correta
+          {revealed && correta && (
+            <div className={cn('mt-3 flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest', acertou ? 'text-emerald-400' : 'text-red-400')}>
+              {acertou
                 ? <><svg className="w-3.5 h-3.5" viewBox="0 0 16 16" fill="currentColor"><path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/></svg>Correto!</>
-                : <><svg className="w-3.5 h-3.5" viewBox="0 0 16 16" fill="currentColor"><path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/></svg>Errado — correta: {questao.correta}</>
+                : <><svg className="w-3.5 h-3.5" viewBox="0 0 16 16" fill="currentColor"><path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/></svg>Errado — correta: {correta}</>
               }
             </div>
           )}

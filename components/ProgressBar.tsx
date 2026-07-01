@@ -1,7 +1,7 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
-import { gsap } from 'gsap'
+import { useEffect, useState } from 'react'
+import { motion, useMotionValue, useTransform, animate } from 'framer-motion'
 import { cn } from '@/lib/utils'
 
 interface ProgressBarProps {
@@ -25,33 +25,16 @@ const colorText: Record<string, string> = {
 }
 
 export default function ProgressBar({ value, max, color = 'blue', label, showPercent = false, size = 'md' }: ProgressBarProps) {
-  const pct    = max === 0 ? 0 : Math.round((value / max) * 100)
-  const barRef = useRef<HTMLDivElement>(null)
-  const numRef = useRef<HTMLSpanElement>(null)
+  const pct = max === 0 ? 0 : Math.round((value / max) * 100)
+  const count = useMotionValue(0)
+  const rounded = useTransform(count, latest => `${Math.round(latest)}%`)
+  const [display, setDisplay] = useState('0%')
 
   useEffect(() => {
-    if (!barRef.current) return
-    gsap.fromTo(
-      barRef.current,
-      { width: '0%' },
-      { width: `${pct}%`, duration: 0.8, ease: 'power2.out', delay: 0.1 }
-    )
-    if (numRef.current) {
-      const obj = { val: 0 }
-      gsap.fromTo(
-        obj,
-        { val: 0 },
-        {
-          val: pct,
-          duration: 0.8,
-          ease: 'power2.out',
-          delay: 0.1,
-          onUpdate() { if (numRef.current) numRef.current.textContent = `${Math.round(obj.val)}%` },
-        }
-      )
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pct])
+    const controls = animate(count, pct, { duration: 0.8, ease: 'easeOut', delay: 0.1 })
+    const unsub = rounded.on('change', v => setDisplay(v))
+    return () => { controls.stop(); unsub() }
+  }, [pct, count, rounded])
 
   return (
     <div className="w-full">
@@ -61,8 +44,8 @@ export default function ProgressBar({ value, max, color = 'blue', label, showPer
             <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">{label}</span>
           )}
           {showPercent && (
-            <span ref={numRef} className={cn('font-mono text-[10px] uppercase tracking-widest ml-auto', colorText[color])}>
-              {pct}%
+            <span className={cn('font-mono text-[10px] uppercase tracking-widest ml-auto', colorText[color])}>
+              {display}
             </span>
           )}
         </div>
@@ -74,10 +57,11 @@ export default function ProgressBar({ value, max, color = 'blue', label, showPer
         aria-valuemin={0}
         aria-valuemax={max}
       >
-        <div
-          ref={barRef}
+        <motion.div
           className={cn('h-full rounded-full', colorBar[color])}
-          style={{ width: '0%' }}
+          initial={{ width: '0%' }}
+          animate={{ width: `${pct}%` }}
+          transition={{ duration: 0.8, ease: 'easeOut', delay: 0.1 }}
         />
       </div>
     </div>

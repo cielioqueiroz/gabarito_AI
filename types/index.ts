@@ -38,13 +38,15 @@ export interface Flashcard {
   created_at: string
 }
 
+// Public shape sent to client — server withholds `correta` and `explicacao`
+// until the user submits an answer via /api/responder.
 export interface Questao {
   id: string
   disciplina_id: string
   enunciado: string
   alternativas: Alternativa[]
-  correta: string
-  explicacao: string | null
+  dificuldade?: 'facil' | 'medio' | 'dificil'
+  tags?: string[]
   created_at: string
 }
 

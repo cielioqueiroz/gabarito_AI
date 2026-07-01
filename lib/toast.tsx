@@ -6,19 +6,23 @@ import { CheckCircle2, XCircle, AlertTriangle, Info, X } from 'lucide-react'
 
 type ToastType = 'success' | 'error' | 'warning' | 'info'
 
+interface ToastAction { label: string; onClick: () => void }
 interface Toast {
   id: number
   type: ToastType
   title: string
   description?: string
+  action?: ToastAction
 }
+
+interface ToastOptions { action?: ToastAction }
 
 interface ToastContextValue {
   toast: (t: Omit<Toast, 'id'>) => void
-  success: (title: string, description?: string) => void
-  error:   (title: string, description?: string) => void
-  warning: (title: string, description?: string) => void
-  info:    (title: string, description?: string) => void
+  success: (title: string, description?: string, opts?: ToastOptions) => void
+  error:   (title: string, description?: string, opts?: ToastOptions) => void
+  warning: (title: string, description?: string, opts?: ToastOptions) => void
+  info:    (title: string, description?: string, opts?: ToastOptions) => void
 }
 
 const ToastContext = createContext<ToastContextValue | null>(null)
@@ -48,10 +52,10 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
 
   const helpers: ToastContextValue = {
     toast,
-    success: (title, description) => toast({ type: 'success', title, description }),
-    error:   (title, description) => toast({ type: 'error',   title, description }),
-    warning: (title, description) => toast({ type: 'warning', title, description }),
-    info:    (title, description) => toast({ type: 'info',    title, description }),
+    success: (title, description, opts) => toast({ type: 'success', title, description, action: opts?.action }),
+    error:   (title, description, opts) => toast({ type: 'error',   title, description, action: opts?.action }),
+    warning: (title, description, opts) => toast({ type: 'warning', title, description, action: opts?.action }),
+    info:    (title, description, opts) => toast({ type: 'info',    title, description, action: opts?.action }),
   }
 
   return (
@@ -81,6 +85,14 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
                     <p className="text-sm font-semibold text-foreground leading-tight">{t.title}</p>
                     {t.description && (
                       <p className="text-xs text-muted mt-0.5 leading-snug">{t.description}</p>
+                    )}
+                    {t.action && (
+                      <button
+                        onClick={() => { t.action?.onClick(); remove(t.id) }}
+                        className={`mt-2 font-mono text-[10px] uppercase tracking-widest ${iconColor} hover:underline cursor-pointer`}
+                      >
+                        {t.action.label} →
+                      </button>
                     )}
                   </div>
                 </div>

@@ -9,6 +9,7 @@ import { useToast } from '@/lib/toast'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import ProgressBar from './ProgressBar'
+import { PlanoStreamPreview } from './PlanoStreamPreview'
 import type { Disciplina, Topico } from '@/types'
 
 interface Props {
@@ -25,6 +26,7 @@ export default function PlanoTab({ disciplinas, topicos: initialTopicos, concurs
   const [editaisText, setEditaisText] = useState('')
   const [showImport, setShowImport]   = useState(false)
   const [expanded, setExpanded] = useState<Set<string>>(new Set(disciplinas.map(d => d.id)))
+  const [streamMode, setStreamMode] = useState(false)
 
   async function toggleTopico(topico: Topico) {
     const updated = !topico.estudado
@@ -45,6 +47,7 @@ export default function PlanoTab({ disciplinas, topicos: initialTopicos, concurs
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ texto: editaisText, concursoId }),
       })
+      if (res.status === 429) throw new Error('Muitas requisições. Aguarde alguns segundos.')
       if (!res.ok) throw new Error(await res.text())
       toast.success('Plano gerado!', 'A IA organizou o edital em disciplinas e tópicos.')
       setEditaisText(''); setShowImport(false); router.refresh()
@@ -76,7 +79,14 @@ export default function PlanoTab({ disciplinas, topicos: initialTopicos, concurs
         <AnimatePresence>
           {showImport && (
             <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}>
-              <ImportEditalForm value={editaisText} onChange={setEditaisText} onSubmit={handleGerarPlano} onCancel={() => setShowImport(false)} loading={generating} />
+              <ImportEditalForm
+                value={editaisText}
+                onChange={setEditaisText}
+                onSubmit={handleGerarPlano}
+                onStream={() => setStreamMode(true)}
+                onCancel={() => setShowImport(false)}
+                loading={generating}
+              />
             </motion.div>
           )}
         </AnimatePresence>
@@ -96,7 +106,23 @@ export default function PlanoTab({ disciplinas, topicos: initialTopicos, concurs
       <AnimatePresence>
         {showImport && (
           <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}>
-            <ImportEditalForm value={editaisText} onChange={setEditaisText} onSubmit={handleGerarPlano} onCancel={() => setShowImport(false)} loading={generating} />
+            {streamMode && editaisText.trim() ? (
+              <PlanoStreamPreview
+                concursoId={concursoId}
+                texto={editaisText}
+                onComplete={() => { setEditaisText(''); setStreamMode(false); setShowImport(false); router.refresh() }}
+                onCancel={() => setStreamMode(false)}
+              />
+            ) : (
+              <ImportEditalForm
+                value={editaisText}
+                onChange={setEditaisText}
+                onSubmit={handleGerarPlano}
+                onStream={() => setStreamMode(true)}
+                onCancel={() => setShowImport(false)}
+                loading={generating}
+              />
+            )}
           </motion.div>
         )}
       </AnimatePresence>
@@ -162,9 +188,9 @@ export default function PlanoTab({ disciplinas, topicos: initialTopicos, concurs
   )
 }
 
-function ImportEditalForm({ value, onChange, onSubmit, onCancel, loading }: {
+function ImportEditalForm({ value, onChange, onSubmit, onStream, onCancel, loading }: {
   value: string; onChange: (v: string) => void; onSubmit: (e: React.FormEvent) => void
-  onCancel: () => void; loading: boolean
+  onStream: () => void; onCancel: () => void; loading: boolean
 }) {
   return (
     <Card className="border-blue-500/30">
@@ -179,9 +205,12 @@ function ImportEditalForm({ value, onChange, onSubmit, onCancel, loading }: {
             placeholder="Cole aqui o conteúdo programático do edital…"
             className="w-full rounded-lg border border-border bg-elevated px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition resize-none font-mono"
           />
-          <div className="flex gap-2">
-            <Button type="submit" disabled={loading || !value.trim()} className="flex-1">
+          <div className="flex flex-wrap gap-2">
+            <Button type="submit" disabled={loading || !value.trim()} className="flex-1 min-w-40">
               {loading ? 'Gerando plano…' : 'Gerar plano com IA'}
+            </Button>
+            <Button type="button" variant="secondary" onClick={onStream} disabled={loading || !value.trim()}>
+              ⚡ Preview streaming
             </Button>
             <Button type="button" variant="outline" onClick={onCancel}>Cancelar</Button>
           </div>

@@ -10,14 +10,18 @@ const ThemeContext = createContext<{ theme: Theme; toggle: () => void }>({
 })
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>('dark')
+  const [theme, setTheme] = useState<Theme>(() => {
+    if (typeof document === 'undefined') return 'dark'
+    return document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+  })
 
   useEffect(() => {
     const stored = localStorage.getItem('gabarito-theme') as Theme | null
-    const initial = stored ?? 'dark'
-    setTheme(initial)
-    document.documentElement.classList.toggle('dark', initial === 'dark')
-  }, [])
+    if (stored && stored !== theme) {
+      setTheme(stored)
+      document.documentElement.classList.toggle('dark', stored === 'dark')
+    }
+  }, [theme])
 
   function toggle() {
     setTheme(prev => {

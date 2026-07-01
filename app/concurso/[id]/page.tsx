@@ -36,7 +36,7 @@ export default async function ConcursoPage({ params }: Props) {
       ? supabase.from('flashcards').select('*').in('disciplina_id', disciplinaIds).order('created_at')
       : Promise.resolve({ data: [] }),
     disciplinaIds.length
-      ? supabase.from('questoes').select('*').in('disciplina_id', disciplinaIds).order('created_at')
+      ? supabase.from('questoes').select('id, disciplina_id, enunciado, alternativas, dificuldade, tags, created_at').in('disciplina_id', disciplinaIds).order('created_at')
       : Promise.resolve({ data: [] }),
   ])
 
