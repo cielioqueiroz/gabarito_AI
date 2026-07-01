@@ -12,6 +12,7 @@ interface BeforeInstallPromptEvent extends Event {
 
 const INSTALL_KEY = 'gab:pwa-install-dismissed'
 const NOTIF_KEY = 'gab:notif-asked'
+const ONBOARDING_KEY = 'gab:onboarding-done'
 
 export function PwaPrompt() {
   const [installEvent, setInstallEvent] = useState<BeforeInstallPromptEvent | null>(null)
@@ -20,20 +21,28 @@ export function PwaPrompt() {
 
   useEffect(() => {
     if (typeof window === 'undefined' || !('serviceWorker' in navigator)) return
-    navigator.serviceWorker.register('/sw.js').catch(() => {})
+    // Only register in production — SW caching interferes with Next dev hot reload.
+    if (process.env.NODE_ENV === 'production') {
+      navigator.serviceWorker.register('/sw.js').catch(() => {})
+    }
+
+    // Defer showing our prompts until the onboarding tour is done — otherwise
+    // two banners fight for attention on first visit.
+    const onboardingDone = (() => { try { return !!localStorage.getItem(ONBOARDING_KEY) } catch { return true } })()
 
     function onBeforeInstall(e: Event) {
       e.preventDefault()
       const already = localStorage.getItem(INSTALL_KEY)
       if (already) return
       setInstallEvent(e as BeforeInstallPromptEvent)
-      setShowInstall(true)
+      if (onboardingDone) setShowInstall(true)
     }
     window.addEventListener('beforeinstallprompt', onBeforeInstall)
 
     // Notifications: ask once, only after user has some cards.
     try {
       if (
+        onboardingDone &&
         'Notification' in window &&
         Notification.permission === 'default' &&
         !localStorage.getItem(NOTIF_KEY)
@@ -42,7 +51,22 @@ export function PwaPrompt() {
       }
     } catch {}
 
-    return () => window.removeEventListener('beforeinstallprompt', onBeforeInstall)
+    // Re-check when onboarding closes. Storage events don't fire same-tab, so
+    // OnboardingTour dispatches a CustomEvent instead.
+    function onOnboardingDone() {
+      if (installEvent) setShowInstall(true)
+      try {
+        if ('Notification' in window && Notification.permission === 'default' && !localStorage.getItem(NOTIF_KEY)) {
+          setShowNotif(true)
+        }
+      } catch {}
+    }
+    window.addEventListener('gab:onboarding-done', onOnboardingDone)
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', onBeforeInstall)
+      window.removeEventListener('gab:onboarding-done', onOnboardingDone)
+    }
   }, [])
 
   async function doInstall() {

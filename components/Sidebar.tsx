@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
@@ -27,10 +27,10 @@ export default function Sidebar({ onMobileClose }: Props) {
   const router           = useRouter()
   const { theme, toggle } = useTheme()
   const [badges, setBadges] = useState<Record<BadgeKey, number>>({ revisao: 0 })
+  const previousRef = useRef<number | null>(null)
 
   useEffect(() => {
     let alive = true
-    let previous = 0
     async function refresh() {
       try {
         const res = await fetch('/api/revisao-count', { cache: 'no-store' })
@@ -38,9 +38,11 @@ export default function Sidebar({ onMobileClose }: Props) {
         const data = await res.json() as { count: number }
         if (!alive) return
         setBadges({ revisao: data.count })
-        // Fire notification only when count crossed from 0 to >0.
+        // Fire notification only when count crossed from 0 to >0 across the whole
+        // session, not per pathname change. First fetch is a baseline (no notify).
+        const previous = previousRef.current
         if (
-          previous === 0 && data.count > 0 &&
+          previous !== null && previous === 0 && data.count > 0 &&
           typeof window !== 'undefined' && 'Notification' in window &&
           Notification.permission === 'granted'
         ) {
@@ -51,7 +53,7 @@ export default function Sidebar({ onMobileClose }: Props) {
             })
           } catch {}
         }
-        previous = data.count
+        previousRef.current = data.count
       } catch {}
     }
     refresh()

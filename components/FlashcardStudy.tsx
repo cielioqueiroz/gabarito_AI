@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -27,16 +27,37 @@ interface Props {
   sessionKey?: string
 }
 
-function readSession(key?: string): number {
-  if (!key || typeof window === 'undefined') return 0
-  const raw = sessionStorage.getItem(key)
-  const n = raw ? parseInt(raw, 10) : 0
-  return Number.isFinite(n) && n >= 0 ? n : 0
+interface Persisted { index: number; deckLen: number; deckHash: string }
+
+function hashDeck(cards: { id: string }[]): string {
+  // Cheap stable identifier for the deck order.
+  return cards.map(c => c.id).join('|')
 }
 
-function writeSession(key: string | undefined, index: number) {
-  if (!key || typeof window === 'undefined') return
-  sessionStorage.setItem(key, String(index))
+function readSession(key: string | undefined, cards: { id: string }[]): number {
+  if (!key || typeof window === 'undefined' || cards.length === 0) return 0
+  try {
+    const raw = sessionStorage.getItem(key)
+    if (!raw) return 0
+    const p = JSON.parse(raw) as Partial<Persisted>
+    // Bail if deck changed since the saved index — different length OR different
+    // order means the stored index no longer maps to a meaningful card.
+    if (p.deckLen !== cards.length || p.deckHash !== hashDeck(cards)) {
+      sessionStorage.removeItem(key)
+      return 0
+    }
+    const n = Number(p.index)
+    if (!Number.isFinite(n) || n < 0 || n >= cards.length) return 0
+    return n
+  } catch {
+    return 0
+  }
+}
+
+function writeSession(key: string | undefined, index: number, cards: { id: string }[]) {
+  if (!key || typeof window === 'undefined' || cards.length === 0) return
+  const payload: Persisted = { index, deckLen: cards.length, deckHash: hashDeck(cards) }
+  sessionStorage.setItem(key, JSON.stringify(payload))
 }
 
 function clearSession(key?: string) {
@@ -45,7 +66,7 @@ function clearSession(key?: string) {
 }
 
 export default function FlashcardStudy({ cards, discNameOf, onAnswer, onExit, onFinish, showBoxLabel = true, sessionKey }: Props) {
-  const [index, setIndex] = useState(() => Math.min(readSession(sessionKey), Math.max(0, cards.length - 1)))
+  const [index, setIndex] = useState(() => readSession(sessionKey, cards))
   const [flipped, setFlipped] = useState(false)
   const [history, setHistory] = useState<Flashcard[]>([])
   const [busy, setBusy] = useState(false)
@@ -53,21 +74,30 @@ export default function FlashcardStudy({ cards, discNameOf, onAnswer, onExit, on
   const current = cards[index]
   const progress = cards.length === 0 ? 0 : ((index + (flipped ? 0.5 : 0)) / cards.length) * 100
 
-  useEffect(() => { writeSession(sessionKey, index) }, [index, sessionKey])
+  // Latest values captured in a ref so the keydown listener stays stable
+  // (registered once) but still reads current state on each key press.
+  const stateRef = useRef({ flipped, busy, historyLen: history.length, hasCurrent: !!current })
+  stateRef.current = { flipped, busy, historyLen: history.length, hasCurrent: !!current }
+  const handlersRef = useRef<{ answer: (a: boolean) => void; undo: () => void; toggleFlip: () => void }>({
+    answer: () => {}, undo: () => {}, toggleFlip: () => {},
+  })
+
+  useEffect(() => { writeSession(sessionKey, index, cards) }, [index, sessionKey, cards])
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       const tgt = e.target as HTMLElement | null
       if (tgt && (tgt.tagName === 'INPUT' || tgt.tagName === 'TEXTAREA' || tgt.isContentEditable)) return
-      if (!current) return
-      if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); setFlipped(v => !v) }
-      if (flipped && (e.key === '1' || e.key.toLowerCase() === 'j')) handleAnswer(false)
-      if (flipped && (e.key === '2' || e.key.toLowerCase() === 'k')) handleAnswer(true)
-      if ((e.key === 'u' || e.key === 'U') && history.length > 0) undo()
+      const s = stateRef.current
+      if (!s.hasCurrent) return
+      if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); handlersRef.current.toggleFlip() }
+      if (s.flipped && (e.key === '1' || e.key.toLowerCase() === 'j')) handlersRef.current.answer(false)
+      if (s.flipped && (e.key === '2' || e.key.toLowerCase() === 'k')) handlersRef.current.answer(true)
+      if ((e.key === 'u' || e.key === 'U') && s.historyLen > 0) handlersRef.current.undo()
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  })
+  }, [])
 
   async function handleAnswer(acertou: boolean) {
     if (!current || busy) return
@@ -93,6 +123,12 @@ export default function FlashcardStudy({ cards, discNameOf, onAnswer, onExit, on
     setIndex(i => Math.max(0, i - 1))
     setFlipped(false)
     setBusy(false)
+  }
+
+  handlersRef.current = {
+    answer: handleAnswer,
+    undo,
+    toggleFlip: () => setFlipped(v => !v),
   }
 
   if (!current) return null

@@ -41,6 +41,8 @@ export function OnboardingTour() {
 
   function finish() {
     try { localStorage.setItem(STORAGE_KEY, '1') } catch {}
+    // Notify same-tab listeners (storage event only fires cross-tab).
+    try { window.dispatchEvent(new CustomEvent('gab:onboarding-done')) } catch {}
     setOpen(false)
   }
 
