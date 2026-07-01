@@ -10,14 +10,17 @@ Suba o edital em PDF ou TXT — a IA extrai as disciplinas, organiza os tópicos
 
 | Feature | Descrição |
 |---|---|
-| **Upload de edital** | PDF ou TXT → IA extrai e organiza disciplinas + tópicos automaticamente |
-| **Plano de estudos** | Checklist por disciplina com progresso visual e indicador de conclusão |
+| **Upload de edital** | PDF ou TXT (até 5 MB) → IA extrai e organiza disciplinas + tópicos automaticamente |
+| **Plano de estudos** | Checklist por disciplina com progresso visual e trigger que registra `estudado_em` para analytics |
 | **Flashcards Leitner** | Sistema de 5 caixas com agendamento automático de revisão (1/2/4/7/15 dias) |
 | **Questões com IA** | Múltipla escolha gerada por Claude com gabarito e explicação comentada |
 | **Revisão do Dia** | Sessão diária com todos os cards vencidos, cruzando concursos |
 | **Multi-concurso** | Gerencie quantos concursos quiser, cada um com plano, cards e questões próprios |
 | **Dashboard** | Visão geral com contadores animados de tópicos estudados e cards dominados |
-| **Toggle dark/light** | Tema escuro por padrão, alternável com persistência em localStorage |
+| **Estatísticas** | KPIs de acerto, gráfico dos últimos 7 dias e desempenho por disciplina |
+| **Atalhos de teclado** | Espaço vira o card, 1/J = errei, 2/K = acertei, U = desfazer |
+| **PWA-ready** | `manifest.json` para instalação em mobile/desktop |
+| **Dark/Light** | Tema escuro por padrão, alternável com persistência em localStorage (sem FOUC) |
 
 ---
 
@@ -25,12 +28,12 @@ Suba o edital em PDF ou TXT — a IA extrai as disciplinas, organiza os tópicos
 
 | Camada | Tecnologia |
 |---|---|
-| Framework | Next.js 16 (App Router, RSC, async params) |
+| Framework | Next.js 16 (App Router, RSC, async params, `proxy.ts`) |
 | Banco de dados | Supabase — PostgreSQL + Auth + Row Level Security |
-| IA | Anthropic Claude `claude-sonnet-4-6` |
+| IA | Anthropic Claude `claude-sonnet-4-5-20250929` (via **tool use** com JSON Schema) |
 | Estilo | Tailwind CSS v4 + shadcn/ui |
-| Animações | Framer Motion + GSAP |
-| 3D | Three.js (tela de login) |
+| Animações | Framer Motion |
+| 3D | Three.js (tela de login, lazy-loaded) |
 | Componentes UI | shadcn/ui (Button, Card, Badge, Input) |
 | Linguagem | TypeScript (strict) |
 
@@ -65,22 +68,35 @@ SUPABASE_SERVICE_ROLE_KEY=eyJ...
 ANTHROPIC_API_KEY=sk-ant-...
 ```
 
-> As chaves do Supabase estão em **Project Settings → API**.  
+> As chaves do Supabase estão em **Project Settings → API**.
 > A chave Anthropic está em **console.anthropic.com → API Keys**.
+
+O `lib/env.ts` valida essas variáveis em runtime e falha rápido se algo estiver ausente.
 
 ### 3. Banco de dados
 
 Execute no SQL Editor do Supabase, nesta ordem:
 
 ```
-supabase/schema.sql   →  tabelas, RLS e índices
+supabase/schema.sql   →  tabelas, RLS com WITH CHECK, índices, views (concurso_stats, disciplina_stats) e triggers
 supabase/seed.sql     →  dados de exemplo — Banco do Brasil 2023 (opcional)
 ```
 
-### 4. Rodar localmente
+### 4. Autenticação social (opcional)
+
+Para habilitar login com Google:
+
+1. **Supabase Dashboard → Authentication → Providers → Google** → habilitar e configurar Client ID/Secret
+2. **URL Configuration → Redirect URLs**: adicione `http://localhost:3000/**` e sua URL de produção com `/**`
+3. Para o fluxo de reset de senha, adicione também `<origin>/redefinir-senha`
+
+### 5. Rodar localmente
 
 ```bash
-npm run dev
+npm run dev        # Next dev server
+npm run typecheck  # tsc --noEmit
+npm run lint       # next lint
+npm run build      # build de produção
 ```
 
 Acesse [http://localhost:3000](http://localhost:3000).
@@ -93,50 +109,66 @@ Acesse [http://localhost:3000](http://localhost:3000).
 gabarito_AI/
 ├── app/
 │   ├── api/
-│   │   ├── criar-com-edital/   # Upload + extração + geração do plano via IA
+│   │   ├── criar-com-edital/   # Upload + extração + geração do plano via IA (com rollback)
 │   │   ├── gerar-flashcards/   # Geração de cards por disciplina
 │   │   ├── gerar-questoes/     # Geração de questões com alternativas
-│   │   └── gerar-plano/        # Reimportação de edital
+│   │   ├── gerar-plano/        # Reimportação de edital
+│   │   └── stream-plano/       # Versão streaming (messages.stream) para feedback incremental
 │   ├── concurso/[id]/          # Detalhes do concurso (plano, flashcards, questões)
 │   ├── revisao/                # Sessão de Revisão do Dia (Leitner cross-concurso)
-│   ├── configuracoes/          # Configurações (em breve)
-│   ├── estatisticas/           # Estatísticas (em breve)
-│   └── login/                  # Autenticação com Three.js background
+│   ├── estatisticas/           # KPIs + gráfico 7 dias + desempenho por disciplina
+│   ├── configuracoes/          # Perfil do usuário
+│   ├── redefinir-senha/        # Fluxo de reset de senha
+│   └── login/                  # Login/signup/forgot com Google OAuth e Three.js
 ├── components/
 │   ├── ui/                     # shadcn/ui — Button, Card, Badge, Input
 │   ├── Sidebar.tsx             # Navegação lateral com Framer Motion
 │   ├── ShellLayout.tsx         # Shell: sidebar + header + footer + drawer mobile
-│   ├── ThreeBackground.tsx     # Canvas Three.js (partículas + orbs)
+│   ├── ThreeBackground.tsx     # Canvas Three.js (dynamic import, ssr: false)
 │   ├── HomeClient.tsx          # Dashboard com stats animados
 │   ├── ConcursoCard.tsx        # Card com hover animado
 │   ├── ConcursoDetail.tsx      # Página de concurso com tabs animadas
 │   ├── PlanoTab.tsx            # Plano de estudos com accordion Framer Motion
-│   ├── FlashcardTab.tsx        # Flashcards com flip animado
+│   ├── FlashcardTab.tsx        # Lista de decks
+│   ├── FlashcardStudy.tsx      # Componente reutilizável de estudo (atalhos, undo, previsão)
 │   ├── QuestaoTab.tsx          # Questões com alternativas interativas
-│   ├── RevisaoClient.tsx       # Sessão de revisão diária
-│   └── ProgressBar.tsx         # Barra com animação GSAP
+│   ├── RevisaoClient.tsx       # Sessão de revisão diária (usa FlashcardStudy)
+│   ├── EstatisticasClient.tsx  # Página de estatísticas
+│   └── ProgressBar.tsx         # Barra animada (Framer Motion)
 ├── lib/
-│   ├── anthropic.ts            # Cliente Anthropic (server-side)
+│   ├── anthropic.ts            # Cliente Anthropic + callClaudeStructured (tool use + retry)
+│   ├── apiHelpers.ts           # requireAuth, checkRateLimit, ownership checks
+│   ├── concursos.ts            # getConcursosComStats via view concurso_stats
+│   ├── env.ts                  # Validação de env vars
+│   ├── i18n.ts                 # Catálogo de strings
 │   ├── leitner.ts              # Lógica Leitner — boxes 1-5, intervalos, isDue()
+│   ├── logger.ts               # Logger JSON estruturado
+│   ├── rateLimit.ts            # Rate limiter (in-memory)
 │   ├── theme.tsx               # ThemeContext — dark/light com localStorage
+│   ├── toast.tsx               # Toast provider
 │   ├── utils.ts                # cn() helper (clsx + tailwind-merge)
 │   └── supabase/               # Clientes server e client do Supabase
 ├── supabase/
-│   ├── schema.sql              # DDL completo com RLS
+│   ├── schema.sql              # DDL completo com RLS (WITH CHECK), índices, views e triggers
 │   └── seed.sql                # Seed — BB Agente de Tecnologia 2023
-└── types/                      # Interfaces TypeScript (Concurso, Disciplina, etc.)
+├── proxy.ts                    # Autenticação + redirect (convenção Next 16, substitui middleware.ts)
+├── next.config.ts              # Headers de segurança + serverExternalPackages
+└── types/                      # Interfaces TypeScript
 ```
 
 ---
 
 ## Rotas de API
 
-| Endpoint | Método | Descrição |
-|---|---|---|
-| `/api/criar-com-edital` | `POST` (multipart) | Cria concurso + processa edital + gera plano |
-| `/api/gerar-plano` | `POST` (JSON) | Gera/reimporta plano a partir de texto do edital |
-| `/api/gerar-flashcards` | `POST` (JSON) | Gera flashcards para uma disciplina |
-| `/api/gerar-questoes` | `POST` (JSON) | Gera questões de múltipla escolha para uma disciplina |
+| Endpoint | Método | Rate limit | Descrição |
+|---|---|---|---|
+| `/api/criar-com-edital` | `POST` (multipart) | 5/min | Cria concurso + processa edital + gera plano |
+| `/api/gerar-plano` | `POST` (JSON) | 5/min | Gera/reimporta plano a partir de texto |
+| `/api/gerar-flashcards` | `POST` (JSON) | 10/min | Gera flashcards para uma disciplina |
+| `/api/gerar-questoes` | `POST` (JSON) | 10/min | Gera questões de múltipla escolha |
+| `/api/stream-plano` | `POST` (JSON) | 5/min | Versão streaming (`text/plain` chunk-a-chunk) |
+
+Todas as rotas exigem sessão autenticada, checam ownership da disciplina/concurso antes de chamar a IA, e usam **tool use** do Claude com JSON Schema (não regex em markdown).
 
 ---
 
@@ -154,6 +186,27 @@ Os flashcards seguem o método de repetição espaçada com 5 caixas:
 
 Cards errados voltam para a caixa 1. Cards da caixa 4+ são considerados **dominados** no cálculo de progresso.
 
+### Atalhos do estudo
+
+| Tecla | Ação |
+|---|---|
+| `Espaço` / `Enter` | Virar o card |
+| `1` ou `J` | Errei (volta para caixa 1) |
+| `2` ou `K` | Acertei (avança de caixa) |
+| `U` | Desfazer última resposta |
+
+---
+
+## Segurança
+
+- **Row Level Security** ativa em todas as tabelas com policies `USING` + `WITH CHECK` para bloquear leitura *e* escrita cruzada.
+- **Ownership check** explícito em todas as rotas de IA — evita chamadas caras a Claude com IDs de outros usuários.
+- **Rate limiting** por `user_id` em cada rota de IA.
+- **Limite de 5 MB** no upload de edital.
+- **Env vars** validadas em runtime (`lib/env.ts`).
+- **Security headers** globais (`next.config.ts`): `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy: camera=(), microphone=(), geolocation=()`.
+- **Retry com backoff exponencial** em chamadas Claude (`lib/anthropic.ts`).
+
 ---
 
 ## Deploy
@@ -163,6 +216,8 @@ O projeto é compatível com **Vercel** out of the box.
 1. Importe o repositório no [vercel.com](https://vercel.com)
 2. Configure as variáveis de ambiente (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `ANTHROPIC_API_KEY`)
 3. Deploy automático a cada push na `main`
+
+Para produção com múltiplas instâncias, troque o `lib/rateLimit.ts` (in-memory) por `@upstash/ratelimit` ou equivalente.
 
 ---
 
