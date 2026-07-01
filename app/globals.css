@@ -84,6 +84,34 @@ select, input[type="checkbox"], input[type="radio"] {
 }
 .animate-glow { animation: glow-pulse 3s ease-in-out infinite; }
 
+/* ── Landing entrance (CSS-only, staggered via inline animation-delay) ── */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-up {
+  opacity: 0;
+  animation: fade-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+@keyframes float-y {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
+}
+.float-y { animation: float-y 6s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .fade-up { animation: none; opacity: 1; }
+  .float-y { animation: none; }
+}
+
+/* ── Blue gradient text (brand headline) ── */
+.text-gradient-blue {
+  background: linear-gradient(120deg, #60A5FA 0%, #3B82F6 45%, #2563EB 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
 /* ── Three.js canvas ── */
 #three-canvas {
   position: fixed;
