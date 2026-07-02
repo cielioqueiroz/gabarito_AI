@@ -109,8 +109,8 @@ export function PwaPrompt() {
             className="pointer-events-auto bg-surface border border-border rounded-xl p-4 shadow-lg shadow-black/30"
           >
             <div className="flex items-start gap-3">
-              <div className="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center flex-shrink-0">
-                <Smartphone size={16} className="text-blue-500" />
+              <div className="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center flex-shrink-0">
+                <Smartphone size={16} className="text-amber-500" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-foreground">Instalar app</p>

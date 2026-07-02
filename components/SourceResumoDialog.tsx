@@ -66,7 +66,7 @@ export function SourceResumoDialog({ open, onClose, disciplinas, onGenerated }: 
           <select
             value={discId}
             onChange={e => setDiscId(e.target.value)}
-            className="h-10 w-full rounded-lg border border-border bg-elevated px-3 text-sm text-foreground outline-none focus:border-blue-500/40 cursor-pointer"
+            className="h-10 w-full rounded-lg border border-border bg-elevated px-3 text-sm text-foreground outline-none focus:border-amber-500/40 cursor-pointer"
           >
             {disciplinas.map(d => <option key={d.id} value={d.id}>{d.nome}</option>)}
           </select>
@@ -97,7 +97,7 @@ export function SourceResumoDialog({ open, onClose, disciplinas, onGenerated }: 
               onChange={e => setValue(e.target.value)}
               placeholder={placeholder}
               rows={6}
-              className="w-full resize-y rounded-lg border border-border bg-elevated px-3 py-2 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-blue-500/40"
+              className="w-full resize-y rounded-lg border border-border bg-elevated px-3 py-2 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-amber-500/40"
             />
           ) : (
             <Input value={value} onChange={e => setValue(e.target.value)} placeholder={placeholder} className="h-10" />

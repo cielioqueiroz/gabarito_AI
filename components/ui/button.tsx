@@ -4,17 +4,17 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-semibold ring-offset-background transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 cursor-pointer active:scale-[0.98] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
+  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-semibold ring-offset-background transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 cursor-pointer active:scale-[0.98] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
   {
     variants: {
       variant: {
-        default:     'bg-gradient-to-r from-emerald-500 to-cyan-500 text-white hover:from-emerald-400 hover:to-cyan-400 shadow-sm shadow-emerald-500/20',
+        default:     'bg-[#E8A93C] text-[#0E1B33] font-bold hover:bg-[#F0BA5A] shadow-sm shadow-amber-900/30',
         destructive: 'bg-rose-500/10 text-rose-400 border border-rose-500/20 hover:bg-rose-500/20',
         outline:     'border border-border bg-transparent text-muted hover:bg-elevated hover:text-foreground',
         secondary:   'bg-elevated text-muted hover:bg-border hover:text-foreground',
         ghost:       'text-muted hover:bg-elevated hover:text-foreground',
-        link:        'text-emerald-400 underline-offset-4 hover:underline hover:text-emerald-300',
-        amber:       'bg-amber-500 text-white hover:bg-amber-400 shadow-sm',
+        link:        'text-amber-400 underline-offset-4 hover:underline hover:text-amber-300',
+        amber:       'bg-[#E8A93C] text-[#0E1B33] font-bold hover:bg-[#F0BA5A] shadow-sm',
       },
       size: {
         default: 'h-9 px-4 py-2',

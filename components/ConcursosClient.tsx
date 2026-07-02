@@ -159,14 +159,14 @@ export default function ConcursosClient({ stats }: { stats: ConcursoStat[] }) {
                         onDrop={e => { e.preventDefault(); const d = e.dataTransfer.files[0]; if (d) setFile(d) }}
                         className={`w-full rounded-lg border-2 border-dashed px-4 py-5 text-center cursor-pointer transition-all duration-150 ${
                           file
-                            ? 'border-blue-500/50 bg-blue-500/5'
-                            : 'border-border hover:border-blue-500/30 hover:bg-elevated'
+                            ? 'border-amber-500/50 bg-amber-500/5'
+                            : 'border-border hover:border-amber-500/30 hover:bg-elevated'
                         }`}
                       >
                         {file ? (
                           <div className="flex items-center justify-center gap-2">
-                            <Upload size={14} className="text-blue-500 flex-shrink-0" />
-                            <span className="text-sm text-blue-500 font-medium truncate max-w-xs">{file.name}</span>
+                            <Upload size={14} className="text-amber-500 flex-shrink-0" />
+                            <span className="text-sm text-amber-500 font-medium truncate max-w-xs">{file.name}</span>
                             <button type="button" onClick={ev => { ev.stopPropagation(); setFile(null) }} className="text-muted-foreground hover:text-red-500 ml-1 cursor-pointer transition-colors">
                               <X size={14} />
                             </button>
@@ -181,7 +181,7 @@ export default function ConcursosClient({ stats }: { stats: ConcursoStat[] }) {
                       <input ref={fileInputRef} type="file" accept=".pdf,.txt,application/pdf,text/plain" className="hidden" onChange={e => setFile(e.target.files?.[0] ?? null)} />
                     </div>
                     {loading && loadingMsg && (
-                      <div className="flex items-center gap-2 text-blue-500 text-sm">
+                      <div className="flex items-center gap-2 text-amber-500 text-sm">
                         <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
                           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
@@ -209,7 +209,7 @@ export default function ConcursosClient({ stats }: { stats: ConcursoStat[] }) {
               <BookOpen size={22} className="text-muted-foreground" />
             </div>
             <p className="text-muted-foreground text-sm mb-4">Nenhum concurso cadastrado ainda.</p>
-            <button onClick={() => setShowForm(true)} className="text-blue-500 text-sm font-semibold hover:text-blue-400 transition-colors cursor-pointer">
+            <button onClick={() => setShowForm(true)} className="text-amber-500 text-sm font-semibold hover:text-amber-400 transition-colors cursor-pointer">
               Criar o primeiro concurso →
             </button>
           </motion.div>

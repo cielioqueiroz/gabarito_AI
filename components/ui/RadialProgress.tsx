@@ -12,8 +12,8 @@ interface Props {
 }
 
 const STOPS: Record<string, [string, string]> = {
-  emerald: ['#34D399', '#22D3EE'],
-  cyan:    ['#22D3EE', '#818CF8'],
+  emerald: ['#4ADE80', '#22C55E'],   // domínio / sucesso (verde)
+  cyan:    ['#F2CE82', '#E8A93C'],    // meta do plano (ouro)
 }
 
 export function RadialProgress({ value, max, size = 66, stroke = 6, gradient = 'emerald', label }: Props) {

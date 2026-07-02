@@ -29,11 +29,11 @@ export default function ConcursoCard({ concurso, topicoTotal, topicoEstudados, f
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -8 }}
         whileHover={{ y: -2, transition: { duration: 0.15 } }}
-        className="group bg-surface backdrop-blur-xl rounded-xl border border-border p-5 hover:border-emerald-500/30 hover:shadow-lg hover:shadow-emerald-500/5 transition-colors duration-200"
+        className="group bg-surface rounded-xl border border-border p-5 hover:border-amber-400/40 hover:shadow-lg hover:shadow-amber-900/10 transition-colors duration-200"
       >
         <div className="flex items-start justify-between mb-4">
           <Link href={`/concurso/${concurso.id}`} className="flex-1 min-w-0 cursor-pointer">
-            <h2 className="font-bold text-foreground text-base leading-tight tracking-tight truncate group-hover:text-emerald-400 transition-colors duration-150">
+            <h2 className="font-bold text-foreground text-base leading-tight tracking-tight truncate group-hover:text-amber-400 transition-colors duration-150">
               {concurso.nome}
             </h2>
             <div className="flex flex-wrap gap-2 mt-2">
@@ -57,7 +57,7 @@ export default function ConcursoCard({ concurso, topicoTotal, topicoEstudados, f
         <Link href={`/concurso/${concurso.id}`} className="flex items-center justify-between gap-4 cursor-pointer">
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-xs text-muted">
-              <span className="h-1.5 w-1.5 rounded-full bg-cyan-400" />
+              <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />
               <span><span className="font-semibold text-foreground">{topicoEstudados}</span><span className="text-muted-foreground">/{topicoTotal} tópicos no plano</span></span>
             </div>
             <div className="flex items-center gap-2 text-xs text-muted">

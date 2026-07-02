@@ -138,21 +138,21 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-background text-foreground lg:grid lg:grid-cols-2">
       {/* ── Left brand panel ── */}
-      <aside className="relative hidden overflow-hidden bg-gradient-to-br from-[#0B0F19] via-[#0e1626] to-[#0B0F19] p-12 lg:flex lg:flex-col lg:justify-between">
+      <aside className="relative hidden overflow-hidden bg-gradient-to-br from-[#0E1B33] via-[#132649] to-[#0B1526] p-12 lg:flex lg:flex-col lg:justify-between">
         <div aria-hidden className="pointer-events-none absolute inset-0">
           <div className="absolute inset-0 opacity-[0.15]" style={{ backgroundImage: 'linear-gradient(#1e293b 1px, transparent 1px), linear-gradient(90deg, #1e293b 1px, transparent 1px)', backgroundSize: '48px 48px' }} />
-          <div className="absolute -top-24 -left-16 h-96 w-96 rounded-full bg-emerald-500/15 blur-[110px]" />
-          <div className="absolute bottom-0 right-0 h-96 w-96 rounded-full bg-cyan-500/12 blur-[120px]" />
+          <div className="absolute -top-24 -left-16 h-96 w-96 rounded-full bg-amber-500/15 blur-[110px]" />
+          <div className="absolute bottom-0 right-0 h-96 w-96 rounded-full bg-amber-500/12 blur-[120px]" />
         </div>
 
         <div className="relative z-10 flex items-center gap-3">
-          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-cyan-500 shadow-lg shadow-emerald-500/25">
+          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500 to-amber-500 shadow-lg shadow-amber-500/25">
             <GraduationCap size={20} className="text-white" />
           </span>
           <span className="font-mono text-lg font-bold tracking-tight">
-            gabarito<span className="text-emerald-400">_AI</span>
+            gabarito<span className="text-amber-400">_AI</span>
           </span>
-          <span className="ml-1 inline-flex items-center gap-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-widest text-emerald-300">
+          <span className="ml-1 inline-flex items-center gap-1 rounded-full border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-widest text-amber-300">
             <Sparkles size={10} /> IA
           </span>
         </div>
@@ -174,8 +174,8 @@ export default function LoginPage() {
               const Icon = f.icon
               return (
                 <li key={f.text} className="flex items-center gap-3 text-sm text-slate-300">
-                  <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg border border-emerald-500/20 bg-emerald-500/10">
-                    <Icon size={15} className="text-emerald-400" />
+                  <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg border border-amber-500/20 bg-amber-500/10">
+                    <Icon size={15} className="text-amber-400" />
                   </span>
                   {f.text}
                 </li>
@@ -194,11 +194,11 @@ export default function LoginPage() {
         <div className="w-full max-w-sm">
           {/* Mobile logo */}
           <div className="mb-8 flex items-center justify-center gap-2 lg:hidden">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-cyan-500">
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500 to-amber-500">
               <GraduationCap size={18} className="text-white" />
             </span>
             <span className="font-mono text-lg font-bold tracking-tight">
-              gabarito<span className="text-emerald-400">_AI</span>
+              gabarito<span className="text-amber-400">_AI</span>
             </span>
           </div>
 
@@ -219,7 +219,7 @@ export default function LoginPage() {
                   key={k}
                   onClick={() => switchTab(k)}
                   className={`flex-1 rounded-lg py-1.5 text-sm font-semibold transition-all duration-200 cursor-pointer ${
-                    tab === k ? 'bg-gradient-to-r from-emerald-500/15 to-cyan-500/10 text-emerald-300 shadow-sm' : 'text-muted-foreground hover:text-muted'
+                    tab === k ? 'bg-gradient-to-r from-amber-500/15 to-amber-500/10 text-amber-300 shadow-sm' : 'text-muted-foreground hover:text-muted'
                   }`}
                 >
                   {k === 'login' ? 'Entrar' : 'Criar conta'}
@@ -236,7 +236,7 @@ export default function LoginPage() {
                   type="button"
                   onClick={() => handleOAuth('google')}
                   disabled={loading}
-                  className="inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-border bg-elevated/40 text-sm font-semibold text-foreground transition-colors hover:border-emerald-500/40 hover:bg-elevated disabled:opacity-50 cursor-pointer"
+                  className="inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-border bg-elevated/40 text-sm font-semibold text-foreground transition-colors hover:border-amber-500/40 hover:bg-elevated disabled:opacity-50 cursor-pointer"
                 >
                   <svg width="16" height="16" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
                   Google
@@ -245,7 +245,7 @@ export default function LoginPage() {
                   type="button"
                   onClick={() => handleOAuth('github')}
                   disabled={loading}
-                  className="inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-border bg-elevated/40 text-sm font-semibold text-foreground transition-colors hover:border-emerald-500/40 hover:bg-elevated disabled:opacity-50 cursor-pointer"
+                  className="inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-border bg-elevated/40 text-sm font-semibold text-foreground transition-colors hover:border-amber-500/40 hover:bg-elevated disabled:opacity-50 cursor-pointer"
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.37.5 0 5.87 0 12.5c0 5.3 3.44 9.8 8.21 11.39.6.11.82-.26.82-.58 0-.29-.01-1.04-.02-2.04-3.34.73-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.09-.75.08-.73.08-.73 1.21.09 1.84 1.24 1.84 1.24 1.07 1.84 2.81 1.31 3.5 1 .11-.78.42-1.31.76-1.61-2.67-.3-5.47-1.34-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 016 0c2.29-1.55 3.3-1.23 3.3-1.23.66 1.66.25 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.8 5.63-5.48 5.92.43.37.81 1.1.81 2.22 0 1.6-.01 2.9-.01 3.29 0 .32.22.7.83.58A12 12 0 0024 12.5C24 5.87 18.63.5 12 .5z"/></svg> GitHub
                 </button>
@@ -296,7 +296,7 @@ export default function LoginPage() {
               <div>
                 <div className="mb-1.5 flex items-center justify-between">
                   {tab === 'login' && (
-                    <button type="button" onClick={() => switchTab('forgot')} className="ml-auto cursor-pointer font-mono text-[10px] uppercase tracking-widest text-emerald-400 transition-colors hover:text-emerald-300">
+                    <button type="button" onClick={() => switchTab('forgot')} className="ml-auto cursor-pointer font-mono text-[10px] uppercase tracking-widest text-amber-400 transition-colors hover:text-amber-300">
                       {t.auth.forgotPassword}
                     </button>
                   )}
@@ -311,7 +311,7 @@ export default function LoginPage() {
             )}
 
             {tab === 'forgot' && (
-              <button type="button" onClick={() => switchTab('login')} className="cursor-pointer text-[11px] text-emerald-400 hover:text-emerald-300">← Voltar para entrar</button>
+              <button type="button" onClick={() => switchTab('login')} className="cursor-pointer text-[11px] text-amber-400 hover:text-amber-300">← Voltar para entrar</button>
             )}
 
             <Button type="submit" disabled={loading} className="h-11 w-full text-[15px]" size="lg">

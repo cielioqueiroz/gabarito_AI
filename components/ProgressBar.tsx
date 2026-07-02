@@ -14,16 +14,16 @@ interface ProgressBarProps {
 }
 
 const colorBar: Record<string, string> = {
-  blue:    'bg-cyan-500',
-  cyan:    'bg-gradient-to-r from-cyan-500 to-indigo-500',
-  indigo:  'bg-indigo-500',
-  emerald: 'bg-gradient-to-r from-emerald-500 to-cyan-500',
+  blue:    'bg-amber-400',
+  cyan:    'bg-amber-400',
+  indigo:  'bg-amber-400',
+  emerald: 'bg-emerald-500',
   amber:   'bg-amber-400',
 }
 const colorText: Record<string, string> = {
-  blue:    'text-cyan-400',
-  cyan:    'text-cyan-400',
-  indigo:  'text-indigo-400',
+  blue:    'text-amber-400',
+  cyan:    'text-amber-400',
+  indigo:  'text-amber-400',
   emerald: 'text-emerald-400',
   amber:   'text-amber-400',
 }

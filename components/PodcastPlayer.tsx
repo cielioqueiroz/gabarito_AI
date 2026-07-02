@@ -72,7 +72,7 @@ export function PodcastPlayer({ resumoId }: { resumoId: string }) {
       <button
         onClick={toggle}
         disabled={loading}
-        className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-blue-600 text-white transition-colors hover:bg-blue-500 disabled:opacity-70 cursor-pointer"
+        className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-amber-600 text-white transition-colors hover:bg-amber-500 disabled:opacity-70 cursor-pointer"
         title={error ? 'Tentar novamente' : playing ? 'Pausar' : 'Ouvir resumo'}
         aria-label={playing ? 'Pausar' : 'Ouvir'}
       >
@@ -97,14 +97,14 @@ export function PodcastPlayer({ resumoId }: { resumoId: string }) {
           value={cur}
           onChange={seek}
           disabled={!dur}
-          className="h-1 w-full cursor-pointer appearance-none rounded-full bg-border accent-blue-500 disabled:cursor-default"
+          className="h-1 w-full cursor-pointer appearance-none rounded-full bg-border accent-amber-500 disabled:cursor-default"
           aria-label="Progresso"
         />
       </div>
 
       <button
         onClick={() => setSpeed(SPEEDS[(SPEEDS.indexOf(speed) + 1) % SPEEDS.length])}
-        className="flex-shrink-0 rounded-md border border-border px-2 py-1 font-mono text-[10px] text-muted-foreground transition-colors hover:border-blue-500/30 hover:text-blue-400 cursor-pointer"
+        className="flex-shrink-0 rounded-md border border-border px-2 py-1 font-mono text-[10px] text-muted-foreground transition-colors hover:border-amber-500/30 hover:text-amber-400 cursor-pointer"
         title="Velocidade"
       >
         {speed}×
@@ -114,7 +114,7 @@ export function PodcastPlayer({ resumoId }: { resumoId: string }) {
         <a
           href={src}
           download="resumo.mp3"
-          className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-md border border-border text-muted-foreground transition-colors hover:border-blue-500/30 hover:text-blue-400"
+          className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-md border border-border text-muted-foreground transition-colors hover:border-amber-500/30 hover:text-amber-400"
           title="Baixar MP3"
         >
           <Download size={14} />

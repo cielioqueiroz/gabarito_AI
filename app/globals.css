@@ -3,7 +3,7 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme inline {
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-sans-c);
   --font-mono: var(--font-geist-mono);
 
   /* Semantic color tokens — resolved from CSS vars below */
@@ -27,13 +27,13 @@
   --c-dimmed:   #94A3B8;
 }
 html.dark {
-  --c-bg:       #0B0F19;                      /* deep slate-950 */
-  --c-surface:  rgba(15, 23, 42, 0.55);       /* slate-900/55 — glass */
-  --c-elevated: rgba(30, 41, 59, 0.6);        /* slate-800/60 */
-  --c-border:   rgba(51, 65, 85, 0.55);       /* slate-700/55 — subtle */
-  --c-text:     #F8FAFC;                       /* strong titles */
-  --c-muted:    #CBD5E1;                       /* slate-300 — descriptions */
-  --c-dimmed:   #64748B;                       /* slate-500 — metadata */
+  --c-bg:       #0E1B33;   /* navy profundo */
+  --c-surface:  #16274A;   /* superfície sólida (sem glass) */
+  --c-elevated: #1E3358;   /* elevado */
+  --c-border:   #2A3C60;   /* borda steel navy */
+  --c-text:     #F4F1E9;   /* off-white quente — títulos */
+  --c-muted:    #C4CAD6;   /* descrições */
+  --c-dimmed:   #8592AB;   /* metadados */
 }
 
 /* ── Global cursor ── */
@@ -45,14 +45,18 @@ select, input[type="checkbox"], input[type="radio"] {
 /* ── Scrollbar ── */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #334155; border-radius: 99px; }
-::-webkit-scrollbar-thumb:hover { background: #475569; }
+::-webkit-scrollbar-thumb { background: #2A3C60; border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: #3A4E78; }
 
-/* ── Focus ring ── */
+/* ── Focus ring (gold) ── */
 *:focus-visible {
-  outline: 2px solid #10B981;
+  outline: 2px solid #E8A93C;
   outline-offset: 2px;
 }
+
+/* ── Display serif (Fraunces) for headings ── */
+.font-display { font-family: var(--font-display), Georgia, serif; }
+h1, h2 { font-family: var(--font-display), Georgia, serif; }
 
 /* ── Blink cursor ── */
 @keyframes blink {
@@ -77,25 +81,25 @@ select, input[type="checkbox"], input[type="radio"] {
   animation: shimmer 1.5s infinite linear;
 }
 
-/* ── Glow pulse (emerald) ── */
+/* ── Glow pulse (gold) ── */
 @keyframes glow-pulse {
-  0%, 100% { box-shadow: 0 0 20px rgba(16,185,129,0.20); }
-  50%       { box-shadow: 0 0 44px rgba(16,185,129,0.38); }
+  0%, 100% { box-shadow: 0 0 20px rgba(232,169,60,0.18); }
+  50%       { box-shadow: 0 0 44px rgba(232,169,60,0.34); }
 }
 .animate-glow { animation: glow-pulse 3s ease-in-out infinite; }
 
-/* ── Ambient light blobs (dashboard / auth backgrounds) ── */
+/* ── Ambient light blobs (subtle, gold + steel) ── */
 .bg-blobs::before,
 .bg-blobs::after {
   content: '';
   position: fixed;
   border-radius: 9999px;
-  filter: blur(120px);
+  filter: blur(130px);
   z-index: 0;
   pointer-events: none;
 }
-.bg-blobs::before { top: -180px; left: -120px; width: 520px; height: 520px; background: rgba(16,185,129,0.14); }
-.bg-blobs::after  { bottom: -220px; right: -140px; width: 560px; height: 560px; background: rgba(56,189,248,0.12); }
+.bg-blobs::before { top: -180px; left: -120px; width: 520px; height: 520px; background: rgba(232,169,60,0.10); }
+.bg-blobs::after  { bottom: -220px; right: -140px; width: 560px; height: 560px; background: rgba(120,140,200,0.10); }
 
 /* ── Landing entrance (CSS-only, staggered via inline animation-delay) ── */
 @keyframes fade-up {
@@ -125,9 +129,9 @@ select, input[type="checkbox"], input[type="radio"] {
   color: transparent;
 }
 
-/* ── Brand gradient text (emerald → cyan → indigo) ── */
+/* ── Brand gradient text (warm gold) ── */
 .text-gradient-brand {
-  background: linear-gradient(120deg, #34D399 0%, #22D3EE 50%, #818CF8 100%);
+  background: linear-gradient(120deg, #F2CE82 0%, #E8A93C 55%, #C88A2A 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;

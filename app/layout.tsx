@@ -1,12 +1,13 @@
 import type { Metadata, Viewport } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
+import { Inter, Fraunces, Geist_Mono } from 'next/font/google'
 import { ThemeProvider } from '@/lib/theme'
 import { ToastProvider } from '@/lib/toast'
 import { MotionProvider } from '@/lib/motion'
 import { ShortcutsProvider } from '@/lib/shortcuts'
 import './globals.css'
 
-const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] })
+const inter = Inter({ variable: '--font-sans-c', subsets: ['latin'] })
+const fraunces = Fraunces({ variable: '--font-display', subsets: ['latin'], weight: ['400', '600', '700', '900'] })
 const geistMono = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin'] })
 
 export const metadata: Metadata = {
@@ -47,7 +48,7 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: '#0F1117',
+  themeColor: '#0E1B33',
   width: 'device-width',
   initialScale: 1,
 }
@@ -58,7 +59,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="pt-BR"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
+      className={`${inter.variable} ${fraunces.variable} ${geistMono.variable} h-full antialiased dark`}
       suppressHydrationWarning
     >
       <head>
