@@ -9,10 +9,10 @@ export const contentType = 'image/png'
 // (next/og) throws "failed to pipe response" otherwise, yielding an empty PNG.
 export default function Image() {
   const chips = [
-    { label: 'Plano de estudos', bg: '#3A3413', border: '#F2D53C55', text: '#F8E97E' },
+    { label: 'Plano de estudos', bg: '#1B2542', border: '#4A72E855', text: '#A8BCF8' },
     { label: 'Flashcards Leitner', bg: '#14532d', border: '#16a34a55', text: '#86EFAC' },
-    { label: 'Questões com IA', bg: '#1B2B24', border: '#3B554799', text: '#C2CBBE' },
-    { label: 'Upload de edital', bg: '#14201B', border: '#F2D53C44', text: '#F2D53C' },
+    { label: 'Questões com IA', bg: '#1F1F28', border: '#34343F99', text: '#9C9CA6' },
+    { label: 'Upload de edital', bg: '#17171D', border: '#4A72E844', text: '#4A72E8' },
   ]
 
   return new ImageResponse(
@@ -24,7 +24,7 @@ export default function Image() {
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
-          background: '#0D1512',
+          background: '#101014',
           padding: '80px',
           position: 'relative',
         }}
@@ -36,7 +36,7 @@ export default function Image() {
             inset: 0,
             display: 'flex',
             backgroundImage:
-              'linear-gradient(#293D33 1px, transparent 1px), linear-gradient(90deg, #293D33 1px, transparent 1px)',
+              'linear-gradient(#26262F 1px, transparent 1px), linear-gradient(90deg, #26262F 1px, transparent 1px)',
             backgroundSize: '48px 48px',
             opacity: 0.28,
           }}
@@ -50,7 +50,7 @@ export default function Image() {
             width: 560,
             height: 560,
             display: 'flex',
-            background: 'radial-gradient(circle, #F2D53C22 0%, transparent 70%)',
+            background: 'radial-gradient(circle, #4A72E822 0%, transparent 70%)',
           }}
         />
         {/* top accent line */}
@@ -62,7 +62,7 @@ export default function Image() {
             right: 0,
             height: 3,
             display: 'flex',
-            background: 'linear-gradient(90deg, transparent, #F2D53C, #F8E97E, transparent)',
+            background: 'linear-gradient(90deg, transparent, #4A72E8, #A8BCF8, transparent)',
           }}
         />
 
@@ -76,29 +76,29 @@ export default function Image() {
               alignItems: 'center',
               justifyContent: 'center',
               borderRadius: 22,
-              background: 'linear-gradient(135deg, #1B2B24, #0D1512)',
-              border: '1px solid #293D33',
-              boxShadow: '0 0 48px #F2D53C33',
+              background: 'linear-gradient(135deg, #1F1F28, #101014)',
+              border: '1px solid #26262F',
+              boxShadow: '0 0 48px #4A72E833',
             }}
           >
             <svg width="56" height="56" viewBox="0 0 64 64" fill="none">
-              <path d="M18 33.5 L28 43 L47 21.5" stroke="#F2D53C" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" />
-              <rect x="18" y="49" width="16" height="3.5" rx="1.75" fill="#F2D53C" />
+              <path d="M18 33.5 L28 43 L47 21.5" stroke="#4A72E8" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" />
+              <rect x="18" y="49" width="16" height="3.5" rx="1.75" fill="#4A72E8" />
             </svg>
           </div>
           <div style={{ display: 'flex', alignItems: 'baseline' }}>
-            <div style={{ display: 'flex', fontFamily: 'monospace', fontSize: 64, fontWeight: 800, color: '#EFEDE3', letterSpacing: -2 }}>gabarito</div>
-            <div style={{ display: 'flex', fontFamily: 'monospace', fontSize: 64, fontWeight: 800, color: '#F2D53C', letterSpacing: -2 }}>_AI</div>
+            <div style={{ display: 'flex', fontFamily: 'monospace', fontSize: 64, fontWeight: 800, color: '#F4F4F0', letterSpacing: -2 }}>gabarito</div>
+            <div style={{ display: 'flex', fontFamily: 'monospace', fontSize: 64, fontWeight: 800, color: '#4A72E8', letterSpacing: -2 }}>_AI</div>
           </div>
         </div>
 
         {/* headline */}
-        <div style={{ display: 'flex', fontSize: 30, color: '#C2CBBE', lineHeight: 1.45, maxWidth: 900, marginBottom: 20 }}>
+        <div style={{ display: 'flex', fontSize: 30, color: '#9C9CA6', lineHeight: 1.45, maxWidth: 900, marginBottom: 20 }}>
           Suba o edital em PDF e a IA monta seu plano de estudos, flashcards e questões comentadas.
         </div>
 
         {/* subline */}
-        <div style={{ display: 'flex', fontFamily: 'monospace', fontSize: 17, color: '#7F8D82', letterSpacing: 3, textTransform: 'uppercase', marginBottom: 44 }}>
+        <div style={{ display: 'flex', fontFamily: 'monospace', fontSize: 17, color: '#6E6E7A', letterSpacing: 3, textTransform: 'uppercase', marginBottom: 44 }}>
           Console de estudos para concursos públicos
         </div>
 

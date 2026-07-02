@@ -17,24 +17,24 @@
 }
 
 /* ── Design tokens — light default, dark override ──
-   Identidade "Mesa de estudo": quadro viridian escuro + marca-texto amarelo. */
+   Identidade "Meia-noite & Azul-caneta": carvão quente + azul de caneta. */
 :root {
-  --c-bg:       #F7F5EC;   /* papel sulfite */
+  --c-bg:       #F6F6F3;   /* papel */
   --c-surface:  #FFFFFF;
-  --c-elevated: #EFECDF;
-  --c-border:   #DDD8C6;
-  --c-text:     #1C221D;   /* tinta */
-  --c-muted:    #5B6459;
-  --c-dimmed:   #8B948A;
+  --c-elevated: #ECECE7;
+  --c-border:   #DEDED8;
+  --c-text:     #17171D;   /* tinta */
+  --c-muted:    #5C5C66;
+  --c-dimmed:   #8A8A94;
 }
 html.dark {
-  --c-bg:       #0D1512;   /* quadro viridian profundo */
-  --c-surface:  #14201B;   /* superfície sólida */
-  --c-elevated: #1B2B24;   /* elevado */
-  --c-border:   #293D33;   /* borda */
-  --c-text:     #EFEDE3;   /* giz — títulos */
-  --c-muted:    #C2CBBE;   /* descrições */
-  --c-dimmed:   #7F8D82;   /* metadados */
+  --c-bg:       #101014;   /* carvão quente */
+  --c-surface:  #17171D;   /* superfície sólida */
+  --c-elevated: #1F1F28;   /* elevado */
+  --c-border:   #26262F;   /* borda discreta */
+  --c-text:     #F4F4F0;   /* quase-branco — títulos */
+  --c-muted:    #9C9CA6;   /* descrições */
+  --c-dimmed:   #6E6E7A;   /* metadados */
 }
 
 /* ── Global cursor ── */
@@ -46,16 +46,16 @@ select, input[type="checkbox"], input[type="radio"] {
 /* ── Scrollbar ── */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #293D33; border-radius: 99px; }
-::-webkit-scrollbar-thumb:hover { background: #3B5547; }
+::-webkit-scrollbar-thumb { background: #26262F; border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: #34343F; }
 
-/* ── Focus ring (marca-texto) ── */
+/* ── Focus ring (azul-caneta) ── */
 *:focus-visible {
-  outline: 2px solid #F2D53C;
+  outline: 2px solid #4A72E8;
   outline-offset: 2px;
 }
 
-/* ── Display (Bricolage Grotesque) for headings ── */
+/* ── Display (Plus Jakarta Sans) for headings ── */
 .font-display { font-family: var(--font-display), system-ui, sans-serif; }
 h1, h2 { font-family: var(--font-display), system-ui, sans-serif; }
 
@@ -77,19 +77,19 @@ h1, h2 { font-family: var(--font-display), system-ui, sans-serif; }
   100% { background-position:  200% 0; }
 }
 .animate-shimmer {
-  background: linear-gradient(90deg, rgba(27,43,36,0.5) 25%, rgba(41,61,51,0.6) 50%, rgba(27,43,36,0.5) 75%);
+  background: linear-gradient(90deg, rgba(31,31,40,0.5) 25%, rgba(38,38,47,0.6) 50%, rgba(31,31,40,0.5) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite linear;
 }
 
-/* ── Glow pulse (marca-texto) ── */
+/* ── Glow pulse (azul-caneta) ── */
 @keyframes glow-pulse {
-  0%, 100% { box-shadow: 0 0 20px rgba(242,213,60,0.16); }
-  50%       { box-shadow: 0 0 44px rgba(242,213,60,0.30); }
+  0%, 100% { box-shadow: 0 0 20px rgba(74,114,232,0.16); }
+  50%       { box-shadow: 0 0 44px rgba(74,114,232,0.30); }
 }
 .animate-glow { animation: glow-pulse 3s ease-in-out infinite; }
 
-/* ── Ambient light blobs (subtle, marca-texto + viridian) ── */
+/* ── Ambient light blobs (subtle, azul + neutro) ── */
 .bg-blobs::before,
 .bg-blobs::after {
   content: '';
@@ -99,8 +99,8 @@ h1, h2 { font-family: var(--font-display), system-ui, sans-serif; }
   z-index: 0;
   pointer-events: none;
 }
-.bg-blobs::before { top: -180px; left: -120px; width: 520px; height: 520px; background: rgba(242,213,60,0.07); }
-.bg-blobs::after  { bottom: -220px; right: -140px; width: 560px; height: 560px; background: rgba(88,142,110,0.10); }
+.bg-blobs::before { top: -180px; left: -120px; width: 520px; height: 520px; background: rgba(74,114,232,0.08); }
+.bg-blobs::after  { bottom: -220px; right: -140px; width: 560px; height: 560px; background: rgba(150,160,190,0.06); }
 
 /* ── Landing entrance (CSS-only, staggered via inline animation-delay) ── */
 @keyframes fade-up {
@@ -121,25 +121,43 @@ h1, h2 { font-family: var(--font-display), system-ui, sans-serif; }
   .float-y { animation: none; }
 }
 
-/* ── Brand gradient text (marca-texto) ── */
+/* ── Brand gradient text (azul-caneta) ── */
 .text-gradient-brand {
-  background: linear-gradient(120deg, #FFF3A0 0%, #F2D53C 55%, #C9A81D 100%);
+  background: linear-gradient(120deg, #A8BCF8 0%, #4A72E8 55%, #3556C4 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   color: transparent;
 }
 
-/* ── Marca-texto: grifo amarelo atrás de palavras-chave (assinatura da marca).
-   box-decoration-break: clone mantém o grifo íntegro quando quebra de linha. ── */
+/* ── Sublinhado de caneta: traço azul à mão sob palavras-chave (assinatura
+   da marca). SVG inline com leve ondulação, como um sublinhado de prova. ── */
 .hl-mark {
-  background: linear-gradient(100deg, #F7DC4B 0%, #EFCF2E 100%);
-  color: #171B10;
-  padding: 0.04em 0.16em;
-  margin: 0 -0.04em;
-  border-radius: 0.14em;
+  color: #A8BCF8;
+  padding-bottom: 0.14em;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 8' preserveAspectRatio='none'%3E%3Cpath d='M2 5.5 Q 30 2.5, 60 5 T 118 4' fill='none' stroke='%234A72E8' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 100% 0.16em;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
+}
+
+/* ── Divisor vivo: hairline com gradiente que desliza devagar —
+   substitui as bordas duras de header/footer. ── */
+@keyframes divider-slide {
+  0%   { background-position: -60% 0; }
+  100% { background-position: 160% 0; }
+}
+.divider-live {
+  height: 1px;
+  background-image: linear-gradient(90deg, transparent 0%, rgba(74,114,232,0.55) 50%, transparent 100%);
+  background-size: 45% 100%;
+  background-repeat: no-repeat;
+  animation: divider-slide 7s ease-in-out infinite alternate;
+}
+@media (prefers-reduced-motion: reduce) {
+  .divider-live { animation: none; background-position: 50% 0; }
 }
 
 /* ── Three.js canvas ── */

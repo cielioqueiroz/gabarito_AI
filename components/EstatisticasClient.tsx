@@ -67,7 +67,7 @@ export default function EstatisticasClient({ respostas: allResp, disciplinaStats
           <div className="flex items-center gap-2 flex-wrap">
             <button
               onClick={() => setFilterConcurso(null)}
-              className={`rounded-full px-3 py-1 text-xs font-semibold transition-all duration-150 cursor-pointer ${!filterConcurso ? 'bg-[#C9A81D] text-white' : 'bg-elevated text-muted hover:bg-border'}`}
+              className={`rounded-full px-3 py-1 text-xs font-semibold transition-all duration-150 cursor-pointer ${!filterConcurso ? 'bg-[#3556C4] text-white' : 'bg-elevated text-muted hover:bg-border'}`}
             >
               Todos ({concursos.length})
             </button>
@@ -75,7 +75,7 @@ export default function EstatisticasClient({ respostas: allResp, disciplinaStats
               <button
                 key={c.id}
                 onClick={() => setFilterConcurso(c.id)}
-                className={`rounded-full px-3 py-1 text-xs font-semibold transition-all duration-150 cursor-pointer ${filterConcurso === c.id ? 'bg-[#C9A81D] text-white' : 'bg-elevated text-muted hover:bg-border'}`}
+                className={`rounded-full px-3 py-1 text-xs font-semibold transition-all duration-150 cursor-pointer ${filterConcurso === c.id ? 'bg-[#3556C4] text-white' : 'bg-elevated text-muted hover:bg-border'}`}
               >
                 {c.nome}
               </button>
@@ -117,7 +117,7 @@ export default function EstatisticasClient({ respostas: allResp, disciplinaStats
                     initial={{ height: 0 }}
                     animate={{ height: `${(d.total / maxDia) * 100}%` }}
                     transition={{ duration: 0.6, ease: 'easeOut' }}
-                    className="w-full bg-[#E9C92F]/30 rounded-t"
+                    className="w-full bg-[#4A72E8]/30 rounded-t"
                   >
                     <motion.div
                       initial={{ height: 0 }}

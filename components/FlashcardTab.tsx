@@ -90,10 +90,10 @@ export default function FlashcardTab({ disciplinas, flashcards: initialCards, to
   return (
     <div className="space-y-4">
       {dueCards.length > 0 && (
-        <div className="bg-[#E9C92F]/10 border border-[#E9C92F]/20 rounded-xl px-4 py-3 flex items-center justify-between">
+        <div className="bg-[#4A72E8]/10 border border-[#4A72E8]/20 rounded-xl px-4 py-3 flex items-center justify-between">
           <div>
-            <p className="font-semibold text-[#F2D53C] text-sm">{dueCards.length} card{dueCards.length !== 1 ? 's' : ''} para revisar</p>
-            <p className="font-mono text-[10px] uppercase tracking-widest text-[#E9C92F]/60 mt-0.5">Todos os decks</p>
+            <p className="font-semibold text-[#4A72E8] text-sm">{dueCards.length} card{dueCards.length !== 1 ? 's' : ''} para revisar</p>
+            <p className="font-mono text-[10px] uppercase tracking-widest text-[#4A72E8]/60 mt-0.5">Todos os decks</p>
           </div>
           <Button variant="amber" onClick={() => startStudy(null)}>Estudar agora</Button>
         </div>

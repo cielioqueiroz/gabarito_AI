@@ -72,7 +72,7 @@ export function PodcastPlayer({ resumoId }: { resumoId: string }) {
       <button
         onClick={toggle}
         disabled={loading}
-        className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-[#C9A81D] text-white transition-colors hover:bg-[#E9C92F] disabled:opacity-70 cursor-pointer"
+        className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-[#3556C4] text-white transition-colors hover:bg-[#4A72E8] disabled:opacity-70 cursor-pointer"
         title={error ? 'Tentar novamente' : playing ? 'Pausar' : 'Ouvir resumo'}
         aria-label={playing ? 'Pausar' : 'Ouvir'}
       >
@@ -97,14 +97,14 @@ export function PodcastPlayer({ resumoId }: { resumoId: string }) {
           value={cur}
           onChange={seek}
           disabled={!dur}
-          className="h-1 w-full cursor-pointer appearance-none rounded-full bg-border accent-[#E9C92F] disabled:cursor-default"
+          className="h-1 w-full cursor-pointer appearance-none rounded-full bg-border accent-[#4A72E8] disabled:cursor-default"
           aria-label="Progresso"
         />
       </div>
 
       <button
         onClick={() => setSpeed(SPEEDS[(SPEEDS.indexOf(speed) + 1) % SPEEDS.length])}
-        className="flex-shrink-0 rounded-md border border-border px-2 py-1 font-mono text-[10px] text-muted-foreground transition-colors hover:border-[#E9C92F]/30 hover:text-[#F2D53C] cursor-pointer"
+        className="flex-shrink-0 rounded-md border border-border px-2 py-1 font-mono text-[10px] text-muted-foreground transition-colors hover:border-[#4A72E8]/30 hover:text-[#4A72E8] cursor-pointer"
         title="Velocidade"
       >
         {speed}×
@@ -114,7 +114,7 @@ export function PodcastPlayer({ resumoId }: { resumoId: string }) {
         <a
           href={src}
           download="resumo.mp3"
-          className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-md border border-border text-muted-foreground transition-colors hover:border-[#E9C92F]/30 hover:text-[#F2D53C]"
+          className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-md border border-border text-muted-foreground transition-colors hover:border-[#4A72E8]/30 hover:text-[#4A72E8]"
           title="Baixar MP3"
         >
           <Download size={14} />

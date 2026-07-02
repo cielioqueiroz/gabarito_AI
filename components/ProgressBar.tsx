@@ -14,18 +14,18 @@ interface ProgressBarProps {
 }
 
 const colorBar: Record<string, string> = {
-  blue:    'bg-[#F2D53C]',
-  cyan:    'bg-[#F2D53C]',
-  indigo:  'bg-[#F2D53C]',
+  blue:    'bg-[#4A72E8]',
+  cyan:    'bg-[#4A72E8]',
+  indigo:  'bg-[#4A72E8]',
   emerald: 'bg-emerald-500',
-  amber:   'bg-[#F2D53C]',
+  amber:   'bg-[#4A72E8]',
 }
 const colorText: Record<string, string> = {
-  blue:    'text-[#F2D53C]',
-  cyan:    'text-[#F2D53C]',
-  indigo:  'text-[#F2D53C]',
+  blue:    'text-[#4A72E8]',
+  cyan:    'text-[#4A72E8]',
+  indigo:  'text-[#4A72E8]',
   emerald: 'text-emerald-400',
-  amber:   'text-[#F2D53C]',
+  amber:   'text-[#4A72E8]',
 }
 
 export default function ProgressBar({ value, max, color = 'blue', label, showPercent = false, size = 'md' }: ProgressBarProps) {

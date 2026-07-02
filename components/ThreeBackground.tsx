@@ -14,9 +14,9 @@ interface Props {
 }
 
 export default function ThreeBackground({
-  pointColor  = 0xf2d53c,
-  orbColorA   = 0x3b5547,
-  orbColorB   = 0xf2d53c,
+  pointColor  = 0x4a72e8,
+  orbColorA   = 0x34343f,
+  orbColorB   = 0x4a72e8,
   pointOpacity = 0.5,
   className,
 }: Props) {

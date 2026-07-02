@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next'
-import { Inter, Bricolage_Grotesque, Geist_Mono } from 'next/font/google'
+import { Inter, Plus_Jakarta_Sans, Geist_Mono } from 'next/font/google'
 import { ThemeProvider } from '@/lib/theme'
 import { ToastProvider } from '@/lib/toast'
 import { MotionProvider } from '@/lib/motion'
@@ -7,7 +7,7 @@ import { ShortcutsProvider } from '@/lib/shortcuts'
 import './globals.css'
 
 const inter = Inter({ variable: '--font-sans-c', subsets: ['latin'] })
-const bricolage = Bricolage_Grotesque({ variable: '--font-display', subsets: ['latin'], weight: ['400', '600', '700', '800'] })
+const jakarta = Plus_Jakarta_Sans({ variable: '--font-display', subsets: ['latin'], weight: ['400', '600', '700', '800'] })
 const geistMono = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin'] })
 
 export const metadata: Metadata = {
@@ -48,7 +48,7 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: '#0D1512',
+  themeColor: '#101014',
   width: 'device-width',
   initialScale: 1,
 }
@@ -59,7 +59,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="pt-BR"
-      className={`${inter.variable} ${bricolage.variable} ${geistMono.variable} h-full antialiased dark`}
+      className={`${inter.variable} ${jakarta.variable} ${geistMono.variable} h-full antialiased dark`}
       suppressHydrationWarning
     >
       <head>

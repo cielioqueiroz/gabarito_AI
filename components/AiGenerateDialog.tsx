@@ -40,7 +40,7 @@ export function AiGenerateDialog({ open, onClose, onConfirm, disciplinaNome, top
             Tópicos ({topicos.length})
           </p>
           {topicos.length === 0 ? (
-            <p className="text-sm text-[#E9C92F]">⚠ Nenhum tópico cadastrado. A IA vai gerar com base no nome da disciplina.</p>
+            <p className="text-sm text-[#4A72E8]">⚠ Nenhum tópico cadastrado. A IA vai gerar com base no nome da disciplina.</p>
           ) : (
             <ul className="text-sm text-muted space-y-1">
               {preview.map((t, i) => <li key={i} className="truncate">• {t}</li>)}

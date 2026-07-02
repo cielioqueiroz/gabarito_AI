@@ -95,19 +95,19 @@ export default function ConcursoDetail({ concurso, disciplinas, topicos, flashca
               key={t.key}
               onClick={() => setTab(t.key)}
               className={`relative pb-3 px-3 text-sm font-semibold transition-colors duration-150 cursor-pointer ${
-                tab === t.key ? 'text-[#F2D53C]' : 'text-muted-foreground hover:text-muted'
+                tab === t.key ? 'text-[#4A72E8]' : 'text-muted-foreground hover:text-muted'
               }`}
             >
               {t.label}
               {t.count > 0 && (
-                <span className={`ml-1.5 font-mono text-[10px] ${tab === t.key ? 'text-[#E9C92F]' : 'text-border'}`}>
+                <span className={`ml-1.5 font-mono text-[10px] ${tab === t.key ? 'text-[#4A72E8]' : 'text-border'}`}>
                   {t.count}
                 </span>
               )}
               {tab === t.key && (
                 <motion.div
                   layoutId="tab-indicator"
-                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#E9C92F] rounded-full"
+                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#4A72E8] rounded-full"
                   transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                 />
               )}

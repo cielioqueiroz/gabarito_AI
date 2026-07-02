@@ -44,11 +44,11 @@ export default function ShellLayout({ children, title, headerRight }: Props) {
 
   return (
     <div className="flex h-screen bg-background overflow-hidden">
-      <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[200] focus:bg-[#C9A81D] focus:text-white focus:px-3 focus:py-1.5 focus:rounded-md focus:text-sm">
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[200] focus:bg-[#3556C4] focus:text-white focus:px-3 focus:py-1.5 focus:rounded-md focus:text-sm">
         Pular para o conteúdo
       </a>
-      {/* Desktop sidebar */}
-      <div className="hidden md:flex flex-col flex-shrink-0">
+      {/* Desktop sidebar — flutuante, com respiro das bordas */}
+      <div className="hidden md:flex flex-col flex-shrink-0 p-3 pr-0">
         <Sidebar />
       </div>
 
@@ -83,8 +83,9 @@ export default function ShellLayout({ children, title, headerRight }: Props) {
 
       {/* Main area */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        {/* Header */}
-        <header className="h-14 flex-shrink-0 flex items-center justify-between px-5 border-b border-border bg-background/85 backdrop-blur-sm sticky top-0 z-10">
+        {/* Header — sem borda dura: hairline viva no lugar */}
+        <header className="relative h-14 flex-shrink-0 flex items-center justify-between px-5 bg-background/85 backdrop-blur-sm sticky top-0 z-10">
+          <div aria-hidden className="divider-live absolute bottom-0 left-5 right-5" />
           <div className="flex items-center gap-3">
             <button
               ref={openerRef}
@@ -105,7 +106,7 @@ export default function ShellLayout({ children, title, headerRight }: Props) {
               onClick={shortcuts.show}
               aria-label="Ver atalhos de teclado"
               title="Atalhos (?)"
-              className="hidden md:inline-flex p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-elevated cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E9C92F]"
+              className="hidden md:inline-flex p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-elevated cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4A72E8]"
             >
               <Keyboard size={16} />
             </button>
@@ -127,10 +128,18 @@ export default function ShellLayout({ children, title, headerRight }: Props) {
 
         <PwaPrompt />
 
-        {/* Footer */}
-        <footer className="flex-shrink-0 h-9 flex items-center justify-center border-t border-border">
+        {/* Footer — vivo: hairline animada + pulso de status */}
+        <footer className="relative flex-shrink-0 h-10 flex items-center justify-between px-5">
+          <div aria-hidden className="divider-live absolute top-0 left-5 right-5" />
+          <span className="font-mono text-[10px] font-bold tracking-tight text-muted">
+            gabarito<span className="text-[#4A72E8]">_AI</span>
+          </span>
+          <span className="hidden sm:flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#4A72E8] animate-pulse" />
+            estudando com IA
+          </span>
           <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-            gabarito_AI · concursos públicos
+            concursos públicos
           </span>
         </footer>
       </div>

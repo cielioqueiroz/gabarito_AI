@@ -109,8 +109,8 @@ export function PwaPrompt() {
             className="pointer-events-auto bg-surface border border-border rounded-xl p-4 shadow-lg shadow-black/30"
           >
             <div className="flex items-start gap-3">
-              <div className="w-8 h-8 rounded-lg bg-[#E9C92F]/10 border border-[#E9C92F]/20 flex items-center justify-center flex-shrink-0">
-                <Smartphone size={16} className="text-[#E9C92F]" />
+              <div className="w-8 h-8 rounded-lg bg-[#4A72E8]/10 border border-[#4A72E8]/20 flex items-center justify-center flex-shrink-0">
+                <Smartphone size={16} className="text-[#4A72E8]" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-foreground">Instalar app</p>
@@ -135,8 +135,8 @@ export function PwaPrompt() {
             className="pointer-events-auto bg-surface border border-border rounded-xl p-4 shadow-lg shadow-black/30"
           >
             <div className="flex items-start gap-3">
-              <div className="w-8 h-8 rounded-lg bg-[#E9C92F]/10 border border-[#E9C92F]/20 flex items-center justify-center flex-shrink-0">
-                <Bell size={16} className="text-[#E9C92F]" />
+              <div className="w-8 h-8 rounded-lg bg-[#4A72E8]/10 border border-[#4A72E8]/20 flex items-center justify-center flex-shrink-0">
+                <Bell size={16} className="text-[#4A72E8]" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-foreground">Avisos de revisão</p>
