@@ -4,7 +4,7 @@
 
 🌐 **Live:** [gabarito-lyart.vercel.app](https://gabarito-lyart.vercel.app) · [Landing](https://gabarito-lyart.vercel.app/sobre)
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fcielioqueiroz%2Fgabarito_AI&env=NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY,SUPABASE_SERVICE_ROLE_KEY,ANTHROPIC_API_KEY&envDescription=Chaves%20do%20Supabase%20e%20da%20Anthropic&envLink=https%3A%2F%2Fgithub.com%2Fcielioqueiroz%2Fgabarito_AI%23instala%C3%A7%C3%A3o)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fcielioqueiroz%2Fgabarito_AI&env=NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY,SUPABASE_SERVICE_ROLE_KEY,GEMINI_API_KEY&envDescription=Chaves%20do%20Supabase%20e%20do%20Google%20Gemini&envLink=https%3A%2F%2Fgithub.com%2Fcielioqueiroz%2Fgabarito_AI%23instala%C3%A7%C3%A3o)
 
 Suba o edital em PDF ou TXT — a IA extrai as disciplinas, organiza os tópicos e gera flashcards e questões comentadas. Estude com repetição espaçada (sistema Leitner), acompanhe seu progresso e revise o que precisa, no ritmo certo.
 
@@ -17,7 +17,9 @@ Suba o edital em PDF ou TXT — a IA extrai as disciplinas, organiza os tópicos
 | **Upload de edital** | PDF ou TXT (até 5 MB) → IA extrai e organiza disciplinas + tópicos automaticamente |
 | **Plano de estudos** | Checklist por disciplina com progresso visual e trigger que registra `estudado_em` para analytics |
 | **Flashcards Leitner** | Sistema de 5 caixas com agendamento automático de revisão (1/2/4/7/15 dias) |
-| **Questões com IA** | Múltipla escolha gerada por Claude com gabarito e explicação comentada |
+| **Questões com IA** | Múltipla escolha gerada por IA com gabarito e explicação comentada |
+| **Resumos com IA** | Resumos em markdown a partir de texto, link ou vídeo do YouTube |
+| **Podcast** | Narração neural pt-BR de cada resumo (Edge TTS) — player com velocidade e download |
 | **Revisão do Dia** | Sessão diária com todos os cards vencidos, cruzando concursos |
 | **Multi-concurso** | Gerencie quantos concursos quiser, cada um com plano, cards e questões próprios |
 | **Dashboard** | Visão geral com contadores animados de tópicos estudados e cards dominados |
@@ -34,7 +36,7 @@ Suba o edital em PDF ou TXT — a IA extrai as disciplinas, organiza os tópicos
 |---|---|
 | Framework | Next.js 16 (App Router, RSC, async params, `proxy.ts`) |
 | Banco de dados | Supabase — PostgreSQL + Auth + Row Level Security |
-| IA | Anthropic Claude `claude-sonnet-4-5-20250929` (via **tool use** com JSON Schema) |
+| IA | Google Gemini `gemini-flash-latest` (saída estruturada via JSON Schema, camada gratuita) |
 | Estilo | Tailwind CSS v4 + shadcn/ui |
 | Animações | Framer Motion |
 | 3D | Three.js (tela de login, lazy-loaded) |
@@ -47,7 +49,7 @@ Suba o edital em PDF ou TXT — a IA extrai as disciplinas, organiza os tópicos
 
 - Node.js 20+
 - Conta no [Supabase](https://supabase.com)
-- Chave de API na [Anthropic](https://console.anthropic.com)
+- Chave de API do [Google AI Studio](https://aistudio.google.com/apikey) (gratuita)
 
 ---
 
@@ -69,11 +71,11 @@ Crie `.env.local` na raiz do projeto:
 NEXT_PUBLIC_SUPABASE_URL=https://xxxx.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...
 SUPABASE_SERVICE_ROLE_KEY=eyJ...
-ANTHROPIC_API_KEY=sk-ant-...
+GEMINI_API_KEY=AIza...
 ```
 
 > As chaves do Supabase estão em **Project Settings → API**.
-> A chave Anthropic está em **console.anthropic.com → API Keys**.
+> A chave Gemini está em **aistudio.google.com → Get API key** (gratuita).
 
 O `lib/env.ts` valida essas variáveis em runtime e falha rápido se algo estiver ausente.
 
@@ -140,7 +142,7 @@ gabarito_AI/
 │   ├── EstatisticasClient.tsx  # Página de estatísticas
 │   └── ProgressBar.tsx         # Barra animada (Framer Motion)
 ├── lib/
-│   ├── anthropic.ts            # Cliente Anthropic + callClaudeStructured (tool use + retry)
+│   ├── anthropic.ts            # Cliente Gemini (nome legado) — callClaudeStructured + retry
 │   ├── apiHelpers.ts           # requireAuth, checkRateLimit, ownership checks
 │   ├── concursos.ts            # getConcursosComStats via view concurso_stats
 │   ├── env.ts                  # Validação de env vars
@@ -171,8 +173,10 @@ gabarito_AI/
 | `/api/gerar-flashcards` | `POST` (JSON) | 10/min | Gera flashcards para uma disciplina |
 | `/api/gerar-questoes` | `POST` (JSON) | 10/min | Gera questões de múltipla escolha |
 | `/api/stream-plano` | `POST` (JSON) | 5/min | Versão streaming (`text/plain` chunk-a-chunk) |
+| `/api/gerar-resumo` | `POST` (JSON) | 10/min | Gera resumo em markdown de texto, link ou YouTube |
+| `/api/podcast/[resumoId]` | `GET` | 20/min | MP3 do resumo em voz neural pt-BR (Edge TTS) |
 
-Todas as rotas exigem sessão autenticada, checam ownership da disciplina/concurso antes de chamar a IA, e usam **tool use** do Claude com JSON Schema (não regex em markdown).
+Todas as rotas exigem sessão autenticada, checam ownership da disciplina/concurso antes de chamar a IA, e usam **saída estruturada** com JSON Schema (não regex em markdown).
 
 ---
 
@@ -204,12 +208,12 @@ Cards errados voltam para a caixa 1. Cards da caixa 4+ são considerados **domin
 ## Segurança
 
 - **Row Level Security** ativa em todas as tabelas com policies `USING` + `WITH CHECK` para bloquear leitura *e* escrita cruzada.
-- **Ownership check** explícito em todas as rotas de IA — evita chamadas caras a Claude com IDs de outros usuários.
+- **Ownership check** explícito em todas as rotas de IA — evita chamadas de IA com IDs de outros usuários.
 - **Rate limiting** por `user_id` em cada rota de IA.
 - **Limite de 5 MB** no upload de edital.
 - **Env vars** validadas em runtime (`lib/env.ts`).
 - **Security headers** globais (`next.config.ts`): `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy: camera=(), microphone=(), geolocation=()`.
-- **Retry com backoff exponencial** em chamadas Claude (`lib/anthropic.ts`).
+- **Retry com backoff exponencial** nas chamadas de IA (`lib/anthropic.ts`).
 
 ---
 
@@ -218,7 +222,7 @@ Cards errados voltam para a caixa 1. Cards da caixa 4+ são considerados **domin
 O projeto é compatível com **Vercel** out of the box.
 
 1. Importe o repositório no [vercel.com](https://vercel.com)
-2. Configure as variáveis de ambiente (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `ANTHROPIC_API_KEY`)
+2. Configure as variáveis de ambiente (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `GEMINI_API_KEY`)
 3. Deploy automático a cada push na `main`
 
 Para produção com múltiplas instâncias, troque o `lib/rateLimit.ts` (in-memory) por `@upstash/ratelimit` ou equivalente.
