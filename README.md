@@ -19,7 +19,7 @@ Suba o edital em PDF → a IA monta seu plano, flashcards, questões comentadas,
 
 <br/>
 
-<img src="docs/screenshots/landing-hero.png" alt="Landing do gabarito_AI — identidade Meia-noite & Azul-caneta" width="920" />
+<img src=".github/screenshots/landing-hero.png" alt="Landing do gabarito_AI — identidade Meia-noite & Azul-caneta" width="920" />
 
 </div>
 
@@ -54,8 +54,8 @@ Feito por um concurseiro, para concurseiros. Projeto aberto (MIT), roda inteiro 
 <div align="center">
 <table>
   <tr>
-    <td align="center"><img src="docs/screenshots/como-funciona.png" alt="Como funciona — 4 passos" width="440"/><br/><sub>Do edital ao domínio, em 4 passos</sub></td>
-    <td align="center"><img src="docs/screenshots/login.png" alt="Login com Google e GitHub" width="440"/><br/><sub>Login social + Three.js</sub></td>
+    <td align="center"><img src=".github/screenshots/como-funciona.png" alt="Como funciona — 4 passos" width="440"/><br/><sub>Do edital ao domínio, em 4 passos</sub></td>
+    <td align="center"><img src=".github/screenshots/login.png" alt="Login com Google e GitHub" width="440"/><br/><sub>Login social + Three.js</sub></td>
   </tr>
 </table>
 </div>
