@@ -120,15 +120,6 @@ h1, h2 { font-family: var(--font-display), Georgia, serif; }
   .float-y { animation: none; }
 }
 
-/* ── Blue gradient text (legacy landing headline) ── */
-.text-gradient-blue {
-  background: linear-gradient(120deg, #60A5FA 0%, #3B82F6 45%, #2563EB 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
-}
-
 /* ── Brand gradient text (warm gold) ── */
 .text-gradient-brand {
   background: linear-gradient(120deg, #F2CE82 0%, #E8A93C 55%, #C88A2A 100%);

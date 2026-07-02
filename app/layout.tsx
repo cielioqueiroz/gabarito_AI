@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   description: 'Suba o edital em PDF e a IA monta seu plano de estudos, flashcards Leitner e questões comentadas para concursos públicos.',
   manifest: '/manifest.json',
   applicationName: 'gabarito_AI',
-  keywords: ['concurso público', 'estudos', 'flashcards', 'leitner', 'IA', 'edital', 'Claude', 'repetição espaçada', 'gabarito'],
+  keywords: ['concurso público', 'estudos', 'flashcards', 'leitner', 'IA', 'edital', 'repetição espaçada', 'gabarito'],
   authors: [{ name: 'cielioqueiroz', url: 'https://github.com/cielioqueiroz' }],
   creator: 'cielioqueiroz',
   openGraph: {
