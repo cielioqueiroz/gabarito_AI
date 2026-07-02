@@ -4,7 +4,7 @@
 
 🌐 **Live:** [gabarito-lyart.vercel.app](https://gabarito-lyart.vercel.app) · [Landing](https://gabarito-lyart.vercel.app/sobre)
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fcielioqueiroz%2Fgabarito_AI&env=NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY,SUPABASE_SERVICE_ROLE_KEY,GEMINI_API_KEY&envDescription=Chaves%20do%20Supabase%20e%20do%20Google%20Gemini&envLink=https%3A%2F%2Fgithub.com%2Fcielioqueiroz%2Fgabarito_AI%23instala%C3%A7%C3%A3o)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fcielioqueiroz%2Fgabarito_AI&env=NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY,GEMINI_API_KEY&envDescription=Chaves%20do%20Supabase%20e%20do%20Google%20Gemini&envLink=https%3A%2F%2Fgithub.com%2Fcielioqueiroz%2Fgabarito_AI%23instala%C3%A7%C3%A3o)
 
 Suba o edital em PDF ou TXT — a IA extrai as disciplinas, organiza os tópicos e gera flashcards e questões comentadas. Estude com repetição espaçada (sistema Leitner), acompanhe seu progresso e revise o que precisa, no ritmo certo.
 
@@ -70,7 +70,6 @@ Crie `.env.local` na raiz do projeto:
 ```env
 NEXT_PUBLIC_SUPABASE_URL=https://xxxx.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...
-SUPABASE_SERVICE_ROLE_KEY=eyJ...
 GEMINI_API_KEY=AIza...
 ```
 
@@ -222,7 +221,7 @@ Cards errados voltam para a caixa 1. Cards da caixa 4+ são considerados **domin
 O projeto é compatível com **Vercel** out of the box.
 
 1. Importe o repositório no [vercel.com](https://vercel.com)
-2. Configure as variáveis de ambiente (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `GEMINI_API_KEY`)
+2. Configure as variáveis de ambiente (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `GEMINI_API_KEY`)
 3. Deploy automático a cada push na `main`
 
 Para produção com múltiplas instâncias, troque o `lib/rateLimit.ts` (in-memory) por `@upstash/ratelimit` ou equivalente.

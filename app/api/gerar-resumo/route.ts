@@ -39,18 +39,63 @@ function stripHtml(html: string): string {
     .trim()
 }
 
-// Basic SSRF guard: only http(s), and refuse obvious internal hosts.
+// SSRF guard: only http(s), no IP-literal hosts (evita 0x7f…, 127.1 e afins),
+// and refuse obvious internal hosts. Redirects são seguidos manualmente e cada
+// salto é re-validado (um 302 para IP interno não passa).
 function assertPublicUrl(raw: string): URL {
   const u = new URL(raw)
   if (u.protocol !== 'http:' && u.protocol !== 'https:') throw new Error('Só http(s).')
   const host = u.hostname.toLowerCase()
+  // IP literal (v4 em qualquer formato, ou v6 entre colchetes): recusa direto —
+  // conteúdo de estudo legítimo não mora em IP cru.
+  if (host.includes(':') || /^[0-9x.]+$/.test(host)) throw new Error('Use um domínio, não um IP.')
   const blocked =
-    host === 'localhost' || host.endsWith('.local') || host === '0.0.0.0' ||
-    host === '::1' || host.startsWith('127.') || host.startsWith('10.') ||
+    host === 'localhost' || host.endsWith('.local') || host.endsWith('.internal') ||
+    host.startsWith('127.') || host.startsWith('10.') ||
     host.startsWith('192.168.') || host.startsWith('169.254.') ||
     /^172\.(1[6-9]|2\d|3[01])\./.test(host)
   if (blocked) throw new Error('Endereço interno não permitido.')
   return u
+}
+
+const MAX_FETCH_BYTES = 2 * 1024 * 1024 // 2 MB de HTML é mais que suficiente
+const MAX_REDIRECTS = 3
+
+// fetch com redirects manuais (cada destino re-validado) e corpo com teto.
+async function fetchPublicPage(start: URL, signal: AbortSignal): Promise<string> {
+  let url = start
+  for (let hop = 0; hop <= MAX_REDIRECTS; hop++) {
+    const res = await fetch(url, {
+      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; gabaritoAI/1.0)' },
+      signal,
+      redirect: 'manual',
+    })
+    if (res.status >= 300 && res.status < 400) {
+      const loc = res.headers.get('location')
+      if (!loc) throw new Error(`Página respondeu ${res.status}.`)
+      url = assertPublicUrl(new URL(loc, url).href)
+      continue
+    }
+    if (!res.ok) throw new Error(`Página respondeu ${res.status}.`)
+    const ct = res.headers.get('content-type') ?? ''
+    if (ct && !/text\/(html|plain)|application\/xhtml/i.test(ct)) {
+      throw new Error('O link não aponta para uma página de texto.')
+    }
+    // Lê em stream com teto — não confia no content-length declarado.
+    const reader = res.body?.getReader()
+    if (!reader) return ''
+    const chunks: Uint8Array[] = []
+    let total = 0
+    while (total < MAX_FETCH_BYTES) {
+      const { done, value } = await reader.read()
+      if (done) break
+      chunks.push(value)
+      total += value.byteLength
+    }
+    await reader.cancel().catch(() => {})
+    return new TextDecoder('utf-8', { fatal: false }).decode(Buffer.concat(chunks.map(c => Buffer.from(c))))
+  }
+  throw new Error('Redirecionamentos demais.')
 }
 
 async function extractSource(source: Source): Promise<{ text: string; label: string }> {
@@ -68,12 +113,7 @@ async function extractSource(source: Source): Promise<{ text: string; label: str
   const ctrl = new AbortController()
   const to = setTimeout(() => ctrl.abort(), 15000)
   try {
-    const res = await fetch(u, {
-      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; gabaritoAI/1.0)' },
-      signal: ctrl.signal,
-    })
-    if (!res.ok) throw new Error(`Página respondeu ${res.status}.`)
-    const html = await res.text()
+    const html = await fetchPublicPage(u, ctrl.signal)
     const text = stripHtml(html).slice(0, MAX_SOURCE_CHARS)
     if (text.length < 40) throw new Error('Não consegui extrair texto dessa página.')
     return { text, label: 'página web' }
@@ -137,12 +177,12 @@ export async function POST(req: NextRequest) {
     logger.error('gerar-resumo', 'claude', { err: String(err) })
     const raw = String(err)
     const friendly =
-      /credit balance|billing|insufficient|quota/i.test(raw)
-        ? 'Sem créditos na Anthropic. Adicione créditos em console.anthropic.com → Billing e tente de novo.'
-      : /rate.?limit|overloaded|429|529/i.test(raw)
+      /quota|resource.?exhausted|billing|insufficient/i.test(raw)
+        ? 'Limite gratuito da IA atingido por agora. Aguarde um pouco e tente de novo.'
+      : /rate.?limit|overloaded|429|529|503/i.test(raw)
         ? 'A IA está sobrecarregada no momento. Tente novamente em instantes.'
-      : /api.?key|authentication|401/i.test(raw)
-        ? 'Chave da Anthropic inválida. Verifique a variável ANTHROPIC_API_KEY.'
+      : /api.?key|authentication|401|403/i.test(raw)
+        ? 'Chave da IA inválida ou ausente. Verifique a configuração do servidor.'
         : 'Erro ao gerar resumo. Tente novamente.'
     return NextResponse.json({ error: friendly }, { status: 502 })
   }
