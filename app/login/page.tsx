@@ -325,7 +325,16 @@ export default function LoginPage() {
           </motion.form>
 
           <p className="mt-8 text-center font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-            gabarito_AI · {new Date().getFullYear()}
+            gabarito_AI · ©{new Date().getFullYear()}{' '}
+            <a
+              href="https://cielioqueiroz.github.io/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-bold text-[#A8BCF8] transition-colors hover:text-foreground"
+              title="Portfólio de Cielio Queiroz"
+            >
+              Cielio Queiroz
+            </a>
           </p>
         </div>
       </main>

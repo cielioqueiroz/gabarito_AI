@@ -128,7 +128,7 @@ export default function ShellLayout({ children, title, headerRight }: Props) {
 
         <PwaPrompt />
 
-        {/* Footer — vivo: hairline animada + pulso de status */}
+        {/* Footer — vivo: hairline animada + pulso de status + crédito do autor */}
         <footer className="relative flex-shrink-0 h-10 flex items-center justify-between px-5">
           <div aria-hidden className="divider-live absolute top-0 left-5 right-5" />
           <span className="font-mono text-[10px] font-bold tracking-tight text-muted">
@@ -138,9 +138,15 @@ export default function ShellLayout({ children, title, headerRight }: Props) {
             <span className="h-1.5 w-1.5 rounded-full bg-[#4A72E8] animate-pulse" />
             estudando com IA
           </span>
-          <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-            concursos públicos
-          </span>
+          <a
+            href="https://cielioqueiroz.github.io/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group font-mono text-[10px] tracking-tight text-muted-foreground transition-colors hover:text-foreground"
+            title="Portfólio de Cielio Queiroz"
+          >
+            © {new Date().getFullYear()} <span className="font-bold text-[#A8BCF8] group-hover:text-[#F4F4F0] transition-colors">Cielio Queiroz</span>
+          </a>
         </footer>
       </div>
     </div>

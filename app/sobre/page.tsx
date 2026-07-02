@@ -358,23 +358,32 @@ export default function SobrePage() {
         </section>
       </main>
 
-      {/* ── Footer — hairline viva no lugar da borda dura ── */}
-      <footer className="relative z-10">
-        <div aria-hidden className="divider-live mx-auto max-w-5xl" />
-        <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-3 px-6 py-8 sm:flex-row">
-          <span className="font-mono text-sm font-bold tracking-tight">
-            gabarito<span className="text-[#4A72E8]">_AI</span>
-            <span className="ml-0.5 inline-block h-3 w-1 translate-y-0.5 bg-[#4A72E8] animate-blink" />
-          </span>
-          <p className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-[#6E6E7A]">
+      {/* Respiro para o conteúdo não ficar escondido atrás do footer fixo */}
+      <div aria-hidden className="h-24" />
+
+      {/* ── Footer flutuante — acompanha o scroll, espelha a nav do topo ── */}
+      <footer className="fixed inset-x-0 bottom-4 z-50 px-4">
+        <div className="mx-auto flex h-12 max-w-3xl items-center justify-between gap-3 rounded-full border border-[#26262F] bg-[#17171D]/95 px-5 shadow-[0_16px_40px_-16px_rgba(0,0,0,0.9),inset_0_1px_0_rgba(255,255,255,0.05)] backdrop-blur-sm">
+          <a
+            href="https://cielioqueiroz.github.io/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group flex items-center gap-1.5 text-xs text-[#9C9CA6] transition-colors hover:text-[#F4F4F0]"
+            title="Portfólio de Cielio Queiroz"
+          >
+            <span className="text-[#6E6E7A]">© {new Date().getFullYear()}</span>
+            <span className="font-semibold text-[#A8BCF8] transition-colors group-hover:text-[#F4F4F0]">Cielio Queiroz</span>
+            <span className="hidden sm:inline text-[#6E6E7A]">· Todos os direitos reservados</span>
+          </a>
+          <span className="hidden md:flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-[#6E6E7A]">
             <span className="h-1.5 w-1.5 rounded-full bg-[#4A72E8] animate-pulse" />
-            {new Date().getFullYear()} · MIT · feito para concurseiros
-          </p>
+            feito para concurseiros
+          </span>
           <a
             href="https://github.com/cielioqueiroz/gabarito_AI"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-sm text-[#9C9CA6] transition-all hover:-translate-y-0.5 hover:text-[#F4F4F0]"
+            className="text-xs text-[#9C9CA6] transition-all hover:-translate-y-0.5 hover:text-[#F4F4F0]"
           >
             GitHub ↗
           </a>
