@@ -30,7 +30,7 @@ const ToastContext = createContext<ToastContextValue | null>(null)
 const CONFIG: Record<ToastType, { icon: typeof Info; accent: string; iconColor: string }> = {
   success: { icon: CheckCircle2,  accent: 'bg-emerald-500', iconColor: 'text-emerald-500' },
   error:   { icon: XCircle,       accent: 'bg-red-500',     iconColor: 'text-red-500' },
-  warning: { icon: AlertTriangle, accent: 'bg-amber-500',   iconColor: 'text-amber-500' },
+  warning: { icon: AlertTriangle, accent: 'bg-[#E9C92F]',   iconColor: 'text-[#E9C92F]' },
   info:    { icon: Info,          accent: 'bg-blue-500',    iconColor: 'text-blue-500' },
 }
 

@@ -66,8 +66,8 @@ export default function ConfiguracoesClient({ email, initialName }: Props) {
             <Card>
               <CardHeader>
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center">
-                    <User size={16} className="text-amber-500" />
+                  <div className="w-8 h-8 rounded-lg bg-[#E9C92F]/10 flex items-center justify-center">
+                    <User size={16} className="text-[#E9C92F]" />
                   </div>
                   <div>
                     <CardTitle>Perfil</CardTitle>
@@ -115,8 +115,8 @@ export default function ConfiguracoesClient({ email, initialName }: Props) {
             <Card>
               <CardHeader>
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center">
-                    <Palette size={16} className="text-amber-500" />
+                  <div className="w-8 h-8 rounded-lg bg-[#E9C92F]/10 flex items-center justify-center">
+                    <Palette size={16} className="text-[#E9C92F]" />
                   </div>
                   <div>
                     <CardTitle>Aparência</CardTitle>
@@ -131,8 +131,8 @@ export default function ConfiguracoesClient({ email, initialName }: Props) {
                     onClick={() => theme === 'light' && toggle()}
                     className={`relative rounded-xl border-2 p-4 cursor-pointer transition-all duration-150 text-left ${
                       theme === 'dark'
-                        ? 'border-amber-500 bg-amber-500/5'
-                        : 'border-border hover:border-amber-500/40'
+                        ? 'border-[#E9C92F] bg-[#E9C92F]/5'
+                        : 'border-border hover:border-[#E9C92F]/40'
                     }`}
                   >
                     <div className="w-full aspect-video rounded-lg bg-[#0F1117] mb-3 overflow-hidden p-2">
@@ -145,7 +145,7 @@ export default function ConfiguracoesClient({ email, initialName }: Props) {
                       <span className="text-sm font-medium text-foreground">Modo escuro</span>
                     </div>
                     {theme === 'dark' && (
-                      <div className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full bg-amber-500 flex items-center justify-center">
+                      <div className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full bg-[#E9C92F] flex items-center justify-center">
                         <Check size={11} className="text-white" />
                       </div>
                     )}
@@ -156,8 +156,8 @@ export default function ConfiguracoesClient({ email, initialName }: Props) {
                     onClick={() => theme === 'dark' && toggle()}
                     className={`relative rounded-xl border-2 p-4 cursor-pointer transition-all duration-150 text-left ${
                       theme === 'light'
-                        ? 'border-amber-500 bg-amber-500/5'
-                        : 'border-border hover:border-amber-500/40'
+                        ? 'border-[#E9C92F] bg-[#E9C92F]/5'
+                        : 'border-border hover:border-[#E9C92F]/40'
                     }`}
                   >
                     <div className="w-full aspect-video rounded-lg bg-white mb-3 overflow-hidden p-2 border border-slate-100">
@@ -170,7 +170,7 @@ export default function ConfiguracoesClient({ email, initialName }: Props) {
                       <span className="text-sm font-medium text-foreground">Modo claro</span>
                     </div>
                     {theme === 'light' && (
-                      <div className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full bg-amber-500 flex items-center justify-center">
+                      <div className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full bg-[#E9C92F] flex items-center justify-center">
                         <Check size={11} className="text-white" />
                       </div>
                     )}

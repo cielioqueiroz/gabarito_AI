@@ -148,7 +148,7 @@ export default function FlashcardStudy({ cards, discNameOf, onAnswer, onExit, on
           </span>
           <div className="flex-1 bg-elevated rounded-full h-1 overflow-hidden">
             <motion.div
-              className="h-full bg-amber-500 rounded-full"
+              className="h-full bg-[#E9C92F] rounded-full"
               initial={{ width: 0 }}
               animate={{ width: `${progress}%` }}
               transition={{ duration: reduce ? 0.1 : 0.4, ease: 'easeOut' }}

@@ -16,24 +16,25 @@
   --color-muted-foreground: var(--c-dimmed);
 }
 
-/* ── Design tokens — light default, dark override ── */
+/* ── Design tokens — light default, dark override ──
+   Identidade "Mesa de estudo": quadro viridian escuro + marca-texto amarelo. */
 :root {
-  --c-bg:       #F8FAFC;
+  --c-bg:       #F7F5EC;   /* papel sulfite */
   --c-surface:  #FFFFFF;
-  --c-elevated: #F1F5F9;
-  --c-border:   #E2E8F0;
-  --c-text:     #0F172A;
-  --c-muted:    #64748B;
-  --c-dimmed:   #94A3B8;
+  --c-elevated: #EFECDF;
+  --c-border:   #DDD8C6;
+  --c-text:     #1C221D;   /* tinta */
+  --c-muted:    #5B6459;
+  --c-dimmed:   #8B948A;
 }
 html.dark {
-  --c-bg:       #0E1B33;   /* navy profundo */
-  --c-surface:  #16274A;   /* superfície sólida (sem glass) */
-  --c-elevated: #1E3358;   /* elevado */
-  --c-border:   #2A3C60;   /* borda steel navy */
-  --c-text:     #F4F1E9;   /* off-white quente — títulos */
-  --c-muted:    #C4CAD6;   /* descrições */
-  --c-dimmed:   #8592AB;   /* metadados */
+  --c-bg:       #0D1512;   /* quadro viridian profundo */
+  --c-surface:  #14201B;   /* superfície sólida */
+  --c-elevated: #1B2B24;   /* elevado */
+  --c-border:   #293D33;   /* borda */
+  --c-text:     #EFEDE3;   /* giz — títulos */
+  --c-muted:    #C2CBBE;   /* descrições */
+  --c-dimmed:   #7F8D82;   /* metadados */
 }
 
 /* ── Global cursor ── */
@@ -45,18 +46,18 @@ select, input[type="checkbox"], input[type="radio"] {
 /* ── Scrollbar ── */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #2A3C60; border-radius: 99px; }
-::-webkit-scrollbar-thumb:hover { background: #3A4E78; }
+::-webkit-scrollbar-thumb { background: #293D33; border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: #3B5547; }
 
-/* ── Focus ring (gold) ── */
+/* ── Focus ring (marca-texto) ── */
 *:focus-visible {
-  outline: 2px solid #E8A93C;
+  outline: 2px solid #F2D53C;
   outline-offset: 2px;
 }
 
-/* ── Display serif (Fraunces) for headings ── */
-.font-display { font-family: var(--font-display), Georgia, serif; }
-h1, h2 { font-family: var(--font-display), Georgia, serif; }
+/* ── Display (Bricolage Grotesque) for headings ── */
+.font-display { font-family: var(--font-display), system-ui, sans-serif; }
+h1, h2 { font-family: var(--font-display), system-ui, sans-serif; }
 
 /* ── Blink cursor ── */
 @keyframes blink {
@@ -76,19 +77,19 @@ h1, h2 { font-family: var(--font-display), Georgia, serif; }
   100% { background-position:  200% 0; }
 }
 .animate-shimmer {
-  background: linear-gradient(90deg, rgba(30,41,59,0.5) 25%, rgba(51,65,85,0.6) 50%, rgba(30,41,59,0.5) 75%);
+  background: linear-gradient(90deg, rgba(27,43,36,0.5) 25%, rgba(41,61,51,0.6) 50%, rgba(27,43,36,0.5) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite linear;
 }
 
-/* ── Glow pulse (gold) ── */
+/* ── Glow pulse (marca-texto) ── */
 @keyframes glow-pulse {
-  0%, 100% { box-shadow: 0 0 20px rgba(232,169,60,0.18); }
-  50%       { box-shadow: 0 0 44px rgba(232,169,60,0.34); }
+  0%, 100% { box-shadow: 0 0 20px rgba(242,213,60,0.16); }
+  50%       { box-shadow: 0 0 44px rgba(242,213,60,0.30); }
 }
 .animate-glow { animation: glow-pulse 3s ease-in-out infinite; }
 
-/* ── Ambient light blobs (subtle, gold + steel) ── */
+/* ── Ambient light blobs (subtle, marca-texto + viridian) ── */
 .bg-blobs::before,
 .bg-blobs::after {
   content: '';
@@ -98,8 +99,8 @@ h1, h2 { font-family: var(--font-display), Georgia, serif; }
   z-index: 0;
   pointer-events: none;
 }
-.bg-blobs::before { top: -180px; left: -120px; width: 520px; height: 520px; background: rgba(232,169,60,0.10); }
-.bg-blobs::after  { bottom: -220px; right: -140px; width: 560px; height: 560px; background: rgba(120,140,200,0.10); }
+.bg-blobs::before { top: -180px; left: -120px; width: 520px; height: 520px; background: rgba(242,213,60,0.07); }
+.bg-blobs::after  { bottom: -220px; right: -140px; width: 560px; height: 560px; background: rgba(88,142,110,0.10); }
 
 /* ── Landing entrance (CSS-only, staggered via inline animation-delay) ── */
 @keyframes fade-up {
@@ -120,13 +121,25 @@ h1, h2 { font-family: var(--font-display), Georgia, serif; }
   .float-y { animation: none; }
 }
 
-/* ── Brand gradient text (warm gold) ── */
+/* ── Brand gradient text (marca-texto) ── */
 .text-gradient-brand {
-  background: linear-gradient(120deg, #F2CE82 0%, #E8A93C 55%, #C88A2A 100%);
+  background: linear-gradient(120deg, #FFF3A0 0%, #F2D53C 55%, #C9A81D 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   color: transparent;
+}
+
+/* ── Marca-texto: grifo amarelo atrás de palavras-chave (assinatura da marca).
+   box-decoration-break: clone mantém o grifo íntegro quando quebra de linha. ── */
+.hl-mark {
+  background: linear-gradient(100deg, #F7DC4B 0%, #EFCF2E 100%);
+  color: #171B10;
+  padding: 0.04em 0.16em;
+  margin: 0 -0.04em;
+  border-radius: 0.14em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
 }
 
 /* ── Three.js canvas ── */

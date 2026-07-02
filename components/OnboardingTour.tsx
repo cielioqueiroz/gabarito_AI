@@ -13,19 +13,19 @@ const slides = [
     icon: Upload,
     title: 'Suba o edital',
     description: 'Cole ou envie o PDF do edital. A IA extrai automaticamente disciplinas e tópicos.',
-    accent: 'text-amber-500 bg-amber-500/10 border-amber-500/20',
+    accent: 'text-[#E9C92F] bg-[#E9C92F]/10 border-[#E9C92F]/20',
   },
   {
     icon: Brain,
     title: 'Estude com flashcards',
     description: 'Gere flashcards por disciplina. O sistema Leitner agenda as revisões para você fixar o conteúdo.',
-    accent: 'text-amber-500 bg-amber-500/10 border-amber-500/20',
+    accent: 'text-[#E9C92F] bg-[#E9C92F]/10 border-[#E9C92F]/20',
   },
   {
     icon: CalendarCheck,
     title: 'Revise no ritmo certo',
     description: 'Toda manhã confira "Revisão do Dia" e responda os cards vencidos. Progresso e estatísticas em tempo real.',
-    accent: 'text-amber-500 bg-amber-500/10 border-amber-500/20',
+    accent: 'text-[#E9C92F] bg-[#E9C92F]/10 border-[#E9C92F]/20',
   },
 ]
 
@@ -75,7 +75,7 @@ export function OnboardingTour() {
               key={i}
               onClick={() => setStep(i)}
               aria-label={`Ir para slide ${i + 1}`}
-              className={`w-1.5 h-1.5 rounded-full cursor-pointer transition-all ${i === step ? 'w-4 bg-amber-500' : 'bg-border hover:bg-muted-foreground'}`}
+              className={`w-1.5 h-1.5 rounded-full cursor-pointer transition-all ${i === step ? 'w-4 bg-[#E9C92F]' : 'bg-border hover:bg-muted-foreground'}`}
             />
           ))}
         </div>

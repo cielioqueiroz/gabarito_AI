@@ -1,18 +1,18 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#1C1F2E"/>
-      <stop offset="100%" stop-color="#0F1117"/>
+      <stop offset="0%" stop-color="#1B2B24"/>
+      <stop offset="100%" stop-color="#0D1512"/>
     </linearGradient>
     <linearGradient id="check" x1="16" y1="20" x2="48" y2="46" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#60A5FA"/>
-      <stop offset="100%" stop-color="#2563EB"/>
+      <stop offset="0%" stop-color="#F8E97E"/>
+      <stop offset="100%" stop-color="#E9C92F"/>
     </linearGradient>
   </defs>
 
   <!-- rounded console tile -->
   <rect x="1" y="1" width="62" height="62" rx="15" fill="url(#bg)"/>
-  <rect x="1.5" y="1.5" width="61" height="61" rx="14.5" fill="none" stroke="#2A2D3E" stroke-width="1"/>
+  <rect x="1.5" y="1.5" width="61" height="61" rx="14.5" fill="none" stroke="#293D33" stroke-width="1"/>
 
   <!-- gabarito checkmark (the answer key) -->
   <path d="M18 33.5 L28 43 L47 21.5"
@@ -20,5 +20,5 @@
         stroke-linecap="round" stroke-linejoin="round" fill="none"/>
 
   <!-- terminal cursor accent (the _AI of the wordmark) -->
-  <rect x="18" y="49" width="16" height="3.5" rx="1.75" fill="#3B82F6" fill-opacity="0.9"/>
+  <rect x="18" y="49" width="16" height="3.5" rx="1.75" fill="#F2D53C" fill-opacity="0.9"/>
 </svg>

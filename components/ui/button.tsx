@@ -4,17 +4,17 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-semibold ring-offset-background transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 cursor-pointer active:scale-[0.98] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
+  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-semibold ring-offset-background transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F2D53C] focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 cursor-pointer active:scale-[0.98] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
   {
     variants: {
       variant: {
-        default:     'bg-[#E8A93C] text-[#0E1B33] font-bold hover:bg-[#F0BA5A] shadow-sm shadow-amber-900/30',
+        default:     'bg-[#F2D53C] text-[#171B10] font-bold hover:bg-[#FFE95C] shadow-[inset_0_1px_0_rgba(255,255,255,0.35),0_2px_10px_-2px_rgba(0,0,0,0.5)] hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.35),0_4px_16px_-2px_rgba(242,213,60,0.35)]',
         destructive: 'bg-rose-500/10 text-rose-400 border border-rose-500/20 hover:bg-rose-500/20',
-        outline:     'border border-border bg-transparent text-muted hover:bg-elevated hover:text-foreground',
-        secondary:   'bg-elevated text-muted hover:bg-border hover:text-foreground',
+        outline:     'border border-border bg-transparent text-muted hover:bg-elevated hover:text-foreground hover:border-[#3B5547]',
+        secondary:   'bg-elevated text-muted hover:bg-border hover:text-foreground shadow-[0_2px_8px_-4px_rgba(0,0,0,0.5)]',
         ghost:       'text-muted hover:bg-elevated hover:text-foreground',
-        link:        'text-amber-400 underline-offset-4 hover:underline hover:text-amber-300',
-        amber:       'bg-[#E8A93C] text-[#0E1B33] font-bold hover:bg-[#F0BA5A] shadow-sm',
+        link:        'text-[#F2D53C] underline-offset-4 hover:underline hover:text-[#F8E97E]',
+        amber:       'bg-[#F2D53C] text-[#171B10] font-bold hover:bg-[#FFE95C] shadow-[inset_0_1px_0_rgba(255,255,255,0.35),0_2px_10px_-2px_rgba(0,0,0,0.5)]',
       },
       size: {
         default: 'h-9 px-4 py-2',

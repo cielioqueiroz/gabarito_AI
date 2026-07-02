@@ -73,7 +73,7 @@ export function Dialog({ open, onClose, title, description, children, className,
               <button
                 onClick={onClose}
                 aria-label="Fechar"
-                className="absolute top-3 right-3 p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-elevated cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+                className="absolute top-3 right-3 p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-elevated cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E9C92F]"
               >
                 <X size={14} />
               </button>

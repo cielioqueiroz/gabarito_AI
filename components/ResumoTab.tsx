@@ -135,7 +135,7 @@ export default function ResumoTab({ disciplinas, resumos, topicos = [] }: Props)
                           onClick={() => setOpenId(open ? null : r.id)}
                           className="flex w-full items-center gap-2.5 px-3 py-2.5 text-left transition-colors hover:bg-elevated/70 cursor-pointer"
                         >
-                          <FileText size={15} className="flex-shrink-0 text-amber-400" />
+                          <FileText size={15} className="flex-shrink-0 text-[#F2D53C]" />
                           <span className="min-w-0 flex-1 truncate text-sm font-medium text-foreground">{r.titulo}</span>
                           <ChevronDown size={15} className={`flex-shrink-0 text-muted-foreground transition-transform ${open ? 'rotate-180' : ''}`} />
                         </button>

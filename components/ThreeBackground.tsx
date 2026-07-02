@@ -2,13 +2,32 @@
 
 import { useEffect, useRef } from 'react'
 
-export default function ThreeBackground() {
+interface Props {
+  /** Cor dos pontos (hex numérico). Padrão: marca-texto. */
+  pointColor?: number
+  /** Cores dos orbes ambientes. */
+  orbColorA?: number
+  orbColorB?: number
+  /** Opacidade dos pontos (0–1). */
+  pointOpacity?: number
+  className?: string
+}
+
+export default function ThreeBackground({
+  pointColor  = 0xf2d53c,
+  orbColorA   = 0x3b5547,
+  orbColorB   = 0xf2d53c,
+  pointOpacity = 0.5,
+  className,
+}: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
     let animId: number
     const canvas = canvasRef.current
     if (!canvas) return
+    // Sem animação para quem pediu para reduzir movimento.
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
     let THREE: typeof import('three')
 
@@ -39,12 +58,27 @@ export default function ThreeBackground() {
       geo.setAttribute('position', new THREE.BufferAttribute(positions, 3))
       geo.setAttribute('size', new THREE.BufferAttribute(sizes, 1))
 
+      // Sprite circular com borda suave — sem ele os pontos rendem
+      // como quadrados, que viram blocos ao chegar perto da câmera.
+      const spriteCanvas = document.createElement('canvas')
+      spriteCanvas.width = spriteCanvas.height = 64
+      const ctx = spriteCanvas.getContext('2d')!
+      const grad = ctx.createRadialGradient(32, 32, 0, 32, 32, 32)
+      grad.addColorStop(0, 'rgba(255,255,255,1)')
+      grad.addColorStop(0.4, 'rgba(255,255,255,0.8)')
+      grad.addColorStop(1, 'rgba(255,255,255,0)')
+      ctx.fillStyle = grad
+      ctx.fillRect(0, 0, 64, 64)
+      const sprite = new THREE.CanvasTexture(spriteCanvas)
+
       const mat = new THREE.PointsMaterial({
-        color: 0x2563eb,
-        size: 0.04,
+        color: pointColor,
+        size: 0.05,
+        map: sprite,
         transparent: true,
-        opacity: 0.6,
+        opacity: pointOpacity,
         sizeAttenuation: true,
+        depthWrite: false,
       })
 
       const points = new THREE.Points(geo, mat)
@@ -52,24 +86,34 @@ export default function ThreeBackground() {
 
       // Ambient floating orbs
       const orbGeo = new THREE.SphereGeometry(1.4, 32, 32)
-      const orbMat = new THREE.MeshBasicMaterial({ color: 0x2563eb, transparent: true, opacity: 0.04, wireframe: false })
+      const orbMat = new THREE.MeshBasicMaterial({ color: orbColorA, transparent: true, opacity: 0.05 })
       const orb1   = new THREE.Mesh(orbGeo, orbMat)
       orb1.position.set(-3, 1, -2)
       scene.add(orb1)
 
-      const orb2 = new THREE.Mesh(
-        new THREE.SphereGeometry(0.9, 32, 32),
-        new THREE.MeshBasicMaterial({ color: 0x6366f1, transparent: true, opacity: 0.05 })
-      )
+      const orb2Geo = new THREE.SphereGeometry(0.9, 32, 32)
+      const orb2Mat = new THREE.MeshBasicMaterial({ color: orbColorB, transparent: true, opacity: 0.04 })
+      const orb2 = new THREE.Mesh(orb2Geo, orb2Mat)
       orb2.position.set(3, -1.5, -1)
       scene.add(orb2)
+
+      // Parallax suave com o mouse
+      let targetX = 0
+      let targetY = 0
+      function onPointer(e: PointerEvent) {
+        targetX = (e.clientX / window.innerWidth - 0.5) * 0.4
+        targetY = (e.clientY / window.innerHeight - 0.5) * 0.3
+      }
+      window.addEventListener('pointermove', onPointer, { passive: true })
 
       let t = 0
       function animate() {
         animId = requestAnimationFrame(animate)
         t += 0.003
-        points.rotation.y = t * 0.08
-        points.rotation.x = t * 0.04
+        points.rotation.y = t * 0.08 + targetX * 0.15
+        points.rotation.x = t * 0.04 + targetY * 0.15
+        camera.position.x += (targetX - camera.position.x) * 0.03
+        camera.position.y += (-targetY - camera.position.y) * 0.03
         orb1.position.y = 1 + Math.sin(t * 0.8) * 0.3
         orb2.position.y = -1.5 + Math.cos(t * 0.6) * 0.25
         renderer.render(scene, camera)
@@ -86,11 +130,15 @@ export default function ThreeBackground() {
       return () => {
         cancelAnimationFrame(animId)
         window.removeEventListener('resize', onResize)
+        window.removeEventListener('pointermove', onPointer)
         renderer.dispose()
         geo.dispose()
         mat.dispose()
+        sprite.dispose()
         orbGeo.dispose()
         orbMat.dispose()
+        orb2Geo.dispose()
+        orb2Mat.dispose()
       }
     }
 
@@ -101,12 +149,12 @@ export default function ThreeBackground() {
       cancelAnimationFrame(animId)
       cleanup?.()
     }
-  }, [])
+  }, [pointColor, orbColorA, orbColorB, pointOpacity])
 
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 w-full h-full pointer-events-none z-0"
+      className={className ?? 'fixed inset-0 w-full h-full pointer-events-none z-0'}
     />
   )
 }

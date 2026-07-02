@@ -9,7 +9,7 @@ import { createClient } from '@/lib/supabase/client'
 import { cn } from '@/lib/utils'
 import {
   LayoutDashboard, BookOpen, CalendarCheck,
-  BarChart3, Settings, Sun, Moon, LogOut, GraduationCap,
+  BarChart3, Settings, Sun, Moon, LogOut, Highlighter,
 } from 'lucide-react'
 
 interface Props { onMobileClose?: () => void }
@@ -71,20 +71,21 @@ export default function Sidebar({ onMobileClose }: Props) {
   }
 
   return (
-    <aside className="flex flex-col h-full w-60 bg-[#0B1526] border-r border-border">
+    <aside className="flex flex-col h-full w-60 bg-gradient-to-b from-[#0A110D] to-[#0D1713] border-r border-border shadow-[8px_0_24px_-18px_rgba(0,0,0,0.9)]">
       {/* Logo */}
       <div className="h-14 flex items-center px-5 border-b border-border flex-shrink-0">
         <Link href="/" className="flex items-center gap-2 font-mono text-base font-bold text-foreground tracking-tight">
-          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-amber-500 to-amber-500 shadow-sm shadow-amber-500/25">
-            <GraduationCap size={15} className="text-white" />
+          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#F2D53C] shadow-[inset_0_1px_0_rgba(255,255,255,0.4),0_2px_8px_-2px_rgba(242,213,60,0.5)]">
+            <Highlighter size={14} className="text-[#171B10]" />
           </span>
-          gabarito<span className="text-amber-400">_AI</span>
-          <span className="inline-block w-1.5 h-3.5 bg-amber-400 ml-0.5 align-middle animate-blink" />
+          gabarito<span className="text-[#F2D53C]">_AI</span>
+          <span className="inline-block w-1.5 h-3.5 bg-[#F2D53C] ml-0.5 align-middle animate-blink" />
         </Link>
       </div>
 
       {/* Primary nav */}
       <nav className="flex-1 py-4 px-3 space-y-0.5 overflow-y-auto">
+        <p className="px-3 pb-2 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Estudo</p>
         {navItems.map((item) => {
           const active = isActive(item.href)
           const Icon   = item.icon
@@ -96,14 +97,14 @@ export default function Sidebar({ onMobileClose }: Props) {
               className={cn(
                 'group relative flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150',
                 active
-                  ? 'text-amber-400 bg-gradient-to-r from-amber-500/12 to-amber-500/5'
-                  : 'text-muted hover:text-foreground hover:bg-elevated'
+                  ? 'text-foreground bg-[#F2D53C]/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]'
+                  : 'text-muted hover:text-foreground hover:bg-elevated hover:translate-x-0.5'
               )}
             >
               {active && (
                 <motion.div
                   layoutId="sidebar-active"
-                  className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-6 bg-amber-400 rounded-full"
+                  className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-6 bg-[#F2D53C] rounded-full shadow-[0_0_10px_rgba(242,213,60,0.6)]"
                   transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                 />
               )}
@@ -111,7 +112,7 @@ export default function Sidebar({ onMobileClose }: Props) {
                 size={16}
                 className={cn(
                   'flex-shrink-0 transition-colors',
-                  active ? 'text-amber-400' : 'text-muted-foreground group-hover:text-muted'
+                  active ? 'text-[#F2D53C]' : 'text-muted-foreground group-hover:text-muted'
                 )}
               />
               <motion.span
@@ -122,7 +123,7 @@ export default function Sidebar({ onMobileClose }: Props) {
                 {item.label}
               </motion.span>
               {item.badge && badges[item.badge] > 0 && (
-                <span className="ml-auto font-mono text-[10px] px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-500 border border-amber-500/30" aria-label={`${badges[item.badge]} pendentes`}>
+                <span className="ml-auto font-mono text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-[#F2D53C] text-[#171B10] shadow-[0_0_10px_rgba(242,213,60,0.35)]" aria-label={`${badges[item.badge]} pendentes`}>
                   {badges[item.badge]}
                 </span>
               )}
@@ -139,8 +140,8 @@ export default function Sidebar({ onMobileClose }: Props) {
         >
           <motion.div animate={{ rotate: theme === 'dark' ? 0 : 180 }} transition={{ duration: 0.3 }}>
             {theme === 'dark'
-              ? <Sun  size={16} className="flex-shrink-0 text-muted-foreground group-hover:text-amber-500 transition-colors" />
-              : <Moon size={16} className="flex-shrink-0 text-muted-foreground group-hover:text-amber-500 transition-colors" />
+              ? <Sun  size={16} className="flex-shrink-0 text-muted-foreground group-hover:text-[#E9C92F] transition-colors" />
+              : <Moon size={16} className="flex-shrink-0 text-muted-foreground group-hover:text-[#E9C92F] transition-colors" />
             }
           </motion.div>
           {theme === 'dark' ? 'Modo claro' : 'Modo escuro'}

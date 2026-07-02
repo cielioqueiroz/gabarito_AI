@@ -79,7 +79,7 @@ export function PlanoStreamPreview({ concursoId, texto, onComplete, onCancel }: 
         <div className="flex items-start justify-between gap-3">
           <div>
             <h3 className="font-semibold text-foreground text-sm flex items-center gap-2">
-              <Sparkles size={14} className="text-amber-500" />
+              <Sparkles size={14} className="text-[#E9C92F]" />
               Preview do plano (streaming)
             </h3>
             <p className="text-xs text-muted-foreground mt-0.5">Veja disciplinas aparecerem em tempo real. Confirme para salvar.</p>
@@ -112,7 +112,7 @@ export function PlanoStreamPreview({ concursoId, texto, onComplete, onCancel }: 
             </AnimatePresence>
             {running && (
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+                <span className="w-2 h-2 rounded-full bg-[#E9C92F] animate-pulse" />
                 gerando…
               </div>
             )}
