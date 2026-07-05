@@ -78,7 +78,12 @@ export default function HomeClient({ stats, userEmail, userName }: Props) {
         const res  = await fetch('/api/criar-com-edital', { method: 'POST', body: fd })
         const data = await res.json()
         if (res.status === 429) throw new Error('Muitas requisições. Aguarde alguns segundos.')
-        if (!res.ok) throw new Error(data.error ?? 'Erro ao criar concurso')
+        if (!res.ok) {
+          const err = new Error(data.error ?? 'Erro ao criar concurso')
+          if (data.detail) (err as Error & { detail?: string }).detail = data.detail
+          if (data.hint)   (err as Error & { hint?: string }).hint = data.hint
+          throw err
+        }
         toast.success('Concurso criado!', 'A IA organizou o edital em disciplinas.')
         resetForm()
         router.push(`/concurso/${data.id}`)
@@ -95,7 +100,10 @@ export default function HomeClient({ stats, userEmail, userName }: Props) {
         resetForm(); router.refresh()
       }
     } catch (err: unknown) {
-      toast.error('Erro ao criar concurso', err instanceof Error ? err.message : 'Tente novamente.')
+      const e = err as (Error & { detail?: string; hint?: string })
+      const title = e?.message ?? 'Erro ao criar concurso'
+      const desc = e?.hint ?? e?.detail ?? 'Tente novamente.'
+      toast.error(title, desc)
     }
     setLoading(false); setLoadingMsg('')
   }
