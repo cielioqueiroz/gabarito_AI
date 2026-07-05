@@ -75,9 +75,15 @@ create policy "topicos: own rows" on topicos
 
 create index if not exists topicos_disciplina_id_idx on topicos (disciplina_id);
 
--- Track when tópico was studied for analytics
+-- Track when tópico was studied for analytics.
+-- security definer + fixed empty search_path avoids the mutable-search-path
+-- advisory warning (function can't be hijacked via a rogue schema on the path).
 create or replace function set_topico_estudado_em()
-returns trigger language plpgsql as $$
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
 begin
   if new.estudado is true and (old.estudado is distinct from true) then
     new.estudado_em := now();
