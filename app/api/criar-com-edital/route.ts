@@ -29,11 +29,16 @@ const PLAN_SCHEMA = {
 async function extractText(file: File): Promise<string> {
   if (file.type === 'text/plain' || file.name.endsWith('.txt')) return file.text()
   if (file.type === 'application/pdf' || file.name.endsWith('.pdf')) {
-    const buffer = Buffer.from(await file.arrayBuffer())
-    const pdfModule = await import('pdf-parse')
-    const pdfParse = (pdfModule as unknown as { default: (b: Buffer) => Promise<{ text: string }> }).default ?? pdfModule
-    const data = await pdfParse(buffer)
-    return data.text
+    // pdf-parse v2 exposes a class; construct with the raw bytes and call getText().
+    const { PDFParse } = await import('pdf-parse')
+    const data = new Uint8Array(await file.arrayBuffer())
+    const parser = new PDFParse({ data })
+    try {
+      const result = await parser.getText()
+      return result.text
+    } finally {
+      await parser.destroy().catch(() => {})
+    }
   }
   throw new Error('Formato não suportado. Use PDF ou TXT.')
 }
@@ -71,8 +76,13 @@ export async function POST(req: NextRequest) {
     try {
       texto = (await extractText(file)).trim()
     } catch (err) {
-      logger.error('criar-edital', 'extract', { err: String(err) })
-      return NextResponse.json({ error: err instanceof Error ? err.message : 'Erro ao ler arquivo' }, { status: 400 })
+      const msg = err instanceof Error ? err.message : String(err)
+      logger.error('criar-edital', 'extract', { err: msg, fileName: file.name, fileType: file.type, fileSize: file.size })
+      return NextResponse.json({
+        error: 'Falha ao extrair texto do arquivo',
+        detail: msg,
+        hint: 'Verifique se o PDF não está protegido por senha ou se é composto apenas de imagens (PDFs escaneados sem OCR não têm texto).',
+      }, { status: 400 })
     }
   }
 
