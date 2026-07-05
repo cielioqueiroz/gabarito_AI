@@ -97,8 +97,16 @@ export async function POST(req: NextRequest) {
         user: `Organize o edital abaixo em disciplinas e tópicos.\n\n${wrapEdital(texto)}`,
       })
     } catch (err) {
-      logger.error('criar-edital', 'claude', { err: String(err) })
-      return NextResponse.json({ error: 'Erro ao gerar plano com IA' }, { status: 502 })
+      const msg = err instanceof Error ? err.message : String(err)
+      logger.error('criar-edital', 'gemini', { err: msg })
+      const missingKey = /Missing required env: GEMINI_API_KEY/i.test(msg)
+      return NextResponse.json({
+        error: 'Erro ao gerar plano com IA',
+        detail: msg,
+        hint: missingKey
+          ? 'A variável GEMINI_API_KEY não está configurada no ambiente (Vercel → Settings → Environment Variables). Adicione-a e faça um redeploy.'
+          : 'Verifique a chave da IA e tente novamente em alguns segundos.',
+      }, { status: 502 })
     }
   }
 
