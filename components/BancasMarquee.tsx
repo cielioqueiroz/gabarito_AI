@@ -61,10 +61,6 @@ export default function BancasMarquee() {
           </div>
         </div>
       </div>
-
-      <p className="mt-6 text-center font-mono text-[9px] tracking-wide text-[#6E6E7A]/70">
-        Logos de FGV e Cesgranrio via Wikimedia Commons (CC BY-SA). Marcas de seus respectivos titulares.
-      </p>
     </section>
   )
 }
