@@ -24,7 +24,7 @@ const bancas: Banca[] = [
 
 function Item({ b }: { b: Banca }) {
   return (
-    <span className="group inline-flex flex-shrink-0 items-center gap-2.5 rounded-2xl border border-white/[0.06] bg-white/[0.02] px-6 py-3 transition-all duration-300 hover:-translate-y-0.5 hover:border-white/15 hover:bg-white/[0.05]">
+    <span className="group inline-flex flex-shrink-0 items-center gap-2.5 rounded-2xl border border-black/[0.07] bg-black/[0.02] dark:border-white/[0.06] dark:bg-white/[0.02] px-6 py-3 transition-all duration-300 hover:-translate-y-0.5 hover:border-black/15 dark:hover:border-white/15 hover:bg-black/[0.04] dark:hover:bg-white/[0.05]">
       <span
         aria-hidden
         className="h-1.5 w-1.5 flex-shrink-0 rounded-full opacity-60 transition-opacity duration-300 group-hover:opacity-100"

@@ -13,6 +13,7 @@ import ConcursoCard from './ConcursoCard'
 import ShellLayout from './ShellLayout'
 import { OnboardingTour } from './OnboardingTour'
 import { EmptyIllustration } from './ui/EmptyIllustration'
+import BancasMarquee from './BancasMarquee'
 import type { Concurso } from '@/types'
 
 interface ConcursoStat {
@@ -335,6 +336,11 @@ export default function HomeClient({ stats, userEmail, userName }: Props) {
             ))}
           </motion.div>
         )}
+
+        {/* Bancas cobertas — carrossel infinito */}
+        <div className="mt-10 border-t border-border/60 pt-2">
+          <BancasMarquee />
+        </div>
       </div>
       <OnboardingTour />
     </ShellLayout>
