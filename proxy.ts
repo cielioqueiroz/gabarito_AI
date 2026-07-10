@@ -52,6 +52,6 @@ export const config = {
   // manifest, social/OG images). Without this, crawlers hitting /opengraph-image
   // get bounced to /login and link previews break.
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|icon.svg|apple-icon|manifest.json|opengraph-image|twitter-image|sitemap.xml|robots.txt).*)',
+    '/((?!_next/static|_next/image|favicon.ico|icon.svg|apple-icon|manifest.json|opengraph-image|twitter-image|sitemap.xml|robots.txt|bancas/).*)',
   ],
 }

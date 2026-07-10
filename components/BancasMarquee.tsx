@@ -1,48 +1,41 @@
-/* Carrossel infinito com as principais bancas de concurso do Brasil.
-   Cada banca aparece com a cor da sua identidade (o "estilo original"),
-   discreta em repouso e acesa no hover. Puro CSS (ver globals.css:
-   .marquee-track / .card-interactive) — sem JS, roda como Server Component. */
+/* Carrossel infinito com as bancas cujos logos OFICIAIS temos em arquivo
+   (public/bancas). Cada logo vai num "chip" branco uniforme, para que marcas
+   com fundo branco ou transparente fiquem legíveis tanto no tema claro quanto
+   no escuro. Puro CSS (globals.css: .marquee-track) — roda como Server Component.
 
-type Banca = { nome: string; cor: string; peso?: string; tracking?: string; italic?: boolean }
+   Créditos: FGV e Cesgranrio via Wikimedia Commons (CC BY-SA). Cebraspe e IBFC
+   dos sites oficiais. Todas as marcas pertencem aos seus respectivos titulares
+   e aparecem aqui apenas como referência às bancas cobertas pelo app. */
+
+type Banca = { nome: string; logo: string; alt: string }
 
 const bancas: Banca[] = [
-  { nome: 'Cebraspe',   cor: '#1FC0AE', peso: 'font-extrabold', tracking: 'tracking-tight' },
-  { nome: 'FGV',        cor: '#5B93F7', peso: 'font-black',      tracking: 'tracking-widest' },
-  { nome: 'FCC',        cor: '#6AA5F2', peso: 'font-bold',       tracking: 'tracking-wide' },
-  { nome: 'VUNESP',     cor: '#1FBFB4', peso: 'font-bold',       tracking: 'tracking-[0.2em]' },
-  { nome: 'Cesgranrio', cor: '#F26A79', peso: 'font-semibold',   tracking: 'tracking-tight' },
-  { nome: 'IBFC',       cor: '#6E88F5', peso: 'font-extrabold',  tracking: 'tracking-widest' },
-  { nome: 'Quadrix',    cor: '#F59B3C', peso: 'font-bold',       tracking: 'tracking-tight', italic: true },
-  { nome: 'IADES',      cor: '#4FB0F0', peso: 'font-semibold',   tracking: 'tracking-wide' },
-  { nome: 'AOCP',       cor: '#F26670', peso: 'font-black',      tracking: 'tracking-[0.18em]' },
-  { nome: 'Consulplan', cor: '#46D089', peso: 'font-semibold',   tracking: 'tracking-tight' },
-  { nome: 'FUNDATEC',   cor: '#5A93E0', peso: 'font-bold',       tracking: 'tracking-wide' },
-  { nome: 'IDECAN',     cor: '#57D577', peso: 'font-extrabold',  tracking: 'tracking-tight' },
-  { nome: 'FEPESE',     cor: '#7EA6F5', peso: 'font-semibold',   tracking: 'tracking-widest' },
-  { nome: 'FUNCAB',     cor: '#F5B24E', peso: 'font-bold',       tracking: 'tracking-tight' },
+  { nome: 'Cebraspe',   logo: '/bancas/cebraspe.png',   alt: 'Cebraspe' },
+  { nome: 'FGV',        logo: '/bancas/fgv.png',        alt: 'Fundação Getulio Vargas (FGV)' },
+  { nome: 'Cesgranrio', logo: '/bancas/cesgranrio.png', alt: 'Cesgranrio' },
+  { nome: 'IBFC',       logo: '/bancas/ibfc.png',       alt: 'IBFC' },
 ]
 
-function Item({ b }: { b: Banca }) {
+// Sequência longa o bastante para o loop -50% cobrir a viewport sem falhas.
+const seq = Array(3).fill(bancas).flat()
+
+function Chip({ b }: { b: Banca }) {
   return (
-    <span className="group inline-flex flex-shrink-0 items-center gap-2.5 rounded-2xl border border-black/[0.07] bg-black/[0.02] dark:border-white/[0.06] dark:bg-white/[0.02] px-6 py-3 transition-all duration-300 hover:-translate-y-0.5 hover:border-black/15 dark:hover:border-white/15 hover:bg-black/[0.04] dark:hover:bg-white/[0.05]">
-      <span
-        aria-hidden
-        className="h-1.5 w-1.5 flex-shrink-0 rounded-full opacity-60 transition-opacity duration-300 group-hover:opacity-100"
-        style={{ background: b.cor, boxShadow: `0 0 10px 1px ${b.cor}66` }}
+    <span className="inline-flex h-14 flex-shrink-0 items-center justify-center rounded-xl border border-black/[0.06] bg-white px-6 shadow-sm transition-transform duration-300 hover:-translate-y-0.5">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={b.logo}
+        alt={b.alt}
+        loading="lazy"
+        className="h-7 w-auto max-w-[140px] object-contain"
       />
-      <span
-        className={`whitespace-nowrap text-lg ${b.peso ?? 'font-bold'} ${b.tracking ?? ''} ${b.italic ? 'italic' : ''}`}
-        style={{ color: b.cor, opacity: 0.82 }}
-      >
-        {b.nome}
-      </span>
     </span>
   )
 }
 
 export default function BancasMarquee() {
   return (
-    <section aria-label="Principais bancas de concurso do Brasil" className="relative py-14">
+    <section aria-label="Bancas de concurso cobertas" className="relative py-14">
       <p className="mb-8 text-center font-mono text-[11px] uppercase tracking-[0.22em] text-[#6E6E7A]">
         Feito para as bancas que mais caem
       </p>
@@ -50,11 +43,15 @@ export default function BancasMarquee() {
       <div className="marquee-viewport marquee-mask relative w-full overflow-hidden">
         {/* track duplicada: -50% = exatamente um ciclo → loop perfeito */}
         <div className="marquee-track gap-4 pr-4">
-          {[...bancas, ...bancas].map((b, i) => (
-            <Item key={`${b.nome}-${i}`} b={b} />
+          {[...seq, ...seq].map((b, i) => (
+            <Chip key={`${b.nome}-${i}`} b={b} />
           ))}
         </div>
       </div>
+
+      <p className="mt-6 text-center font-mono text-[9px] tracking-wide text-[#6E6E7A]/70">
+        Logos de FGV e Cesgranrio via Wikimedia Commons (CC BY-SA). Marcas de seus respectivos titulares.
+      </p>
     </section>
   )
 }

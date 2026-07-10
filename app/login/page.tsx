@@ -10,6 +10,7 @@ import { useToast } from '@/lib/toast'
 import { t } from '@/lib/i18n'
 import { Button } from '@/components/ui/button'
 import { Input, FieldError } from '@/components/ui/input'
+import BancasMarquee from '@/components/BancasMarquee'
 
 const ThreeBackground = dynamic(() => import('@/components/ThreeBackground'), { ssr: false })
 
@@ -186,6 +187,10 @@ export default function LoginPage() {
               )
             })}
           </ul>
+        </div>
+
+        <div className="relative z-10 -mx-12">
+          <BancasMarquee />
         </div>
 
         <p className="relative z-10 font-mono text-[10px] uppercase tracking-widest text-[#6E6E7A]">
