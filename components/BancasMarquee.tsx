@@ -21,13 +21,13 @@ const seq = Array(3).fill(bancas).flat()
 
 function Chip({ b }: { b: Banca }) {
   return (
-    <span className="inline-flex h-14 flex-shrink-0 items-center justify-center rounded-xl border border-black/[0.06] bg-white px-6 shadow-sm transition-transform duration-300 hover:-translate-y-0.5">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
+    <span className="inline-flex h-12 flex-shrink-0 items-center justify-center px-7 opacity-90 transition-all duration-300 hover:-translate-y-0.5 hover:opacity-100">
+      {/* eslint-disable-next-line @next/next/no-img-element — logos oficiais em public/bancas, fundo transparente */}
       <img
         src={b.logo}
         alt={b.alt}
         loading="lazy"
-        className="h-7 w-auto max-w-[140px] object-contain"
+        className="h-8 w-auto max-w-[150px] object-contain"
       />
     </span>
   )
