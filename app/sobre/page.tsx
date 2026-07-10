@@ -5,6 +5,7 @@ import {
   Upload, ArrowRight, Check, Layers, Repeat, Terminal,
 } from 'lucide-react'
 import LandingFx from '@/components/LandingFx'
+import BancasMarquee from '@/components/BancasMarquee'
 
 export const metadata: Metadata = {
   title: 'gabarito_AI — estude concursos com IA',
@@ -234,6 +235,9 @@ export default function SobrePage() {
             </div>
           </div>
         </section>
+
+        {/* ── Carrossel de bancas (infinito) ── */}
+        <BancasMarquee />
 
         {/* ── Como funciona ── */}
         <section id="como-funciona" className="mx-auto max-w-5xl scroll-mt-24 px-6 py-20">

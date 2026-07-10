@@ -71,7 +71,7 @@ export default function Sidebar({ onMobileClose }: Props) {
   }
 
   return (
-    <aside className="flex flex-col h-full w-60 bg-gradient-to-b from-[#15151B] to-[#111117] md:rounded-2xl md:border md:border-white/[0.06] shadow-[0_20px_50px_-22px_rgba(0,0,0,0.9),inset_0_1px_0_rgba(255,255,255,0.04)]">
+    <aside className="flex flex-col h-full w-60 bg-gradient-to-b from-white to-[#ECECE6] dark:from-[#15151B] dark:to-[#111117] md:rounded-2xl md:border md:border-black/[0.07] dark:md:border-white/[0.06] shadow-[0_16px_40px_-24px_rgba(0,0,0,0.28)] dark:shadow-[0_20px_50px_-22px_rgba(0,0,0,0.9),inset_0_1px_0_rgba(255,255,255,0.04)]">
       {/* Logo */}
       <div className="h-14 flex items-center px-5 flex-shrink-0">
         <Link href="/" className="flex items-center gap-2 font-mono text-base font-bold text-foreground tracking-tight">
@@ -82,7 +82,7 @@ export default function Sidebar({ onMobileClose }: Props) {
           <span className="inline-block w-1.5 h-3.5 bg-[#4A72E8] ml-0.5 align-middle animate-blink" />
         </Link>
       </div>
-      <div aria-hidden className="mx-4 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent flex-shrink-0" />
+      <div aria-hidden className="mx-4 h-px bg-gradient-to-r from-transparent via-black/10 dark:via-white/10 to-transparent flex-shrink-0" />
 
       {/* Primary nav */}
       <nav className="flex-1 py-4 px-3 space-y-0.5 overflow-y-auto">
@@ -134,7 +134,7 @@ export default function Sidebar({ onMobileClose }: Props) {
       </nav>
 
       {/* Secondary actions */}
-      <div aria-hidden className="mx-4 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent flex-shrink-0" />
+      <div aria-hidden className="mx-4 h-px bg-gradient-to-r from-transparent via-black/10 dark:via-white/10 to-transparent flex-shrink-0" />
       <div className="py-4 px-3 space-y-0.5 flex-shrink-0">
         <button
           onClick={toggle}

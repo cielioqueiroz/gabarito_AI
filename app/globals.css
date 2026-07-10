@@ -55,6 +55,38 @@ select, input[type="checkbox"], input[type="radio"] {
   outline-offset: 2px;
 }
 
+/* Campos de formulário já têm o próprio anel de foco (ver components/ui/input).
+   Sem isto, o outline global soma com o ring do input e a borda azul aparece
+   "dobrada" / pesada. */
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: none;
+  outline-offset: 0;
+}
+
+/* ── Autofill: o Chrome/Safari pintam o fundo com uma cor clara própria, o que
+   quebrava os campos no tema escuro (texto ilegível, caixa branca). Forçamos o
+   fundo elevado e o texto do tema via o truque do box-shadow inset. ── */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:active,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+  -webkit-text-fill-color: var(--c-text);
+  -webkit-box-shadow: 0 0 0 1000px var(--c-elevated) inset;
+  box-shadow: 0 0 0 1000px var(--c-elevated) inset;
+  caret-color: var(--c-text);
+  border-radius: inherit;
+  transition: background-color 9999s ease-in-out 0s;
+}
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill:focus {
+  /* mantém o preenchimento escuro E um anel de foco limpo (sem dobrar) */
+  -webkit-box-shadow: 0 0 0 1000px var(--c-elevated) inset, 0 0 0 2px rgba(74, 114, 232, 0.55);
+  box-shadow: 0 0 0 1000px var(--c-elevated) inset, 0 0 0 2px rgba(74, 114, 232, 0.55);
+}
+
 /* ── Display (Plus Jakarta Sans) for headings ── */
 .font-display { font-family: var(--font-display), system-ui, sans-serif; }
 h1, h2 { font-family: var(--font-display), system-ui, sans-serif; }
@@ -158,6 +190,68 @@ h1, h2 { font-family: var(--font-display), system-ui, sans-serif; }
 }
 @media (prefers-reduced-motion: reduce) {
   .divider-live { animation: none; background-position: 50% 0; }
+}
+
+/* ── Marquee de bancas (carrossel infinito) ──
+   A track duplica a lista; deslocar -50% completa exatamente um ciclo,
+   dando o loop perfeito e contínuo. Pausa ao passar o mouse. ── */
+@keyframes marquee-x {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee-x 42s linear infinite;
+  will-change: transform;
+}
+.marquee-viewport:hover .marquee-track { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track { animation: none; }
+}
+
+/* Máscara de esmaecimento nas bordas do carrossel */
+.marquee-mask {
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
+/* ── Card interativo pós-login: eleva, arredonda mais e ganha halo azul no
+   hover. transition-all para animar inclusive o border-radius (pedido). ── */
+.card-interactive {
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.25s ease,
+              border-color 0.2s ease,
+              border-radius 0.25s ease;
+  will-change: transform;
+}
+.card-interactive:hover {
+  transform: translateY(-4px);
+  border-radius: 1.15rem;
+  border-color: rgba(74, 114, 232, 0.45);
+  box-shadow: 0 18px 40px -20px rgba(0, 0, 0, 0.75),
+              0 0 0 1px rgba(74, 114, 232, 0.12),
+              0 8px 30px -12px rgba(74, 114, 232, 0.28);
+}
+@media (prefers-reduced-motion: reduce) {
+  .card-interactive { transition: border-color 0.2s ease; }
+  .card-interactive:hover { transform: none; border-radius: 0.75rem; }
+}
+
+/* Brilho que atravessa o card no hover (sheen diagonal) */
+.card-sheen { position: relative; overflow: hidden; }
+.card-sheen::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 30%, rgba(168, 188, 248, 0.10) 48%, transparent 62%);
+  transform: translateX(-120%);
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+.card-sheen:hover::after { transform: translateX(120%); }
+@media (prefers-reduced-motion: reduce) {
+  .card-sheen::after { display: none; }
 }
 
 /* ── Three.js canvas ── */

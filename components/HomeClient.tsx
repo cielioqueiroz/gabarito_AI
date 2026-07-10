@@ -167,14 +167,14 @@ export default function HomeClient({ stats, userEmail, userName }: Props) {
                 key={s.label}
                 variants={{ hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0 } }}
               >
-                <Card className="hover:border-[#4A72E8]/30 transition-colors">
+                <Card className="group card-interactive card-sheen">
                   <CardContent className="pt-4 pb-4">
                     <div className="flex items-start justify-between">
                       <div>
-                        <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5">{s.label}</p>
+                        <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5 transition-colors group-hover:text-muted">{s.label}</p>
                         <p className={`text-2xl font-bold ${s.color}`}>{s.value}</p>
                       </div>
-                      <span className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg border ${s.iconCls}`}>
+                      <span className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg border transition-transform duration-300 ease-out group-hover:scale-110 group-hover:-rotate-6 ${s.iconCls}`}>
                         <Icon size={15} />
                       </span>
                     </div>

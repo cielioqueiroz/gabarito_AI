@@ -28,8 +28,8 @@ export default function ConcursoCard({ concurso, topicoTotal, topicoEstudados, f
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -8 }}
-        whileHover={{ y: -2, transition: { duration: 0.15 } }}
-        className="group bg-surface rounded-xl border border-border p-5 hover:border-[#4A72E8]/40 hover:shadow-lg hover:shadow-black/10 transition-colors duration-200"
+        whileHover={{ y: -4, transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] } }}
+        className="group card-sheen bg-surface rounded-xl border border-border p-5 transition-[border-radius,box-shadow,border-color] duration-300 ease-out hover:rounded-2xl hover:border-[#4A72E8]/45 hover:shadow-[0_18px_40px_-20px_rgba(0,0,0,0.75),0_8px_30px_-12px_rgba(74,114,232,0.28)]"
       >
         <div className="flex items-start justify-between mb-4">
           <Link href={`/concurso/${concurso.id}`} className="flex-1 min-w-0 cursor-pointer">
