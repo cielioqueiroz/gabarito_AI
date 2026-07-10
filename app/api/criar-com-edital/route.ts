@@ -26,19 +26,50 @@ const PLAN_SCHEMA = {
   },
 }
 
+// Extração via unpdf — build serverless-safe do pdf.js. Diferente do pdf-parse,
+// NÃO depende de DOMMatrix (API de navegador ausente no runtime da Vercel), por
+// isso funciona também com PDFs escaneados/com imagens (provas), onde o pdf-parse
+// quebrava com "ReferenceError: DOMMatrix is not defined".
+async function extractWithUnpdf(bytes: Uint8Array): Promise<string> {
+  const { extractText: unpdfExtract, getDocumentProxy } = await import('unpdf')
+  const pdf = await getDocumentProxy(new Uint8Array(bytes)) // cópia fresh: evita buffer "detached"
+  const { text } = await unpdfExtract(pdf, { mergePages: true })
+  return (Array.isArray(text) ? text.join('\n') : text) ?? ''
+}
+
+// Fallback: pdf-parse v2 (classe PDFParse). Cobre eventuais PDFs onde o unpdf
+// falhe; pode não funcionar em serverless para PDFs com imagens.
+async function extractWithPdfParse(bytes: Uint8Array): Promise<string> {
+  const { PDFParse } = await import('pdf-parse')
+  const parser = new PDFParse({ data: new Uint8Array(bytes) })
+  try {
+    const result = await parser.getText()
+    return result.text ?? ''
+  } finally {
+    await parser.destroy().catch(() => {})
+  }
+}
+
 async function extractText(file: File): Promise<string> {
   if (file.type === 'text/plain' || file.name.endsWith('.txt')) return file.text()
   if (file.type === 'application/pdf' || file.name.endsWith('.pdf')) {
-    // pdf-parse v2 exposes a class; construct with the raw bytes and call getText().
-    const { PDFParse } = await import('pdf-parse')
-    const data = new Uint8Array(await file.arrayBuffer())
-    const parser = new PDFParse({ data })
+    const bytes = new Uint8Array(await file.arrayBuffer())
+    let text = ''
     try {
-      const result = await parser.getText()
-      return result.text
-    } finally {
-      await parser.destroy().catch(() => {})
+      text = (await extractWithUnpdf(bytes)).trim()
+    } catch (err) {
+      logger.warn('criar-edital', 'unpdf-falhou', { err: String(err) })
     }
+    if (text.length < 20) {
+      // unpdf não achou texto (ou falhou) — tenta o pdf-parse como fallback.
+      try {
+        const alt = (await extractWithPdfParse(bytes)).trim()
+        if (alt.length > text.length) text = alt
+      } catch (err) {
+        logger.warn('criar-edital', 'pdf-parse-falhou', { err: String(err) })
+      }
+    }
+    return text
   }
   throw new Error('Formato não suportado. Use PDF ou TXT.')
 }
