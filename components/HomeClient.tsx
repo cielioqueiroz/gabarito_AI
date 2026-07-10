@@ -48,13 +48,14 @@ export default function HomeClient({ stats, userEmail, userName }: Props) {
   const [banca, setBanca] = useState('')
   const [ano, setAno]     = useState('')
   const [file, setFile]   = useState<File | null>(null)
+  const [tipo, setTipo]   = useState<'edital' | 'prova'>('edital')
   const [loading, setLoading]     = useState(false)
   const [loadingMsg, setLoadingMsg] = useState('')
   const [nomeError, setNomeError] = useState('')
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   function resetForm() {
-    setNome(''); setCargo(''); setBanca(''); setAno(''); setFile(null)
+    setNome(''); setCargo(''); setBanca(''); setAno(''); setFile(null); setTipo('edital')
     setShowForm(false); setNomeError('')
   }
 
@@ -68,12 +69,13 @@ export default function HomeClient({ stats, userEmail, userName }: Props) {
     setLoading(true); setNomeError('')
     try {
       if (file) {
-        setLoadingMsg('Extraindo texto do edital…')
+        setLoadingMsg(tipo === 'prova' ? 'Analisando a prova…' : 'Extraindo texto do edital…')
         const fd = new FormData()
         fd.append('nome', nome.trim())
         if (cargo.trim()) fd.append('cargo', cargo.trim())
         if (banca.trim()) fd.append('banca', banca.trim())
         if (ano.trim())   fd.append('ano', ano.trim())
+        fd.append('tipo', tipo)
         fd.append('edital', file)
         const res  = await fetch('/api/criar-com-edital', { method: 'POST', body: fd })
         const data = await res.json()
@@ -84,7 +86,9 @@ export default function HomeClient({ stats, userEmail, userName }: Props) {
           if (data.hint)   (err as Error & { hint?: string }).hint = data.hint
           throw err
         }
-        toast.success('Concurso criado!', 'A IA organizou o edital em disciplinas.')
+        toast.success('Concurso criado!', tipo === 'prova'
+          ? 'A IA montou o plano a partir da prova.'
+          : 'A IA organizou o edital em disciplinas.')
         resetForm()
         router.push(`/concurso/${data.id}`)
       } else {
@@ -227,7 +231,30 @@ export default function HomeClient({ stats, userEmail, userName }: Props) {
 
                     {/* Upload area */}
                     <div>
-                      <label className="block font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5">Edital (PDF ou TXT) — opcional</label>
+                      <label className="block font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5">Material (PDF ou TXT) — opcional</label>
+
+                      {/* Fonte toggle: edital vs prova */}
+                      <div className="grid grid-cols-2 gap-1 p-1 rounded-lg bg-elevated border border-border mb-2">
+                        {([
+                          { key: 'edital', label: 'Edital', hint: 'organizar o programa' },
+                          { key: 'prova', label: 'Prova',  hint: 'a partir das questões' },
+                        ] as const).map(opt => (
+                          <button
+                            key={opt.key}
+                            type="button"
+                            onClick={() => setTipo(opt.key)}
+                            className={`rounded-md px-3 py-2 text-sm font-medium transition-all duration-150 cursor-pointer ${
+                              tipo === opt.key
+                                ? 'bg-[#4A72E8] text-white shadow-sm'
+                                : 'text-muted-foreground hover:text-foreground'
+                            }`}
+                          >
+                            {opt.label}
+                            <span className={`block font-mono text-[9px] uppercase tracking-wider mt-0.5 ${tipo === opt.key ? 'text-white/70' : 'text-dimmed'}`}>{opt.hint}</span>
+                          </button>
+                        ))}
+                      </div>
+
                       <div
                         onClick={() => fileInputRef.current?.click()}
                         onDragOver={e => e.preventDefault()}
@@ -249,13 +276,15 @@ export default function HomeClient({ stats, userEmail, userName }: Props) {
                         ) : (
                           <div>
                             <Upload size={20} className="text-border mx-auto mb-1.5" />
-                            <p className="text-xs text-muted-foreground">Arraste o edital ou clique para selecionar</p>
+                            <p className="text-xs text-muted-foreground">Arraste {tipo === 'prova' ? 'a prova' : 'o edital'} ou clique para selecionar</p>
                             <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mt-0.5">PDF ou TXT</p>
                           </div>
                         )}
                       </div>
                       <input ref={fileInputRef} type="file" accept=".pdf,.txt,application/pdf,text/plain" className="hidden" onChange={e => setFile(e.target.files?.[0] ?? null)} />
-                      {file && <p className="text-[11px] text-[#4A72E8] mt-1.5">A IA vai organizar o edital em disciplinas e tópicos ao criar</p>}
+                      {file && <p className="text-[11px] text-[#4A72E8] mt-1.5">{tipo === 'prova'
+                        ? 'A IA vai analisar as questões e montar o plano de estudos ao criar'
+                        : 'A IA vai organizar o edital em disciplinas e tópicos ao criar'}</p>}
                     </div>
 
                     {loading && loadingMsg && (
@@ -270,7 +299,7 @@ export default function HomeClient({ stats, userEmail, userName }: Props) {
 
                     <div className="flex gap-2 pt-1">
                       <Button type="submit" disabled={loading} className="flex-1">
-                        {loading ? (file ? 'Processando edital…' : 'Salvando…') : (file ? 'Criar e gerar plano com IA' : 'Criar concurso')}
+                        {loading ? (file ? (tipo === 'prova' ? 'Processando prova…' : 'Processando edital…') : 'Salvando…') : (file ? 'Criar e gerar plano com IA' : 'Criar concurso')}
                       </Button>
                       <Button type="button" variant="outline" onClick={resetForm}>Cancelar</Button>
                     </div>
