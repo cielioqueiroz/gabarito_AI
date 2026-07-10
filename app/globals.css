@@ -216,6 +216,14 @@ h1, h2 { font-family: var(--font-display), system-ui, sans-serif; }
   mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
 }
 
+/* Faixa contínua: dissolve a faixa inteira (fundo + logos) nas laterais —
+   começa transparente, chega ao tom cheio no meio e some de novo no fim.
+   Sem bordas nem cantos: o fade substitui o recorte. */
+.band-fade {
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 16%, #000 84%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0%, #000 16%, #000 84%, transparent 100%);
+}
+
 /* ── Card interativo pós-login: eleva, arredonda mais e ganha halo azul no
    hover. transition-all para animar inclusive o border-radius (pedido). ── */
 .card-interactive {
