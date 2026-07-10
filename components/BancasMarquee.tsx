@@ -40,12 +40,21 @@ export default function BancasMarquee() {
         Feito para as bancas que mais caem
       </p>
 
-      <div className="marquee-viewport marquee-mask relative w-full overflow-hidden">
-        {/* track duplicada: -50% = exatamente um ciclo → loop perfeito */}
-        <div className="marquee-track gap-4 pr-4">
-          {[...seq, ...seq].map((b, i) => (
-            <Chip key={`${b.nome}-${i}`} b={b} />
-          ))}
+      {/* Faixa escura — cores da paleta do projeto (surface → carvão profundo),
+          hairline sutil e um brilho de azul-caneta no topo. */}
+      <div className="relative overflow-hidden rounded-2xl border border-white/[0.06] bg-gradient-to-b from-[#17171D] to-[#0E0E13] shadow-[inset_0_1px_0_rgba(255,255,255,0.04),0_14px_36px_-20px_rgba(0,0,0,0.85)]">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0"
+          style={{ background: 'radial-gradient(ellipse 60% 90% at 50% 0%, rgba(74,114,232,0.10), transparent 70%)' }}
+        />
+        <div className="marquee-viewport marquee-mask relative w-full overflow-hidden py-7">
+          {/* track duplicada: -50% = exatamente um ciclo → loop perfeito */}
+          <div className="marquee-track gap-4 pr-4">
+            {[...seq, ...seq].map((b, i) => (
+              <Chip key={`${b.nome}-${i}`} b={b} />
+            ))}
+          </div>
         </div>
       </div>
 
