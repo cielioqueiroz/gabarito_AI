@@ -6,6 +6,7 @@ import {
 } from 'lucide-react'
 import LandingFx from '@/components/LandingFx'
 import BancasMarquee from '@/components/BancasMarquee'
+import { ogImage, twitterImage } from '../shared-metadata'
 
 export const metadata: Metadata = {
   title: 'gabarito_AI — estude concursos com IA',
@@ -18,11 +19,13 @@ export const metadata: Metadata = {
     url: '/sobre',
     siteName: 'gabarito_AI',
     locale: 'pt_BR',
+    images: [ogImage],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'gabarito_AI',
     description: 'Console de estudos para concursos públicos com IA.',
+    images: [twitterImage],
   },
 }
 
