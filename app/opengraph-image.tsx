@@ -7,13 +7,18 @@ export const contentType = 'image/png'
 
 // Every element with more than one child MUST declare display:flex — Satori
 // (next/og) throws "failed to pipe response" otherwise, yielding an empty PNG.
+
+// Dois chips em azul-caneta puxam o olho para o que o produto faz de único; os
+// outros dois ficam neutros. O banner vive como miniatura, então nada aqui usa
+// tom abaixo de ~4.5:1 — o #4A72E8 como texto (4.13:1) sumia no thumbnail.
+const chips = [
+  { label: 'Plano de estudos',   bg: '#1B2542', border: '#4A72E866', text: '#A8BCF8' },
+  { label: 'Flashcards Leitner', bg: '#1B2542', border: '#4A72E866', text: '#A8BCF8' },
+  { label: 'Questões com IA',    bg: '#1F1F28', border: '#34343F99', text: '#9C9CA6' },
+  { label: 'Upload de edital',   bg: '#1F1F28', border: '#34343F99', text: '#9C9CA6' },
+]
+
 export default function Image() {
-  const chips = [
-    { label: 'Plano de estudos', bg: '#1B2542', border: '#4A72E855', text: '#A8BCF8' },
-    { label: 'Flashcards Leitner', bg: '#14532d', border: '#16a34a55', text: '#86EFAC' },
-    { label: 'Questões com IA', bg: '#1F1F28', border: '#34343F99', text: '#9C9CA6' },
-    { label: 'Upload de edital', bg: '#17171D', border: '#4A72E844', text: '#4A72E8' },
-  ]
 
   return new ImageResponse(
     (
@@ -98,7 +103,7 @@ export default function Image() {
         </div>
 
         {/* subline */}
-        <div style={{ display: 'flex', fontFamily: 'monospace', fontSize: 17, color: '#6E6E7A', letterSpacing: 3, textTransform: 'uppercase', marginBottom: 44 }}>
+        <div style={{ display: 'flex', fontFamily: 'monospace', fontSize: 17, color: '#8A8A94', letterSpacing: 3, textTransform: 'uppercase', marginBottom: 44 }}>
           Console de estudos para concursos públicos
         </div>
 
