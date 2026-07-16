@@ -7,13 +7,17 @@
    dos sites oficiais. Todas as marcas pertencem aos seus respectivos titulares
    e aparecem aqui apenas como referência às bancas cobertas pelo app. */
 
-type Banca = { nome: string; logo: string; alt: string }
+/* w/h = dimensões intrínsecas do arquivo. Vão no <img> para o browser reservar
+   a caixa antes do download (sem isto o carrossel entra no CLS). Os arquivos já
+   estão no tamanho de exibição (~2x de h-8); o Cebraspe segue em PNG porque em
+   WebP ficava maior que o original. */
+type Banca = { nome: string; logo: string; alt: string; w: number; h: number }
 
 const bancas: Banca[] = [
-  { nome: 'Cebraspe',   logo: '/bancas/cebraspe.png',   alt: 'Cebraspe' },
-  { nome: 'FGV',        logo: '/bancas/fgv.png',        alt: 'Fundação Getulio Vargas (FGV)' },
-  { nome: 'Cesgranrio', logo: '/bancas/cesgranrio.png', alt: 'Cesgranrio' },
-  { nome: 'IBFC',       logo: '/bancas/ibfc.png',       alt: 'IBFC' },
+  { nome: 'Cebraspe',   logo: '/bancas/cebraspe.png',   alt: 'Cebraspe',                        w: 212, h: 50 },
+  { nome: 'FGV',        logo: '/bancas/fgv.webp',       alt: 'Fundação Getulio Vargas (FGV)',   w: 300, h: 54 },
+  { nome: 'Cesgranrio', logo: '/bancas/cesgranrio.webp', alt: 'Cesgranrio',                     w: 206, h: 64 },
+  { nome: 'IBFC',       logo: '/bancas/ibfc.webp',      alt: 'IBFC',                            w: 129, h: 64 },
 ]
 
 // Sequência longa o bastante para o loop -50% cobrir a viewport sem falhas.
@@ -26,7 +30,10 @@ function Chip({ b }: { b: Banca }) {
       <img
         src={b.logo}
         alt={b.alt}
+        width={b.w}
+        height={b.h}
         loading="lazy"
+        decoding="async"
         className="h-8 w-auto max-w-[150px] object-contain"
       />
     </span>
@@ -36,7 +43,7 @@ function Chip({ b }: { b: Banca }) {
 export default function BancasMarquee() {
   return (
     <section aria-label="Bancas de concurso cobertas" className="relative py-14">
-      <p className="mb-8 text-center font-mono text-[11px] uppercase tracking-[0.22em] text-[#6E6E7A]">
+      <p className="mb-8 text-center font-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
         Feito para as bancas que mais caem
       </p>
 
