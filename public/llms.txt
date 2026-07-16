@@ -1,0 +1,26 @@
+# gabarito_AI
+
+> Console de estudos para concursos públicos brasileiros. O candidato sobe o edital em PDF e a IA monta o plano de estudos, os flashcards em repetição espaçada (Leitner) e as questões comentadas a partir do conteúdo programático.
+
+O gabarito_AI é uma aplicação web em português do Brasil, de uso gratuito, que exige cadastro. O fluxo central é: enviar o edital (PDF) → a IA extrai as disciplinas e os tópicos → gera plano, resumos, questões e podcast → o progresso é acompanhado por disciplina e por tópico.
+
+Só as páginas listadas em "Páginas públicas" são acessíveis sem autenticação. As demais rotas (`/`, `/concursos`, `/concurso/[id]`, `/revisao`, `/estatisticas`, `/configuracoes`) exigem sessão e redirecionam para `/login`.
+
+## Páginas públicas
+
+- [Sobre o gabarito_AI](https://gabarito-lyart.vercel.app/sobre): o que é o produto, como funciona o fluxo do edital, os recursos disponíveis, como opera a repetição espaçada e o FAQ.
+- [Entrar ou criar conta](https://gabarito-lyart.vercel.app/login): autenticação por e-mail e senha, Google ou GitHub, e recuperação de senha.
+
+## Recursos
+
+- Plano de estudos gerado a partir do edital em PDF, já dividido por disciplina e tópico.
+- Flashcards com repetição espaçada pelo método de Leitner, com fila diária de revisão.
+- Questões comentadas por disciplina, com alternativas, gabarito e explicação.
+- Resumos gerados por IA a partir do conteúdo programático ou de fonte enviada.
+- Podcast em voz neural a partir dos resumos, para estudo em áudio.
+- Estatísticas de acerto e de progresso por disciplina.
+- Bancas cobertas: Cebraspe, FGV, Cesgranrio e IBFC.
+
+## Optional
+
+- [Portfólio do autor](https://cielioqueiroz.github.io/): Cielio Queiroz, desenvolvedor do projeto.

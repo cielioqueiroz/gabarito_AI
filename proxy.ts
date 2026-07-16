@@ -49,9 +49,10 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   // Skip auth for Next.js internals and public metadata assets (favicon, PWA
-  // manifest, social/OG images). Without this, crawlers hitting /opengraph-image
-  // get bounced to /login and link previews break.
+  // manifest, social/OG images, llms.txt). Without this, crawlers hitting
+  // /opengraph-image get bounced to /login and link previews break — o mesmo
+  // valia para /llms.txt, que respondia 307 em vez do arquivo.
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|icon.svg|apple-icon|manifest.json|opengraph-image|twitter-image|sitemap.xml|robots.txt|bancas/).*)',
+    '/((?!_next/static|_next/image|favicon.ico|icon.svg|apple-icon|manifest.json|opengraph-image|twitter-image|sitemap.xml|robots.txt|llms.txt|bancas/).*)',
   ],
 }
