@@ -34,7 +34,7 @@ html.dark {
   --c-border:   #26262F;   /* borda discreta */
   --c-text:     #F4F4F0;   /* quase-branco — títulos */
   --c-muted:    #9C9CA6;   /* descrições */
-  --c-dimmed:   #6E6E7A;   /* metadados */
+  --c-dimmed:   #8A8A94;   /* metadados — mínimo p/ WCAG AA (4.5:1) sobre --c-elevated */
 }
 
 /* ── Global cursor ── */

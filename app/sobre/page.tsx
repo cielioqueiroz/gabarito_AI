@@ -85,7 +85,7 @@ export default function SobrePage() {
       <header className="sticky top-4 z-50 px-4">
         <nav className="mx-auto flex h-14 max-w-3xl items-center justify-between rounded-full border border-[#26262F] bg-[#17171D] px-3 pl-5 shadow-lg shadow-black/40">
           <Link href="/sobre" className="font-mono text-sm font-bold tracking-tight">
-            gabarito<span className="text-[#4A72E8]">_AI</span>
+            gabarito<span className="text-[#A8BCF8]">_AI</span>
             <span className="ml-0.5 inline-block h-3.5 w-1.5 translate-y-0.5 bg-[#4A72E8] animate-blink" />
           </Link>
           <div className="hidden items-center gap-6 sm:flex">
@@ -95,7 +95,7 @@ export default function SobrePage() {
           </div>
           <Link
             href="/login"
-            className="inline-flex h-9 items-center gap-1.5 rounded-full bg-[#4A72E8] px-4 text-sm font-semibold text-white transition-colors hover:bg-[#6C8DF0]"
+            className="inline-flex h-9 items-center gap-1.5 rounded-full bg-[#4064D8] px-4 text-sm font-semibold text-white transition-colors hover:bg-[#4A72E8]"
           >
             Entrar <ArrowRight size={14} />
           </Link>
@@ -123,7 +123,7 @@ export default function SobrePage() {
           <div className="fade-up mt-9 flex flex-wrap items-center justify-center gap-3" style={{ animationDelay: '240ms' }}>
             <Link
               href="/login"
-              className="group inline-flex h-12 items-center gap-2 rounded-xl bg-[#4A72E8] px-7 font-semibold text-white shadow-lg shadow-[#4A72E8]/25 transition-all hover:-translate-y-0.5 hover:bg-[#6C8DF0] hover:shadow-[#4A72E8]/40"
+              className="group inline-flex h-12 items-center gap-2 rounded-xl bg-[#4064D8] px-7 font-semibold text-white shadow-lg shadow-[#4A72E8]/25 transition-all hover:-translate-y-0.5 hover:bg-[#4A72E8] hover:shadow-[#4A72E8]/40"
             >
               <Sparkles size={17} /> Começar grátis
               <ArrowRight size={16} className="transition-transform group-hover:translate-x-0.5" />
@@ -147,7 +147,7 @@ export default function SobrePage() {
                 <span className="h-3 w-3 rounded-full bg-[#ff5f57]" />
                 <span className="h-3 w-3 rounded-full bg-[#febc2e]" />
                 <span className="h-3 w-3 rounded-full bg-[#28c840]" />
-                <span className="ml-3 truncate font-mono text-xs text-[#6E6E7A]">gabarito_AI — Banco do Brasil · Agente de Tecnologia</span>
+                <span className="ml-3 truncate font-mono text-xs text-muted-foreground">gabarito_AI — Banco do Brasil · Agente de Tecnologia</span>
                 <span className="ml-auto hidden items-center gap-1.5 rounded-md border border-[#4A72E8]/30 bg-[#4A72E8]/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-[#A8BCF8] sm:inline-flex">
                   <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#4A72E8]" /> IA ativa
                 </span>
@@ -156,7 +156,7 @@ export default function SobrePage() {
               <div className="grid grid-cols-1 gap-px overflow-hidden rounded-xl bg-[#26262F] sm:grid-cols-[190px_1fr]">
                 {/* sidebar */}
                 <div className="hidden flex-col gap-1 bg-[#121218] p-3 text-left sm:flex">
-                  <p className="px-2 py-1 font-mono text-[10px] uppercase tracking-widest text-[#6E6E7A]">Disciplinas</p>
+                  <p className="px-2 py-1 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">Disciplinas</p>
                   {[
                     ['Língua Portuguesa', true],
                     ['Raciocínio Lógico', true],
@@ -170,7 +170,7 @@ export default function SobrePage() {
                         active ? 'bg-[#4A72E8]/10 text-[#F4F4F0]' : 'text-[#9C9CA6]'
                       }`}
                     >
-                      <Layers size={13} className={active ? 'text-[#4A72E8]' : 'text-[#6E6E7A]'} />
+                      <Layers size={13} className={active ? 'text-[#4A72E8]' : 'text-muted-foreground'} />
                       <span className="truncate">{d as string}</span>
                     </div>
                   ))}
@@ -180,7 +180,7 @@ export default function SobrePage() {
                 <div className="bg-[#15151A] p-4 text-left sm:p-5">
                   <div className="mb-4 flex items-center justify-between">
                     <div>
-                      <p className="font-mono text-[10px] uppercase tracking-widest text-[#4A72E8]">Plano de estudos</p>
+                      <p className="font-mono text-[10px] uppercase tracking-widest text-[#A8BCF8]">Plano de estudos</p>
                       <p className="text-sm font-semibold text-[#F4F4F0]">Segurança da Informação</p>
                     </div>
                     <span className="rounded-md bg-[#1F1F28] px-2 py-1 font-mono text-[10px] text-[#9C9CA6]">gerado em 24s</span>
@@ -189,7 +189,7 @@ export default function SobrePage() {
                   {/* progress */}
                   <div className="mb-4">
                     <div className="mb-1.5 flex justify-between font-mono text-[10px] text-[#9C9CA6]">
-                      <span>Progresso</span><span className="text-[#4A72E8]">62%</span>
+                      <span>Progresso</span><span className="text-[#A8BCF8]">62%</span>
                     </div>
                     <div className="h-1.5 overflow-hidden rounded-full bg-[#1F1F28]">
                       <div className="h-full w-[62%] rounded-full bg-gradient-to-r from-[#3556C4] to-[#A8BCF8]" />
@@ -208,7 +208,7 @@ export default function SobrePage() {
                         <span className={`flex h-4 w-4 items-center justify-center rounded ${done ? 'bg-[#4A72E8]' : 'border border-[#26262F] bg-[#1F1F28]'}`}>
                           {done ? <Check size={11} className="text-white" /> : null}
                         </span>
-                        <span className={`text-xs ${done ? 'text-[#6E6E7A] line-through' : 'text-[#F4F4F0]'}`}>{topic as string}</span>
+                        <span className={`text-xs ${done ? 'text-muted-foreground line-through' : 'text-[#F4F4F0]'}`}>{topic as string}</span>
                       </div>
                     ))}
                   </div>
@@ -227,10 +227,10 @@ export default function SobrePage() {
 
           {/* tech strip (honest proof) */}
           <div className="fade-up mt-14" style={{ animationDelay: '420ms' }}>
-            <p className="mb-4 font-mono text-[10px] uppercase tracking-[0.2em] text-[#6E6E7A]/70">Construído com</p>
+            <p className="mb-4 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Construído com</p>
             <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
               {tech.map(t => (
-                <span key={t} className="font-mono text-sm text-[#6E6E7A] transition-colors hover:text-[#9C9CA6]">{t}</span>
+                <span key={t} className="font-mono text-sm text-muted-foreground transition-colors hover:text-[#9C9CA6]">{t}</span>
               ))}
             </div>
           </div>
@@ -242,7 +242,7 @@ export default function SobrePage() {
         {/* ── Como funciona ── */}
         <section id="como-funciona" className="mx-auto max-w-5xl scroll-mt-24 px-6 py-20">
           <div className="mb-12 text-center">
-            <p className="font-mono text-[11px] uppercase tracking-widest text-[#4A72E8]">Como funciona</p>
+            <p className="font-mono text-[11px] uppercase tracking-widest text-[#A8BCF8]">Como funciona</p>
             <h2 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">Do edital ao domínio, em 4 passos</h2>
           </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -270,7 +270,7 @@ export default function SobrePage() {
         {/* ── Recursos ── */}
         <section id="recursos" className="mx-auto max-w-5xl scroll-mt-24 px-6 py-20">
           <div className="mb-12 text-center">
-            <p className="font-mono text-[11px] uppercase tracking-widest text-[#4A72E8]">Recursos</p>
+            <p className="font-mono text-[11px] uppercase tracking-widest text-[#A8BCF8]">Recursos</p>
             <h2 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">Tudo que você precisa para passar</h2>
           </div>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
@@ -293,7 +293,7 @@ export default function SobrePage() {
         <section className="mx-auto max-w-5xl px-6 py-20">
           <div className="rounded-3xl border border-[#26262F] bg-gradient-to-b from-[#17171D] to-[#121218] p-8 sm:p-12">
             <div className="mb-10 text-center">
-              <p className="font-mono text-[11px] uppercase tracking-widest text-[#4A72E8]">Repetição espaçada</p>
+              <p className="font-mono text-[11px] uppercase tracking-widest text-[#A8BCF8]">Repetição espaçada</p>
               <h2 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">O método Leitner, automatizado</h2>
               <p className="mx-auto mt-3 max-w-xl text-sm text-[#9C9CA6]">
                 Cada acerto avança o card para uma caixa com intervalo maior. Um erro devolve para a primeira. Você revisa exatamente quando está prestes a esquecer.
@@ -309,7 +309,7 @@ export default function SobrePage() {
                     {l.box}
                   </div>
                   <p className="text-xs font-semibold text-[#F4F4F0]">{l.label}</p>
-                  <p className="mt-0.5 font-mono text-[10px] text-[#6E6E7A]">{l.dias}</p>
+                  <p className="mt-0.5 font-mono text-[10px] text-muted-foreground">{l.dias}</p>
                 </div>
               ))}
             </div>
@@ -319,7 +319,7 @@ export default function SobrePage() {
         {/* ── FAQ ── */}
         <section id="faq" className="mx-auto max-w-3xl scroll-mt-24 px-6 py-20">
           <div className="mb-10 text-center">
-            <p className="font-mono text-[11px] uppercase tracking-widest text-[#4A72E8]">FAQ</p>
+            <p className="font-mono text-[11px] uppercase tracking-widest text-[#A8BCF8]">FAQ</p>
             <h2 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">Perguntas frequentes</h2>
           </div>
           <div className="space-y-3">
@@ -352,7 +352,7 @@ export default function SobrePage() {
               </p>
               <Link
                 href="/login"
-                className="group mt-8 inline-flex h-12 items-center gap-2 rounded-xl bg-[#4A72E8] px-8 font-semibold text-white shadow-lg shadow-[#4A72E8]/30 transition-all hover:-translate-y-0.5 hover:bg-[#6C8DF0]"
+                className="group mt-8 inline-flex h-12 items-center gap-2 rounded-xl bg-[#4064D8] px-8 font-semibold text-white shadow-lg shadow-[#4A72E8]/30 transition-all hover:-translate-y-0.5 hover:bg-[#4A72E8]"
               >
                 <Sparkles size={17} /> Começar grátis
                 <ArrowRight size={16} className="transition-transform group-hover:translate-x-0.5" />
@@ -375,11 +375,11 @@ export default function SobrePage() {
             className="group flex items-center gap-1.5 text-xs text-[#9C9CA6] transition-colors hover:text-[#F4F4F0]"
             title="Portfólio de Cielio Queiroz"
           >
-            <span className="text-[#6E6E7A]">© {new Date().getFullYear()}</span>
+            <span className="text-muted-foreground">© {new Date().getFullYear()}</span>
             <span className="font-semibold text-[#A8BCF8] transition-colors group-hover:text-[#F4F4F0]">Cielio Queiroz</span>
-            <span className="hidden sm:inline text-[#6E6E7A]">· Todos os direitos reservados</span>
+            <span className="hidden sm:inline text-muted-foreground">· Todos os direitos reservados</span>
           </a>
-          <span className="hidden md:flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-[#6E6E7A]">
+          <span className="hidden md:flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
             <span className="h-1.5 w-1.5 rounded-full bg-[#4A72E8] animate-pulse" />
             feito para concurseiros
           </span>

@@ -193,7 +193,7 @@ export default function LoginPage() {
           <BancasMarquee />
         </div>
 
-        <p className="relative z-10 font-mono text-[10px] uppercase tracking-widest text-[#6E6E7A]">
+        <p className="relative z-10 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
           gabarito_AI · console de estudos para concursos
         </p>
       </aside>
@@ -305,7 +305,7 @@ export default function LoginPage() {
               <div>
                 <div className="mb-1.5 flex items-center justify-between">
                   {tab === 'login' && (
-                    <button type="button" onClick={() => switchTab('forgot')} className="ml-auto cursor-pointer font-mono text-[10px] uppercase tracking-widest text-[#4A72E8] transition-colors hover:text-[#A8BCF8]">
+                    <button type="button" onClick={() => switchTab('forgot')} className="ml-auto cursor-pointer font-mono text-[10px] uppercase tracking-widest text-[#A8BCF8] transition-colors hover:text-foreground">
                       {t.auth.forgotPassword}
                     </button>
                   )}
@@ -320,7 +320,7 @@ export default function LoginPage() {
             )}
 
             {tab === 'forgot' && (
-              <button type="button" onClick={() => switchTab('login')} className="cursor-pointer text-[11px] text-[#4A72E8] hover:text-[#A8BCF8]">← Voltar para entrar</button>
+              <button type="button" onClick={() => switchTab('login')} className="cursor-pointer text-[11px] text-[#A8BCF8] hover:text-foreground">← Voltar para entrar</button>
             )}
 
             <Button type="submit" disabled={loading} className="h-11 w-full text-[15px]" size="lg">
