@@ -123,6 +123,7 @@ export const SISTEMA_QUESTOES = `Você transcreve questões de provas de concurs
 
 Regras:
 - Transcreva FIELMENTE o enunciado e todas as alternativas, como estão na prova. Não resuma, não reescreva, não invente questão que não exista.
+- O campo "enunciado" contém APENAS o enunciado. NUNCA repita as alternativas dentro dele — elas vão só no array "alternativas", e cada texto de alternativa vai sem a letra na frente.
 - Traga apenas as questões das disciplinas solicitadas. Se uma delas não aparecer na prova, devolva a lista sem ela.
 - Em "correta": se a prova trouxer gabarito, use o gabarito. Se não trouxer, resolva a questão e responda com a alternativa correta.
 - Em "explicacao": justifique a resposta em 1 a 3 frases.
@@ -133,4 +134,41 @@ ${AVISO_CONTEUDO_NAO_CONFIAVEL}`
 export function pedidoQuestoes(nomes: string[]): string {
   const lista = nomes.map(n => `"${n}"`).join(', ')
   return `Transcreva todas as questões da prova que pertencem a estas disciplinas: ${lista}. Use exatamente esses nomes no campo "disciplina".`
+}
+
+/** Linha que começa como alternativa: "A)", "b.", "C -", "(D)". */
+const LINHA_ALTERNATIVA = /^\s*\(?([A-Ea-e])\)?\s*[).\-–—:]\s+\S/
+
+/**
+ * Remove do enunciado as alternativas que o modelo repetiu ali dentro.
+ *
+ * Mesmo instruído a não fazer isso, o modelo às vezes devolve o bloco de
+ * alternativas dentro do enunciado E no array — o app então mostraria as
+ * cinco opções duas vezes. Prompt não é garantia; a limpeza é.
+ *
+ * Só corta quando há pelo menos duas linhas de alternativa em sequência e
+ * sobra enunciado depois do corte, para nunca engolir uma questão cujo texto
+ * legítimo comece com algo parecido (item "a)" de uma lista, por exemplo).
+ */
+export function limparEnunciado(enunciado: string, alternativas: { letra: string }[]): string {
+  const linhas = enunciado.split('\n')
+
+  for (let i = 0; i < linhas.length; i++) {
+    if (!LINHA_ALTERNATIVA.test(linhas[i])) continue
+
+    // Conta quantas linhas de alternativa vêm a partir daqui (ignorando vazias).
+    let encontradas = 0
+    for (let j = i; j < linhas.length; j++) {
+      if (!linhas[j].trim()) continue
+      if (LINHA_ALTERNATIVA.test(linhas[j])) encontradas++
+    }
+
+    const antes = linhas.slice(0, i).join('\n').trim()
+    // Exige a maioria das alternativas presentes e enunciado sobrando.
+    if (encontradas >= Math.max(2, alternativas.length - 1) && antes.length >= 15) {
+      return antes
+    }
+  }
+
+  return enunciado.trim()
 }

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { callClaudeStructured, wrapDocumento } from '@/lib/anthropic'
-import { QUESTOES_SCHEMA, SISTEMA_QUESTOES, pedidoQuestoes, type QuestaoExtraida } from '@/lib/extracao'
+import { QUESTOES_SCHEMA, SISTEMA_QUESTOES, pedidoQuestoes, limparEnunciado, type QuestaoExtraida } from '@/lib/extracao'
 import { lerDocumento, ArquivoInvalidoError } from '@/lib/documentos'
 import { requireAuth, checkRateLimit, assertConcursoOwnership } from '@/lib/apiHelpers'
 import { logger } from '@/lib/logger'
@@ -150,9 +150,13 @@ export async function POST(req: NextRequest) {
     const numero = Number.isInteger(q.numero) && q.numero > 0 && q.numero <= 500 ? q.numero : null
     if (numero != null && jaTem.has(`${disciplinaId}:${numero}`)) return []
 
+    // O modelo às vezes repete as alternativas dentro do enunciado, mesmo
+    // instruído a não fazer — sem isto a tela mostra as opções duas vezes.
+    const enunciado = limparEnunciado(q.enunciado, q.alternativas)
+
     return [{
       disciplina_id: disciplinaId,
-      enunciado: q.enunciado.trim().slice(0, MAX_ENUNCIADO),
+      enunciado: enunciado.slice(0, MAX_ENUNCIADO),
       alternativas: q.alternativas.slice(0, MAX_ALTERNATIVAS).map(a => ({
         letra: (a.letra ?? '').trim().toUpperCase().slice(0, 1),
         texto: (a.texto ?? '').trim().slice(0, MAX_ENUNCIADO),

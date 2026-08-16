@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "test": "node scripts/testar-lotes.mjs",
+    "test": "node scripts/testar-lotes.mjs && node --experimental-strip-types scripts/testar-enunciado.mjs",
     "avaliar": "node --experimental-strip-types scripts/avaliar-extracao.mjs"
   },
   "dependencies": {
