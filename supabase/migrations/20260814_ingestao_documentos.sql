@@ -1,6 +1,22 @@
 -- Ingestão de documentos: questões vindas de prova oficial + origem do concurso.
 -- Idempotente: pode rodar direto no SQL Editor do Supabase quantas vezes quiser.
 
+-- ─── Correções encontradas ao restaurar o projeto em 16/08/2026 ──────────────
+-- A base de produção estava sem a coluna `topicos.estudado_em`, embora o trigger
+-- set_topico_estudado_em a atribua. Resultado: QUALQUER update em topicos falhava
+-- com "record new has no field estudado_em" — marcar tópico como estudado estava
+-- quebrado. Descoberto por smoke test, não por leitura do schema.
+alter table topicos add column if not exists estudado_em timestamptz;
+comment on column topicos.estudado_em is 'preenchido pelo trigger na primeira vez que estudado vira true';
+
+-- O trigger só precisa ser disparado pelo trigger. Estando no schema public, o
+-- PostgREST o expunha em /rest/v1/rpc/ para anon e authenticated e, sendo
+-- SECURITY DEFINER, virava superfície de ataque sem uso. (Advisors do Supabase
+-- 0028/0029.) O trigger segue funcionando: roda como dono da tabela.
+revoke execute on function public.set_topico_estudado_em() from public;
+revoke execute on function public.set_topico_estudado_em() from anon;
+revoke execute on function public.set_topico_estudado_em() from authenticated;
+
 -- ─── Questões: distinguir prova oficial de questão gerada pela IA ────────────
 alter table questoes add column if not exists origem text default 'ia';
 alter table questoes add column if not exists numero int;

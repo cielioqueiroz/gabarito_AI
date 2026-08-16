@@ -94,6 +94,13 @@ drop trigger if exists topicos_estudado_em on topicos;
 create trigger topicos_estudado_em before update on topicos
   for each row execute function set_topico_estudado_em();
 
+-- A funcao so deve rodar pelo trigger. No schema public o PostgREST a expunha
+-- em /rest/v1/rpc/ para anon e authenticated e, sendo SECURITY DEFINER, virava
+-- superficie de ataque sem uso (advisors 0028/0029 do Supabase).
+revoke execute on function public.set_topico_estudado_em() from public;
+revoke execute on function public.set_topico_estudado_em() from anon;
+revoke execute on function public.set_topico_estudado_em() from authenticated;
+
 -- ─── Flashcards ───────────────────────────────────────────────────────────────
 create table flashcards (
   id             uuid        primary key default gen_random_uuid(),
