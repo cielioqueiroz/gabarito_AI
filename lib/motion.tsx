@@ -1,19 +1,17 @@
 'use client'
 
-import { createContext, useContext, useState, useEffect } from 'react'
+import { createContext, useContext, useMemo } from 'react'
 import { useReducedMotion } from 'framer-motion'
 
 const MotionCtx = createContext<{ reduce: boolean }>({ reduce: false })
 
 export function MotionProvider({ children }: { children: React.ReactNode }) {
-  const systemReduce = useReducedMotion()
-  const [reduce, setReduce] = useState<boolean>(!!systemReduce)
+  // useReducedMotion já reage a mudanças na preferência do sistema. Espelhar o
+  // valor em estado com um efeito só adicionava um render a mais por mudança.
+  const reduce = !!useReducedMotion()
+  const valor = useMemo(() => ({ reduce }), [reduce])
 
-  useEffect(() => {
-    setReduce(!!systemReduce)
-  }, [systemReduce])
-
-  return <MotionCtx.Provider value={{ reduce }}>{children}</MotionCtx.Provider>
+  return <MotionCtx.Provider value={valor}>{children}</MotionCtx.Provider>
 }
 
 export function useMotion() {

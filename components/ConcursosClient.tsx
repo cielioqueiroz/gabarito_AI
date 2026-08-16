@@ -1,15 +1,13 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Plus, Upload, X, BookOpen } from 'lucide-react'
+import { Plus, BookOpen } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
-import { useToast } from '@/lib/toast'
 import { Button } from '@/components/ui/button'
-import { Input, FieldError } from '@/components/ui/input'
-import { Card, CardContent } from '@/components/ui/card'
 import ConcursoCard from './ConcursoCard'
+import NovoConcursoForm from './NovoConcursoForm'
 import ShellLayout from './ShellLayout'
 import type { Concurso } from '@/types'
 
@@ -23,66 +21,12 @@ interface ConcursoStat {
 
 export default function ConcursosClient({ stats }: { stats: ConcursoStat[] }) {
   const router = useRouter()
-  const toast  = useToast()
   const [showForm, setShowForm] = useState(false)
-  const [nome, setNome]   = useState('')
-  const [cargo, setCargo] = useState('')
-  const [banca, setBanca] = useState('')
-  const [ano, setAno]     = useState('')
-  const [file, setFile]   = useState<File | null>(null)
-  const [tipo, setTipo]   = useState<'edital' | 'prova'>('edital')
-  const [loading, setLoading]       = useState(false)
-  const [loadingMsg, setLoadingMsg] = useState('')
-  const [nomeError, setNomeError]   = useState('')
-  const fileInputRef = useRef<HTMLInputElement>(null)
 
-  function resetForm() {
-    setNome(''); setCargo(''); setBanca(''); setAno(''); setFile(null); setTipo('edital')
-    setShowForm(false); setNomeError('')
-  }
-
-  async function handleCreate(e: React.FormEvent) {
-    e.preventDefault()
-    if (!nome.trim()) {
-      setNomeError('Informe o nome do concurso.')
-      toast.warning('Nome obrigatório', 'Dê um nome ao concurso antes de criar.')
-      return
-    }
-    setLoading(true); setNomeError('')
-    try {
-      if (file) {
-        setLoadingMsg(tipo === 'prova' ? 'Analisando a prova…' : 'Extraindo texto do edital…')
-        const fd = new FormData()
-        fd.append('nome', nome.trim())
-        if (cargo.trim()) fd.append('cargo', cargo.trim())
-        if (banca.trim()) fd.append('banca', banca.trim())
-        if (ano.trim())   fd.append('ano', ano.trim())
-        fd.append('tipo', tipo)
-        fd.append('edital', file)
-        const res  = await fetch('/api/criar-com-edital', { method: 'POST', body: fd })
-        const data = await res.json()
-        if (!res.ok) throw new Error(data.error ?? 'Erro ao criar concurso')
-        toast.success('Concurso criado!', tipo === 'prova'
-          ? 'A IA montou o plano a partir da prova.'
-          : 'A IA organizou o edital em disciplinas.')
-        resetForm()
-        router.push(`/concurso/${data.id}`)
-      } else {
-        const supabase = createClient()
-        const { data: { user } } = await supabase.auth.getUser()
-        const { error } = await supabase.from('concursos').insert({
-          nome: nome.trim(), cargo: cargo.trim() || null,
-          banca: banca.trim() || null, ano: ano.trim() || null,
-          user_id: user!.id,
-        })
-        if (error) throw new Error(error.message)
-        toast.success('Concurso criado!')
-        resetForm(); router.refresh()
-      }
-    } catch (err: unknown) {
-      toast.error('Erro ao criar concurso', err instanceof Error ? err.message : 'Tente novamente.')
-    }
-    setLoading(false); setLoadingMsg('')
+  function handleCreated(concursoId: string, { navegar }: { navegar: boolean }) {
+    setShowForm(false)
+    if (navegar) router.push(`/concurso/${concursoId}`)
+    else router.refresh()
   }
 
   async function handleDelete(id: string) {
@@ -122,109 +66,10 @@ export default function ConcursosClient({ stats }: { stats: ConcursoStat[] }) {
               transition={{ duration: 0.25, ease: 'easeInOut' }}
               className="overflow-hidden"
             >
-              <Card>
-                <CardContent className="pt-5">
-                  <div className="flex items-center justify-between mb-4">
-                    <h2 className="font-semibold text-foreground">Novo concurso</h2>
-                    <button onClick={resetForm} className="text-muted-foreground hover:text-muted cursor-pointer transition-colors">
-                      <X size={16} />
-                    </button>
-                  </div>
-                  <form onSubmit={handleCreate} noValidate className="space-y-3">
-                    <div>
-                      <label className="block font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5">Nome *</label>
-                      <Input
-                        value={nome}
-                        onChange={e => { setNome(e.target.value); if (nomeError) setNomeError('') }}
-                        aria-invalid={!!nomeError}
-                        placeholder="ex.: Banco do Brasil 2025"
-                      />
-                      <FieldError>{nomeError}</FieldError>
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                      <div>
-                        <label className="block font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5">Cargo</label>
-                        <Input value={cargo} onChange={e => setCargo(e.target.value)} placeholder="ex.: Agente de TI" />
-                      </div>
-                      <div>
-                        <label className="block font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5">Banca</label>
-                        <Input value={banca} onChange={e => setBanca(e.target.value)} placeholder="ex.: Cesgranrio" />
-                      </div>
-                      <div>
-                        <label className="block font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5">Ano</label>
-                        <Input value={ano} onChange={e => setAno(e.target.value)} placeholder="ex.: 2025" />
-                      </div>
-                    </div>
-                    <div>
-                      <label className="block font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5">Material (PDF ou TXT) — opcional</label>
-
-                      {/* Fonte toggle: edital vs prova */}
-                      <div className="grid grid-cols-2 gap-1 p-1 rounded-lg bg-elevated border border-border mb-2">
-                        {([
-                          { key: 'edital', label: 'Edital', hint: 'organizar o programa' },
-                          { key: 'prova', label: 'Prova',  hint: 'a partir das questões' },
-                        ] as const).map(opt => (
-                          <button
-                            key={opt.key}
-                            type="button"
-                            onClick={() => setTipo(opt.key)}
-                            className={`rounded-md px-3 py-2 text-sm font-medium transition-all duration-150 cursor-pointer ${
-                              tipo === opt.key
-                                ? 'bg-[#4A72E8] text-white shadow-sm'
-                                : 'text-muted-foreground hover:text-foreground'
-                            }`}
-                          >
-                            {opt.label}
-                            <span className={`block font-mono text-[9px] uppercase tracking-wider mt-0.5 ${tipo === opt.key ? 'text-white/70' : 'text-dimmed'}`}>{opt.hint}</span>
-                          </button>
-                        ))}
-                      </div>
-
-                      <div
-                        onClick={() => fileInputRef.current?.click()}
-                        onDragOver={e => e.preventDefault()}
-                        onDrop={e => { e.preventDefault(); const d = e.dataTransfer.files[0]; if (d) setFile(d) }}
-                        className={`w-full rounded-lg border-2 border-dashed px-4 py-5 text-center cursor-pointer transition-all duration-150 ${
-                          file
-                            ? 'border-[#4A72E8]/50 bg-[#4A72E8]/5'
-                            : 'border-border hover:border-[#4A72E8]/30 hover:bg-elevated'
-                        }`}
-                      >
-                        {file ? (
-                          <div className="flex items-center justify-center gap-2">
-                            <Upload size={14} className="text-[#4A72E8] flex-shrink-0" />
-                            <span className="text-sm text-[#4A72E8] font-medium truncate max-w-xs">{file.name}</span>
-                            <button type="button" onClick={ev => { ev.stopPropagation(); setFile(null) }} className="text-muted-foreground hover:text-red-500 ml-1 cursor-pointer transition-colors">
-                              <X size={14} />
-                            </button>
-                          </div>
-                        ) : (
-                          <div>
-                            <Upload size={20} className="text-muted-foreground mx-auto mb-1.5" />
-                            <p className="text-xs text-muted-foreground">Arraste {tipo === 'prova' ? 'a prova' : 'o edital'} ou clique para selecionar</p>
-                          </div>
-                        )}
-                      </div>
-                      <input ref={fileInputRef} type="file" accept=".pdf,.txt,application/pdf,text/plain" className="hidden" onChange={e => setFile(e.target.files?.[0] ?? null)} />
-                    </div>
-                    {loading && loadingMsg && (
-                      <div className="flex items-center gap-2 text-[#4A72E8] text-sm">
-                        <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                        </svg>
-                        {loadingMsg}
-                      </div>
-                    )}
-                    <div className="flex gap-2 pt-1">
-                      <Button type="submit" disabled={loading} className="flex-1">
-                        {loading ? (file ? 'Processando…' : 'Salvando…') : (file ? 'Criar com IA' : 'Criar concurso')}
-                      </Button>
-                      <Button type="button" variant="outline" onClick={resetForm}>Cancelar</Button>
-                    </div>
-                  </form>
-                </CardContent>
-              </Card>
+              <NovoConcursoForm
+                onCreated={handleCreated}
+                onCancel={() => setShowForm(false)}
+              />
             </motion.div>
           )}
         </AnimatePresence>
