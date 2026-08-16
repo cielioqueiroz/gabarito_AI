@@ -22,10 +22,16 @@ export default function QuestaoTab({ disciplinas, questoes, topicos = [] }: Prop
   const [generating, setGenerating] = useState<string | null>(null)
   const [previewDisc, setPreviewDisc] = useState<Disciplina | null>(null)
   const [dificuldade, setDificuldade] = useState<'todas' | 'facil' | 'medio' | 'dificil'>('todas')
+  const [origem, setOrigem] = useState<'todas' | 'prova' | 'ia'>('todas')
+
+  // Questão de prova oficial é o material mais valioso para concurso, então
+  // vale poder isolar só elas.
+  const temQuestoesDeProva = questoes.some(q => q.origem === 'prova')
 
   const filtered = questoes
     .filter(q => !selectedDisc || q.disciplina_id === selectedDisc)
     .filter(q => dificuldade === 'todas' || q.dificuldade === dificuldade)
+    .filter(q => origem === 'todas' || (origem === 'prova' ? q.origem === 'prova' : q.origem !== 'prova'))
 
   function getState(id: string): QuestaoState { return states[id] ?? { selected: null, revealed: false } }
 
@@ -69,6 +75,28 @@ export default function QuestaoTab({ disciplinas, questoes, topicos = [] }: Prop
 
   return (
     <div className="space-y-4">
+
+      {/* Origin filters — só aparecem quando há prova importada */}
+      {temQuestoesDeProva && (
+        <div className="flex items-center gap-2 flex-wrap">
+          {([
+            { key: 'todas', label: `Todas (${questoes.length})` },
+            { key: 'prova', label: `Da prova (${questoes.filter(q => q.origem === 'prova').length})` },
+            { key: 'ia',    label: `Geradas por IA (${questoes.filter(q => q.origem !== 'prova').length})` },
+          ] as const).map(o => (
+            <button
+              key={o.key}
+              onClick={() => setOrigem(o.key)}
+              className={cn(
+                'rounded-full px-3 py-1 text-xs font-semibold transition-all duration-150 cursor-pointer',
+                origem === o.key ? 'bg-[#3556C4] text-white' : 'bg-elevated text-muted hover:bg-border'
+              )}
+            >
+              {o.label}
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* Difficulty filters */}
       <div className="flex items-center gap-2 flex-wrap">
@@ -144,7 +172,14 @@ export default function QuestaoTab({ disciplinas, questoes, topicos = [] }: Prop
         return (
           <div key={disc.id} className="space-y-3">
             <div className="flex items-center justify-between">
-              <h3 className="font-semibold text-foreground text-sm">{disc.nome}</h3>
+              <h3 className="font-semibold text-foreground text-sm">
+                {disc.nome}
+                {disc.peso ? (
+                  <span className="ml-2 font-mono text-[10px] font-normal uppercase tracking-widest text-dimmed">
+                    {disc.peso} na prova
+                  </span>
+                ) : null}
+              </h3>
               <Button size="sm" variant="outline" onClick={() => setPreviewDisc(disc)} disabled={generating === disc.id}>
                 {generating === disc.id ? 'Gerando…' : '+ Gerar com IA'}
               </Button>
@@ -188,7 +223,14 @@ function QuestaoCard({ questao, index, state, onSelect }: { questao: Questao; in
       <Card>
         <CardContent className="pt-4">
           <div className="flex flex-wrap items-center gap-2 mb-2">
-            <Badge variant="secondary">Questão {index}</Badge>
+            {/* Numeração da prova quando existe: é assim que o candidato acha a
+                questão no PDF original. */}
+            <Badge variant="secondary">Questão {questao.numero ?? index}</Badge>
+            {questao.origem === 'prova' && (
+              <Badge variant="emerald" title="Transcrita de uma prova oficial que você enviou">
+                Prova oficial
+              </Badge>
+            )}
             {questao.dificuldade && (
               <Badge variant={questao.dificuldade === 'facil' ? 'emerald' : questao.dificuldade === 'dificil' ? 'destructive' : 'amber'}>
                 {questao.dificuldade}

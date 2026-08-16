@@ -36,7 +36,14 @@ export default async function ConcursoPage({ params }: Props) {
       ? supabase.from('flashcards').select('*').in('disciplina_id', disciplinaIds).order('created_at')
       : Promise.resolve({ data: [] }),
     disciplinaIds.length
-      ? supabase.from('questoes').select('id, disciplina_id, enunciado, alternativas, dificuldade, tags, created_at').in('disciplina_id', disciplinaIds).order('created_at')
+      ? supabase.from('questoes')
+          // `correta` e `explicacao` NÃO saem daqui: só via /api/responder,
+          // depois que o usuário escolhe uma alternativa.
+          .select('id, disciplina_id, enunciado, alternativas, dificuldade, tags, origem, numero, topico, created_at')
+          .in('disciplina_id', disciplinaIds)
+          // Questão de prova segue a numeração original; o resto, ordem de criação.
+          .order('numero', { ascending: true, nullsFirst: false })
+          .order('created_at')
       : Promise.resolve({ data: [] }),
     disciplinaIds.length
       ? supabase.from('resumos').select('*').in('disciplina_id', disciplinaIds).order('created_at', { ascending: false })

@@ -29,7 +29,7 @@ Suba o edital em PDF → a IA monta seu plano, flashcards, questões comentadas,
 
 Estudar para concurso é transformar um edital de 40 páginas em meses de estudo organizado — e a maioria faz isso na mão, em planilha. O **gabarito_AI** automatiza o trabalho pesado:
 
-> **Edital em PDF entra → plano de estudos estruturado, flashcards com repetição espaçada, questões de banca comentadas, resumos e podcast em voz neural saem.**
+> **Edital ou prova entra (PDF, foto ou escaneado) → plano de estudos estruturado, as questões reais da prova já cadastradas, flashcards com repetição espaçada, resumos e podcast em voz neural saem.**
 
 Feito por um concurseiro, para concurseiros. Projeto aberto (MIT), roda inteiro em serviços com camada gratuita.
 
@@ -39,7 +39,9 @@ Feito por um concurseiro, para concurseiros. Projeto aberto (MIT), roda inteiro 
 
 | | Feature | Descrição |
 |---|---|---|
-| 📄 | **Upload de edital** | PDF ou TXT (até 5 MB) → IA extrai e organiza disciplinas + tópicos automaticamente |
+| 📄 | **Lê edital ou prova** | PDF, foto (JPG/PNG) ou TXT. Detecta sozinho o que é o documento e lê da primeira à última página — inclusive **PDF escaneado, via OCR do modelo** |
+| 🎯 | **Importa a prova de verdade** | As questões da prova anterior viram questões respondíveis no app, com gabarito, comentário e a numeração original |
+| ⚖️ | **Peso por disciplina** | Descobre quantas questões a banca cobra de cada disciplina, para você priorizar o que cai mais |
 | 🗂️ | **Plano de estudos** | Checklist por disciplina com progresso visual e registro de `estudado_em` para analytics |
 | 🧠 | **Flashcards Leitner** | 5 caixas com agendamento automático de revisão (1 / 2 / 4 / 7 / 15 dias) |
 | ✅ | **Questões com IA** | Múltipla escolha com gabarito e explicação comentada, no estilo das bancas |
@@ -62,6 +64,82 @@ Feito por um concurseiro, para concurseiros. Projeto aberto (MIT), roda inteiro 
 
 ---
 
+## Como o gabarito lê provas e editais
+
+Ler o documento inteiro é o ponto onde quase tudo dá errado — e onde este projeto foi medido contra uma prova real: **FUNCAB / PRF 2014, 18 páginas, 4 MB, com páginas escaneadas**.
+
+### O que mudou
+
+| | Pipeline anterior | Hoje |
+|---|---|---|
+| Quanto do documento a IA via | **22%** — cortava na questão 06 de 60 | **100%** — as 18 páginas |
+| Disciplinas encontradas | 1 (só Português) | **9** |
+| Questões aproveitadas | 0 | **60**, transcritas com gabarito |
+| PDF escaneado | falhava | lido por OCR do modelo |
+| Banca / cargo | digitados na mão | detectados do documento |
+
+```mermaid
+xychart-beta
+    title "Prova FUNCAB/PRF 2014 — 18 páginas, 60 questões"
+    x-axis ["Páginas lidas", "Disciplinas achadas", "Questões aproveitadas"]
+    y-axis "quantidade" 0 --> 60
+    bar "antes" [4, 1, 0]
+    bar "depois" [18, 9, 60]
+```
+
+A causa era um só número: `MAX_EDITAL_CHARS = 12000`. Num **edital** o estrago é ainda pior que numa prova, porque o conteúdo programático mora num **anexo no fim do arquivo** — exatamente a parte que o corte descartava. Hoje o teto é 300k caracteres, dentro da janela de 1M de tokens do modelo.
+
+### O caminho do arquivo
+
+```mermaid
+flowchart TB
+    U["📤 PDF · foto · TXT<br/><sub>até 4 MB</sub>"]
+    V{"assinatura<br/>nos primeiros bytes"}
+    X["❌ recusado"]
+    D{"PDF tem<br/>camada de texto?"}
+    T["📝 texto extraído<br/><sub>unpdf · barato</sub>"]
+    N["👁️ documento nativo<br/><sub>OCR do modelo</sub>"]
+
+    F1["FASE 1 · estrutura<br/><sub>disciplinas · tópicos · peso · banca</sub>"]
+    DB[("💾 concurso salvo")]
+    Q{"é uma prova?"}
+    L["divide em lotes de ~10 questões"]
+    F2["FASE 2 · transcrição<br/><sub>2 lotes em paralelo</sub>"]
+    QB[("💾 questões com gabarito")]
+    FIM(["✅ pronto para estudar"])
+
+    U --> V
+    V -->|"não é PDF/imagem/TXT"| X
+    V -->|ok| D
+    D -->|"sim · ≥200 chars/página"| T
+    D -->|"não · escaneado"| N
+    T --> F1
+    N --> F1
+    F1 --> DB --> Q
+    Q -->|não · edital| FIM
+    Q -->|sim| L --> F2 --> QB --> FIM
+```
+
+**Por que duas fases.** Pedir estrutura + 60 questões numa chamada só leva **54 s** e devolve JSON cortado quando estoura o teto de tokens de saída — perdendo tudo. Separando, a fase 1 grava o plano em ~22 s e a fase 2 transcreve em lotes independentes: um lote que falhe não derruba os outros nem o plano.
+
+**Por que o lote é medido em questões, não em disciplinas.** O que enche a resposta é o volume transcrito, e uma disciplina pode ter 6 ou 20 questões. Usando o peso que a fase 1 descobre, a prova da PRF vira 5 lotes equilibrados de 12 questões em vez de 9 desiguais — quase metade das requisições. A regra está coberta por teste (`npm test`).
+
+**Por que uma cadeia de modelos.** Os apelidos `-latest` do Gemini apontam para o modelo mais novo, que é justamente o que satura primeiro: durante o desenvolvimento, `gemini-flash-latest` respondia `503 high demand` enquanto `gemini-3.6-flash` ia normalmente. A camada de IA percorre uma lista de modelos em vez de insistir num só.
+
+> **Latência é instável por natureza aqui:** o mesmo documento foi processado em **22 s** e em **82 s**, dependendo da carga do Google. Por isso as rotas de ingestão usam `maxDuration = 300` (requer Fluid Compute) e o cliente repete uma vez em falha transitória.
+
+### Testando a extração sem subir nada
+
+Prompts e schemas ficam isolados em `lib/extracao.ts`, então dá para exercitar a parte que decide a qualidade do resultado contra um arquivo real:
+
+```bash
+npm run avaliar -- caminho/para/prova.pdf --questoes
+```
+
+Ele reporta o modo de leitura escolhido, as disciplinas e pesos encontrados, o tempo de cada fase, o modelo que respondeu e quantas questões passariam na validação da rota.
+
+---
+
 ## Arquitetura
 
 ```mermaid
@@ -72,6 +150,7 @@ flowchart TB
         P["proxy.ts<br/><sub>auth gate (convenção Next 16)</sub>"]
         R["React Server Components"]
         A["API Routes /api/*<br/><sub>requireAuth + ownership + rate limit</sub>"]
+        I["Ingestão<br/><sub>lib/documentos · lib/extracao</sub>"]
     end
 
     subgraph D["🗄️ Dados"]
@@ -85,8 +164,10 @@ flowchart TB
 
     B --> P --> R
     B --> A
+    A --> I
     R -->|"sessão do usuário"| S
     A -->|"anon key + RLS<br/>(nunca service-role)"| S
+    I -->|"PDF/imagem nativos<br/>ou texto extraído"| G
     A --> G
     A --> T
 ```
@@ -97,6 +178,9 @@ flowchart TB
 - **Toda rota de IA** valida sessão (`getUser()` server-side), confere ownership da disciplina/concurso e aplica rate limit por usuário **antes** de gastar tokens.
 - **Saída estruturada** (JSON Schema) em vez de regex sobre markdown — a IA não tem como quebrar o parser.
 - **Guard SSRF** na ingestão de links: redirects re-validados salto a salto, IP-literal bloqueado, corpo lido em stream com teto de 2 MB.
+- **Arquivo validado por assinatura**, não por extensão ou `Content-Type` — os dois vêm de quem envia; os primeiros bytes, não.
+- **A saída da IA é entrada não confiável**: antes de gravar, toda questão passa por validação de letra correta, faixa de numeração e tamanho de campo. O que não passa é descartado, não corrigido.
+- **Prompts fora das rotas** (`lib/extracao.ts`): é a parte que mais muda e a única testável contra documentos reais sem servidor nem banco.
 
 <details>
 <summary><b>📁 Estrutura do projeto</b> (clique para expandir)</summary>
@@ -105,7 +189,8 @@ flowchart TB
 gabarito_AI/
 ├── app/
 │   ├── api/
-│   │   ├── criar-com-edital/   # Upload + extração + geração do plano via IA (com rollback)
+│   │   ├── criar-com-edital/   # FASE 1 — lê o documento e monta o plano (com rollback)
+│   │   ├── importar-questoes/  # FASE 2 — transcreve as questões reais da prova, em lotes
 │   │   ├── gerar-flashcards/   # Geração de cards por disciplina
 │   │   ├── gerar-questoes/     # Geração de questões com alternativas
 │   │   ├── gerar-resumo/       # Resumo de disciplina, texto, link ou YouTube
@@ -118,13 +203,20 @@ gabarito_AI/
 │   ├── estatisticas/           # KPIs + gráfico 7 dias + desempenho por disciplina
 │   └── login/                  # Login/signup/forgot + OAuth + Three.js
 ├── components/                 # UI (shadcn/ui + Framer Motion + Three.js)
+│   └── NovoConcursoForm.tsx    # Formulário único de criação + progresso das 2 fases
 ├── lib/
-│   ├── anthropic.ts            # Cliente Gemini (nome legado) — saída estruturada + retry
+│   ├── anthropic.ts            # Cliente Gemini (nome legado) — saída estruturada + cadeia de modelos
+│   ├── documentos.ts           # Validação por assinatura + escolha texto vs. OCR nativo
+│   ├── extracao.ts             # Prompts e schemas da extração (testáveis isoladamente)
 │   ├── apiHelpers.ts           # requireAuth, checkRateLimit, ownership checks
 │   ├── leitner.ts              # Caixas 1–5, intervalos, isDue()
 │   └── supabase/               # Clientes server e browser
+├── scripts/
+│   ├── avaliar-extracao.mjs    # Roda os prompts reais contra uma prova/edital de verdade
+│   └── testar-lotes.mjs        # Testes do loteamento de disciplinas
 ├── supabase/
 │   ├── schema.sql              # DDL completo: RLS, índices, views e triggers
+│   ├── migrations/             # Alterações incrementais (idempotentes)
 │   └── seed.sql                # Seed — BB Agente de Tecnologia 2023
 ├── proxy.ts                    # Auth gate (substitui middleware.ts no Next 16)
 └── next.config.ts              # CSP, HSTS e demais security headers
@@ -166,7 +258,7 @@ Cards da caixa 4+ contam como **dominados** no cálculo de progresso.
 |---|---|
 | Framework | **Next.js 16** — App Router, RSC, async params, `proxy.ts` |
 | Banco | **Supabase** — PostgreSQL + Auth (PKCE) + Row Level Security |
-| IA | **Google Gemini** `gemini-flash-latest` — saída estruturada, camada gratuita |
+| IA | **Google Gemini** — saída estruturada, leitura nativa de PDF/imagem, cadeia de modelos com fallback |
 | Voz | **Microsoft Edge TTS** — neural pt-BR, sem chave, sem custo |
 | Estilo | **Tailwind CSS v4** + shadcn/ui — identidade "Meia-noite & Azul-caneta" |
 | Motion | **Framer Motion** + **Three.js** (partículas com parallax) |
@@ -198,8 +290,12 @@ Execute no SQL Editor do Supabase: `supabase/schema.sql` (obrigatório) e `supab
 ```bash
 npm run dev        # http://localhost:3000
 npm run typecheck  # tsc --noEmit
+npm run lint       # eslint (flat config — `next lint` não existe mais no Next 16)
+npm test           # testes do loteamento de disciplinas
 npm run build      # build de produção
 ```
+
+> **Já tem o banco de uma versão anterior?** Rode também `supabase/migrations/20260814_ingestao_documentos.sql`. Ele adiciona as colunas que a importação de provas usa (`questoes.origem`, `numero`, `topico`, `disciplinas.peso`, `concursos.fonte`) e é idempotente — rodar duas vezes não quebra nada.
 
 <details>
 <summary><b>🔐 Login social (opcional)</b></summary>
@@ -230,7 +326,8 @@ Todas as rotas exigem sessão autenticada, checam ownership antes de chamar a IA
 
 | Endpoint | Método | Rate limit | Descrição |
 |---|---|---|---|
-| `/api/criar-com-edital` | `POST` multipart | 5/min | Cria concurso + processa edital + gera plano |
+| `/api/criar-com-edital` | `POST` multipart | 5/min | **Fase 1** — lê edital/prova e cria o plano |
+| `/api/importar-questoes` | `POST` multipart | 30/min | **Fase 2** — transcreve um lote de questões da prova |
 | `/api/gerar-plano` | `POST` | 5/min | Gera/reimporta plano a partir de texto |
 | `/api/gerar-flashcards` | `POST` | 10/min | Flashcards por disciplina |
 | `/api/gerar-questoes` | `POST` | 10/min | Questões de múltipla escolha comentadas |
@@ -246,7 +343,10 @@ Todas as rotas exigem sessão autenticada, checam ownership antes de chamar a IA
 - **Menor privilégio**: o app usa somente a anon key + sessão; a service-role key não existe no ambiente.
 - **Guard SSRF** na ingestão de URLs (redirects re-validados, IP-literal bloqueado, corpo com teto).
 - **Security headers** globais: CSP, HSTS + preload, `X-Frame-Options: DENY`, nosniff, COOP/CORP.
-- **Rate limiting** por usuário em todas as rotas de IA; upload limitado a 5 MB.
+- **Rate limiting** por usuário em todas as rotas de IA; upload limitado a 4 MB e validado pela assinatura do arquivo (não pela extensão).
+- **Injeção de prompt**: o documento do usuário é sempre marcado como dado, nunca instrução — inclusive quando a instrução vem *impressa dentro do PDF*, que a leitura nativa também enxerga.
+- **Saída do modelo tratada como não confiável**: campos medidos e validados antes do insert; valor fora do `CHECK` do banco é normalizado, não repassado.
+- A chave da IA vai no header `x-goog-api-key`, não na query string, onde vazaria em log de proxy.
 - Env vars validadas em runtime (`lib/env.ts`) — falha rápido se algo faltar.
 
 ---

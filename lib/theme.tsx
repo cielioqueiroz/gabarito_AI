@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useState } from 'react'
 
 type Theme = 'dark' | 'light'
 
@@ -10,18 +10,17 @@ const ThemeContext = createContext<{ theme: Theme; toggle: () => void }>({
 })
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
+  // O tema já vem aplicado no <html> pelo themeInitScript de app/layout.tsx,
+  // que roda antes da pintura para não piscar. Aqui só lemos o que ele decidiu.
+  //
+  // Havia um useEffect relendo o localStorage com `theme` na lista de
+  // dependências: além de repetir o trabalho do script, ele chamava setState
+  // dentro de um efeito que dependia do próprio estado — renderização em
+  // cascata sem nenhum ganho.
   const [theme, setTheme] = useState<Theme>(() => {
     if (typeof document === 'undefined') return 'dark'
     return document.documentElement.classList.contains('dark') ? 'dark' : 'light'
   })
-
-  useEffect(() => {
-    const stored = localStorage.getItem('gabarito-theme') as Theme | null
-    if (stored && stored !== theme) {
-      setTheme(stored)
-      document.documentElement.classList.toggle('dark', stored === 'dark')
-    }
-  }, [theme])
 
   function toggle() {
     setTheme(prev => {

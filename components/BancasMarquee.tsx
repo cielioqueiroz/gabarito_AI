@@ -26,7 +26,7 @@ const seq = Array(3).fill(bancas).flat()
 function Chip({ b }: { b: Banca }) {
   return (
     <span className="inline-flex h-12 flex-shrink-0 items-center justify-center px-7 opacity-90 transition-all duration-300 hover:-translate-y-0.5 hover:opacity-100">
-      {/* eslint-disable-next-line @next/next/no-img-element — logos oficiais em public/bancas, fundo transparente */}
+      {/* eslint-disable-next-line @next/next/no-img-element -- logos oficiais servidos de public/bancas, já otimizados */}
       <img
         src={b.logo}
         alt={b.alt}

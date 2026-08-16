@@ -5,6 +5,8 @@ export interface Concurso {
   cargo: string | null
   ano: string | null
   banca: string | null
+  /** Documento que originou o plano. */
+  fonte?: 'manual' | 'edital' | 'prova' | null
   created_at: string
 }
 
@@ -13,6 +15,8 @@ export interface Disciplina {
   concurso_id: string
   nome: string
   ordem: number
+  /** Nº de questões que a banca cobra da disciplina; null quando não deu para saber. */
+  peso?: number | null
 }
 
 export interface Topico {
@@ -47,6 +51,11 @@ export interface Questao {
   alternativas: Alternativa[]
   dificuldade?: 'facil' | 'medio' | 'dificil'
   tags?: string[]
+  /** 'prova' = transcrita de prova oficial; 'ia' = gerada pelo modelo. */
+  origem?: 'prova' | 'ia' | null
+  /** Número na prova original, quando origem = 'prova'. */
+  numero?: number | null
+  topico?: string | null
   created_at: string
 }
 

@@ -6,8 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "typecheck": "tsc --noEmit"
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "node scripts/testar-lotes.mjs",
+    "avaliar": "node --experimental-strip-types scripts/avaliar-extracao.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.104.2",
