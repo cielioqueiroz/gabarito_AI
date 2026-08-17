@@ -9,13 +9,28 @@ import { useMotion } from '@/lib/motion'
 import { KeyboardShortcutsDialog } from './KeyboardShortcutsDialog'
 import { PwaPrompt } from './PwaPrompt'
 
+/**
+ * Larguras de conteúdo. A página escolhe a sua; header, conteúdo e rodapé usam
+ * a MESMA, para que título, ações e conteúdo fiquem na mesma coluna.
+ */
+const LARGURAS = {
+  lg:  'max-w-lg',
+  xl:  'max-w-xl',
+  '2xl': 'max-w-2xl',
+  '3xl': 'max-w-3xl',
+  '4xl': 'max-w-4xl',
+} as const
+
 interface Props {
   children: React.ReactNode
   title?: string
   headerRight?: React.ReactNode
+  /** Largura da coluna de conteúdo. Padrão: 3xl. */
+  largura?: keyof typeof LARGURAS
 }
 
-export default function ShellLayout({ children, title, headerRight }: Props) {
+export default function ShellLayout({ children, title, headerRight, largura = '3xl' }: Props) {
+  const container = `w-full ${LARGURAS[largura]} mx-auto px-6`
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const shortcuts = useShortcuts()
   const { reduce } = useMotion()
@@ -81,11 +96,21 @@ export default function ShellLayout({ children, title, headerRight }: Props) {
         )}
       </AnimatePresence>
 
-      {/* Main area */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+      {/*
+        Main area.
+        O `md:pr-[15.75rem]` compensa a sidebar (w-60 = 15rem + 0.75rem do
+        wrapper p-3). Sem ele, `mx-auto` centraliza dentro da área restante e o
+        conteúdo fica 126px à direita do centro da tela — metade da sidebar,
+        medido em 1920px. Com a compensação, os dois lados da coluna ficam
+        iguais e o conteúdo cai no centro da VIEWPORT, que é o que se espera ao
+        olhar para a tela. Em telas estreitas a coluna só encolhe: nunca passa
+        por baixo da sidebar.
+      */}
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden md:pr-[15.75rem]">
         {/* Header — sem borda dura: hairline viva no lugar */}
-        <header className="relative h-14 flex-shrink-0 flex items-center justify-between px-5 bg-background/85 backdrop-blur-sm sticky top-0 z-10">
-          <div aria-hidden className="divider-live absolute bottom-0 left-5 right-5" />
+        <header className="h-14 flex-shrink-0 bg-background/85 backdrop-blur-sm sticky top-0 z-10">
+          <div className={`${container} relative h-full flex items-center justify-between`}>
+          <div aria-hidden className="divider-live absolute bottom-0 left-6 right-6" />
           <div className="flex items-center gap-3">
             <button
               ref={openerRef}
@@ -112,6 +137,7 @@ export default function ShellLayout({ children, title, headerRight }: Props) {
             </button>
             {headerRight}
           </div>
+          </div>
         </header>
         <KeyboardShortcutsDialog open={shortcuts.open} onClose={shortcuts.hide} />
 
@@ -123,14 +149,16 @@ export default function ShellLayout({ children, title, headerRight }: Props) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.25, ease: 'easeOut' }}
         >
-          {children}
+          {/* A coluna vive aqui, não em cada página: antes cada tela repetia o
+              seu próprio `max-w-* mx-auto px-6` e elas divergiam entre si. */}
+          <div className={`${container} py-8`}>{children}</div>
         </motion.main>
 
         <PwaPrompt />
 
         {/* Footer — vivo: hairline animada + pulso de status + crédito do autor */}
-        <footer className="relative flex-shrink-0 h-10 flex items-center justify-between px-5">
-          <div aria-hidden className="divider-live absolute top-0 left-5 right-5" />
+        <footer className={`${container} relative flex-shrink-0 h-10 flex items-center justify-between`}>
+          <div aria-hidden className="divider-live absolute top-0 left-6 right-6" />
           <span className="font-mono text-[10px] font-bold tracking-tight text-muted">
             gabarito<span className="text-[#4A72E8]">_AI</span>
           </span>

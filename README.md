@@ -40,6 +40,7 @@ Feito por um concurseiro, para concurseiros. Projeto aberto (MIT), roda inteiro 
 | | Feature | Descrição |
 |---|---|---|
 | 📄 | **Lê edital ou prova** | PDF, foto (JPG/PNG) ou TXT. Detecta sozinho o que é o documento e lê da primeira à última página — inclusive **PDF escaneado, via OCR do modelo** |
+| ✍️ | **Zero digitação** | Só o arquivo basta: nome, banca, cargo e ano saem do próprio documento. Nenhum campo é obrigatório quando há upload |
 | 🎯 | **Importa a prova de verdade** | As questões da prova anterior viram questões respondíveis no app, com gabarito, comentário e a numeração original |
 | ⚖️ | **Peso por disciplina** | Descobre quantas questões a banca cobra de cada disciplina, para você priorizar o que cai mais |
 | 🗂️ | **Plano de estudos** | Checklist por disciplina com progresso visual e registro de `estudado_em` para analytics |
