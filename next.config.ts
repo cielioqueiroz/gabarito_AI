@@ -3,9 +3,14 @@ import type { NextConfig } from "next";
 // Supabase project URL from env. Fallback to wildcard for local dev.
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? 'https://*.supabase.co'
 
+// O React em modo de desenvolvimento usa eval() para o React Refresh; sem esta
+// exceção o navegador acusa violação de CSP a cada carga em `next dev`. Em
+// produção o eval continua bloqueado — a exceção não vai para o build.
+const evalEmDev = process.env.NODE_ENV === 'development' ? " 'unsafe-eval'" : ''
+
 const cspDirectives = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline'",
+  `script-src 'self' 'unsafe-inline'${evalEmDev}`,
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' https://fonts.gstatic.com data:",
   "img-src 'self' data: blob: https:",
