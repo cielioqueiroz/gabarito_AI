@@ -140,7 +140,12 @@ export default function LoginPage() {
   const submitLabel = loading ? 'Aguarde…' : tab === 'login' ? t.auth.signIn : tab === 'signup' ? t.auth.signUp : t.auth.resetPassword
 
   return (
-    <div className="min-h-screen bg-background text-foreground lg:grid lg:grid-cols-2">
+    /* O par de painéis é limitado e centralizado: esticado de borda a borda
+       numa tela de 1920px, o formulário ficava a 480px do centro, encostado na
+       borda direita, com um vazio preto em volta. Limitado, o conjunto fica no
+       meio da tela e o respiro dos dois lados passa a ser intencional. */
+    <div className="min-h-screen bg-background text-foreground">
+    <div className="mx-auto flex min-h-screen w-full max-w-[1440px] flex-col lg:grid lg:grid-cols-2">
       {/* ── Left brand panel ── */}
       <aside className="relative hidden overflow-hidden bg-gradient-to-br from-[#0B0B0F] via-[#15151A] to-[#101014] p-12 lg:flex lg:flex-col lg:justify-between">
         <div aria-hidden className="pointer-events-none absolute inset-0">
@@ -343,6 +348,7 @@ export default function LoginPage() {
           </p>
         </div>
       </main>
+    </div>
     </div>
   )
 }

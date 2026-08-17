@@ -67,8 +67,8 @@ export default function HomeClient({ stats, userEmail, userName }: Props) {
   )
 
   return (
-    <ShellLayout title="Dashboard" headerRight={headerRight}>
-      <div className="max-w-3xl mx-auto px-6 py-8">
+    <ShellLayout largura="3xl" title="Dashboard" headerRight={headerRight}>
+      <div>
 
         {/* Greeting */}
         <motion.div

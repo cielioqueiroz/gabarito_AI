@@ -25,6 +25,13 @@ export const PLANO_SCHEMA = {
       enum: ['edital', 'prova', 'outro'],
       description: 'O que o documento realmente é.',
     },
+    titulo: {
+      type: 'string',
+      description:
+        'Nome do concurso como um candidato o chamaria, curto e reconhecível: órgão + ano, ' +
+        'e o cargo só quando o documento for específico dele. Ex.: "Banco do Brasil 2023 — Agente Comercial", ' +
+        '"PRF 2014", "TJ-PA 2023 — Analista Judiciário". Nunca use o nome do arquivo.',
+    },
     banca: { type: 'string', description: 'Banca organizadora, se identificável. Vazio se não houver.' },
     cargo: { type: 'string', description: 'Cargo do concurso, se identificável.' },
     ano:   { type: 'string', description: 'Ano do concurso, se identificável.' },
@@ -47,6 +54,7 @@ export const PLANO_SCHEMA = {
 
 export interface Plano {
   tipo_detectado: 'edital' | 'prova' | 'outro'
+  titulo?: string
   banca?: string
   cargo?: string
   ano?: string
@@ -65,7 +73,8 @@ Regras em qualquer caso:
 - Cubra o documento INTEIRO, da primeira à última página.
 - Tópicos precisam ser específicos e estudáveis, não títulos genéricos.
 - Em "peso", informe quantas questões a prova cobra da disciplina quando o documento disser (o edital costuma ter um quadro de provas; na prova, conte as questões). Use 0 se não der para saber.
-- Preencha banca/cargo/ano/orgao só quando estiverem no documento.
+- Preencha titulo/banca/cargo/ano/orgao a partir do documento. O "titulo" é obrigatório: é como o concurso vai aparecer na lista do candidato, então dê o melhor nome possível mesmo com informação parcial (se só houver o órgão, use o órgão).
+- Nunca invente banca, cargo ou ano que não estejam no documento — deixe vazio. O titulo é a única exceção, porque sem ele o concurso fica sem nome.
 
 ${AVISO_CONTEUDO_NAO_CONFIAVEL}`
 

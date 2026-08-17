@@ -15,7 +15,7 @@
 
 import { useState, useRef } from 'react'
 import { motion } from 'framer-motion'
-import { Upload, X, FileText, Image as ImageIcon, Check, Loader2, Sparkles } from 'lucide-react'
+import { Upload, X, FileText, Image as ImageIcon, Check, Loader2, Sparkles, ChevronDown } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { useToast } from '@/lib/toast'
 import { Button } from '@/components/ui/button'
@@ -178,8 +178,10 @@ export default function NovoConcursoForm({ onCreated, onCancel }: Props) {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!nome.trim()) {
-      setNomeError('Informe o nome do concurso.')
+    // Com documento nada é obrigatório — a IA tira nome, banca, cargo e ano do
+    // próprio arquivo. O nome só é exigido quando não há de onde inferir.
+    if (!nome.trim() && !file) {
+      setNomeError('Informe o nome do concurso — ou envie o edital/prova e a IA preenche.')
       return
     }
     setNomeError('')
@@ -214,6 +216,7 @@ export default function NovoConcursoForm({ onCreated, onCancel }: Props) {
     let plano: {
       id: string; fonte: string; disciplinas: DisciplinaSalva[]
       topicos: number; podeImportarQuestoes: boolean
+      detectado?: { nome: string; cargo: string | null; banca: string | null; ano: string | null }
     }
     try {
       setEtapa('plano')
@@ -237,9 +240,13 @@ export default function NovoConcursoForm({ onCreated, onCancel }: Props) {
     }
 
     const qtdDisciplinas = plano.disciplinas?.length ?? 0
+    const d = plano.detectado
+    const identificado = [d?.nome, d?.banca, d?.ano].filter(Boolean).join(' · ')
     toast.success(
-      `Plano criado — ${qtdDisciplinas} disciplinas, ${plano.topicos} tópicos`,
-      plano.fonte === 'prova' ? 'Extraído da prova enviada.' : 'Extraído do edital enviado.',
+      `${d?.nome || 'Plano criado'} — ${qtdDisciplinas} disciplinas, ${plano.topicos} tópicos`,
+      identificado
+        ? `Identificado no ${plano.fonte}: ${identificado}`
+        : plano.fonte === 'prova' ? 'Extraído da prova enviada.' : 'Extraído do edital enviado.',
     )
 
     // ─── Fase 2 ───────────────────────────────────────────────────────────────
@@ -275,40 +282,13 @@ export default function NovoConcursoForm({ onCreated, onCancel }: Props) {
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} noValidate className="space-y-3">
-          <div>
-            <label htmlFor="nc-nome" className="block font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5">Nome *</label>
-            <Input
-              id="nc-nome"
-              value={nome}
-              onChange={e => { setNome(e.target.value); if (nomeError) setNomeError('') }}
-              aria-invalid={!!nomeError}
-              disabled={ocupado}
-              placeholder="ex.: Banco do Brasil 2025"
-            />
-            <FieldError>{nomeError}</FieldError>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div>
-              <label htmlFor="nc-cargo" className="block font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5">Cargo</label>
-              <Input id="nc-cargo" value={cargo} onChange={e => setCargo(e.target.value)} disabled={ocupado} placeholder="ex.: Agente de TI" />
-            </div>
-            <div>
-              <label htmlFor="nc-banca" className="block font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5">Banca</label>
-              <Input id="nc-banca" value={banca} onChange={e => setBanca(e.target.value)} disabled={ocupado} placeholder="ex.: Cesgranrio" />
-            </div>
-            <div>
-              <label htmlFor="nc-ano" className="block font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5">Ano</label>
-              <Input id="nc-ano" value={ano} onChange={e => setAno(e.target.value)} disabled={ocupado} inputMode="numeric" placeholder="ex.: 2025" />
-            </div>
-          </div>
-          <p className="text-[11px] text-dimmed -mt-1">Deixe em branco o que a IA puder achar sozinha no documento.</p>
-
+        <form onSubmit={handleSubmit} noValidate className="space-y-4">
+          {/* O documento vem primeiro: ele é a ação principal e, sozinho,
+              basta — a IA tira nome, banca, cargo e ano de dentro dele. */}
           {/* ─── Documento ─── */}
           <div>
             <label className="block font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5">
-              Documento — opcional
+              Edital ou prova
             </label>
 
             <div role="radiogroup" aria-label="Tipo de documento" className="grid grid-cols-3 gap-1 p-1 rounded-lg bg-elevated border border-border mb-2">
@@ -399,6 +379,49 @@ export default function NovoConcursoForm({ onCreated, onCancel }: Props) {
               </p>
             )}
           </div>
+
+          {/* Os campos manuais são a exceção, não a regra. Ficam recolhidos e
+              só valem para corrigir a IA ou criar um concurso sem documento. */}
+          <details className="group rounded-lg border border-border bg-elevated/40 [&_summary::-webkit-details-marker]:hidden" open={!file}>
+            <summary className="flex cursor-pointer items-center justify-between px-3 py-2.5 text-sm text-muted-foreground transition-colors hover:text-foreground">
+              <span>{file ? 'Preencher na mão (opcional)' : 'Dados do concurso'}</span>
+              <ChevronDown size={15} className="transition-transform group-open:rotate-180" />
+            </summary>
+            <div className="space-y-3 border-t border-border/70 px-3 pb-3 pt-3">
+              {file && (
+                <p className="text-[11px] text-dimmed">
+                  Deixe tudo em branco para a IA preencher a partir do documento. O que você digitar aqui prevalece.
+                </p>
+              )}
+            <div>
+              <label htmlFor="nc-nome" className="block font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5">Nome{file ? '' : ' *'}</label>
+              <Input
+                id="nc-nome"
+                value={nome}
+                onChange={e => { setNome(e.target.value); if (nomeError) setNomeError('') }}
+                aria-invalid={!!nomeError}
+                disabled={ocupado}
+                placeholder="ex.: Banco do Brasil 2025"
+              />
+              <FieldError>{nomeError}</FieldError>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label htmlFor="nc-cargo" className="block font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5">Cargo</label>
+                <Input id="nc-cargo" value={cargo} onChange={e => setCargo(e.target.value)} disabled={ocupado} placeholder="ex.: Agente de TI" />
+              </div>
+              <div>
+                <label htmlFor="nc-banca" className="block font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5">Banca</label>
+                <Input id="nc-banca" value={banca} onChange={e => setBanca(e.target.value)} disabled={ocupado} placeholder="ex.: Cesgranrio" />
+              </div>
+              <div>
+                <label htmlFor="nc-ano" className="block font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5">Ano</label>
+                <Input id="nc-ano" value={ano} onChange={e => setAno(e.target.value)} disabled={ocupado} inputMode="numeric" placeholder="ex.: 2025" />
+              </div>
+            </div>
+            </div>
+          </details>
 
           {ocupado && <Progresso etapa={etapa!} progresso={progresso} temArquivo={!!file} />}
 

@@ -22,8 +22,8 @@ export default function RevisaoClient({ flashcards: initial, disciplinaMap }: Pr
 
   if (cards.length === 0 || done) {
     return (
-      <ShellLayout title="Revisão do Dia">
-        <div className="max-w-lg mx-auto px-6 py-16 text-center">
+      <ShellLayout largura="lg" title="Revisão do Dia">
+        <div className="py-8 text-center">
           <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: 'spring', stiffness: 200 }}>
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 mb-6">
               <svg className="w-8 h-8 text-emerald-400" viewBox="0 0 16 16" fill="currentColor">
@@ -46,8 +46,8 @@ export default function RevisaoClient({ flashcards: initial, disciplinaMap }: Pr
   }
 
   return (
-    <ShellLayout title="Revisão do Dia">
-      <div className="max-w-lg mx-auto px-6 py-8">
+    <ShellLayout largura="lg" title="Revisão do Dia">
+      <div>
         <FlashcardStudy
           cards={cards}
           discNameOf={discNameOf}

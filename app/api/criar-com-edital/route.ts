@@ -21,6 +21,13 @@ export const maxDuration = 300
  * (/api/importar-questoes), em lotes por disciplina e com progresso na tela.
  */
 
+/** Último recurso para o nome: "edital-bb-2023.pdf" → "edital bb 2023". */
+function nomeDoArquivo(file: File): string {
+  const semExtensao = file.name.replace(/\.[^.]+$/, '')
+  const legivel = semExtensao.replace(/[_-]+/g, ' ').replace(/\s+/g, ' ').trim()
+  return (legivel || 'Concurso sem nome').slice(0, 200)
+}
+
 function limpar(valor: unknown): string | null {
   const s = typeof valor === 'string' ? valor.trim() : ''
   return s && s.toLowerCase() !== 'desconhecido' ? s.slice(0, 120) : null
@@ -84,10 +91,18 @@ export async function POST(req: NextRequest) {
     tipoRaw === 'prova' ? 'prova' : tipoRaw === 'edital' ? 'edital' : 'auto'
   const file = (formData.get('edital') as File | null) ?? (formData.get('arquivo') as File | null)
 
-  if (!nome) return NextResponse.json({ error: 'Nome é obrigatório' }, { status: 400 })
+  // Com documento, nada é obrigatório: a IA tira o nome do próprio arquivo.
+  // Sem documento não há de onde inferir, então aí sim o nome é exigido.
+  const temArquivo = !!file && file.size > 0
+  if (!nome && !temArquivo) {
+    return NextResponse.json({
+      error: 'Dê um nome ao concurso',
+      hint: 'Ou envie o edital/prova e a IA preenche tudo sozinha.',
+    }, { status: 400 })
+  }
 
   // Sem arquivo: concurso vazio, para montar o plano na mão.
-  if (!file || file.size === 0) {
+  if (!temArquivo) {
     const { data, error } = await auth.supabase
       .from('concursos')
       .insert({
@@ -168,14 +183,16 @@ export async function POST(req: NextRequest) {
     .from('concursos')
     .insert({
       user_id: auth.userId,
-      nome,
-      // O que o usuário digitou tem prioridade; a IA só preenche o que ficou em branco.
+      // O que o usuário digitou tem prioridade; a IA só preenche o que ficou em
+      // branco. Sem nada digitado nem detectado, sobra o nome do arquivo — feio,
+      // mas melhor que um concurso sem nome na lista.
+      nome: nome || limpar(plano.titulo) || nomeDoArquivo(file),
       cargo: limpar(formData.get('cargo')) ?? limpar(plano.cargo),
       banca: limpar(formData.get('banca')) ?? limpar(plano.banca),
       ano:   limpar(formData.get('ano'))   ?? limpar(plano.ano),
       fonte: plano.tipo_detectado,
     })
-    .select('id').single()
+    .select('id, nome, cargo, banca, ano').single()
 
   if (erroConcurso || !concurso) {
     logger.error('criar-edital', 'insert-concurso', { err: erroConcurso?.message })
@@ -196,6 +213,8 @@ export async function POST(req: NextRequest) {
     id: concurso.id,
     gerou: true,
     fonte: plano.tipo_detectado,
+    // Devolvido para a tela poder mostrar o que foi detectado sozinho.
+    detectado: { nome: concurso.nome, cargo: concurso.cargo, banca: concurso.banca, ano: concurso.ano },
     disciplinas,
     topicos: plano.disciplinas.reduce((n, d) => n + (d.topicos?.length ?? 0), 0),
     // Só prova tem questões transcritíveis na fase 2.

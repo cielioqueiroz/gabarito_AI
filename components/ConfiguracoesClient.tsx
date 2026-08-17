@@ -52,8 +52,8 @@ export default function ConfiguracoesClient({ email, initialName }: Props) {
   }
 
   return (
-    <ShellLayout title="Configurações">
-      <div className="max-w-2xl mx-auto px-6 py-8">
+    <ShellLayout largura="2xl" title="Configurações">
+      <div>
         <motion.div
           variants={stagger}
           initial="hidden"

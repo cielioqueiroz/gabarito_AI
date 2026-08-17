@@ -59,8 +59,8 @@ export default function ConcursoDetail({ concurso, disciplinas, topicos, flashca
   )
 
   return (
-    <ShellLayout title={concurso.nome} headerRight={headerRight}>
-      <div className="max-w-3xl mx-auto px-6 py-6">
+    <ShellLayout largura="3xl" title={concurso.nome} headerRight={headerRight}>
+      <div>
         {/* Meta badges */}
         <div className="flex flex-wrap gap-2 mb-6">
           {concurso.cargo && <Badge variant="secondary">{concurso.cargo}</Badge>}

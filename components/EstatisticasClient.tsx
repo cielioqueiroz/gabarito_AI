@@ -50,8 +50,8 @@ export default function EstatisticasClient({ respostas: allResp, disciplinaStats
 
   if (totalResp === 0 && allConcursoStats.length === 0) {
     return (
-      <ShellLayout title="Estatísticas">
-        <div className="max-w-lg mx-auto px-6 py-16 text-center">
+      <ShellLayout largura="3xl" title="Estatísticas">
+        <div className="py-8 text-center">
           <EmptyIllustration variant="chart" className="mb-5 text-muted-foreground" />
           <h2 className="font-bold text-foreground text-lg mb-2">Sem dados ainda</h2>
           <p className="text-muted-foreground text-sm">Estude flashcards e responda questões para ver estatísticas aqui.</p>
@@ -61,8 +61,8 @@ export default function EstatisticasClient({ respostas: allResp, disciplinaStats
   }
 
   return (
-    <ShellLayout title="Estatísticas">
-      <div className="max-w-3xl mx-auto px-6 py-6 space-y-6">
+    <ShellLayout largura="3xl" title="Estatísticas">
+      <div className="space-y-6">
         {concursos.length > 0 && (
           <div className="flex items-center gap-2 flex-wrap">
             <button

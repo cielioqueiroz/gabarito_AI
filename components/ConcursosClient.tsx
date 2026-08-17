@@ -42,8 +42,8 @@ export default function ConcursosClient({ stats }: { stats: ConcursoStat[] }) {
   )
 
   return (
-    <ShellLayout title="Meus Concursos" headerRight={headerRight}>
-      <div className="max-w-4xl mx-auto px-6 py-8">
+    <ShellLayout largura="4xl" title="Meus Concursos" headerRight={headerRight}>
+      <div>
 
         {/* Summary line */}
         <motion.p

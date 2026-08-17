@@ -17,9 +17,13 @@ Suba o edital em PDF → a IA monta seu plano, flashcards, questões comentadas,
 
 **[🌐 App ao vivo](https://gabarito-lyart.vercel.app)** · **[✨ Landing page](https://gabarito-lyart.vercel.app/sobre)** · **[👨‍💻 Autor](https://cielioqueiroz.github.io/)**
 
+<sub>Entre com <code>teste@gabarito.app</code> / <code>gabarito123</code> para ver o app com dados reais.</sub>
+
 <br/>
 
-<img src=".github/screenshots/landing-hero.png" alt="Landing do gabarito_AI — identidade Meia-noite & Azul-caneta" width="920" />
+<img src=".github/screenshots/dashboard.png" alt="Dashboard do gabarito_AI com um concurso montado a partir de uma prova real" width="920" />
+
+<sub>Dashboard real — concurso montado sozinho a partir do PDF de uma prova da FUNCAB/PRF</sub>
 
 </div>
 
@@ -40,6 +44,7 @@ Feito por um concurseiro, para concurseiros. Projeto aberto (MIT), roda inteiro 
 | | Feature | Descrição |
 |---|---|---|
 | 📄 | **Lê edital ou prova** | PDF, foto (JPG/PNG) ou TXT. Detecta sozinho o que é o documento e lê da primeira à última página — inclusive **PDF escaneado, via OCR do modelo** |
+| ✍️ | **Zero digitação** | Só o arquivo basta: nome, banca, cargo e ano saem do próprio documento. Nenhum campo é obrigatório quando há upload |
 | 🎯 | **Importa a prova de verdade** | As questões da prova anterior viram questões respondíveis no app, com gabarito, comentário e a numeração original |
 | ⚖️ | **Peso por disciplina** | Descobre quantas questões a banca cobra de cada disciplina, para você priorizar o que cai mais |
 | 🗂️ | **Plano de estudos** | Checklist por disciplina com progresso visual e registro de `estudado_em` para analytics |
@@ -56,11 +61,24 @@ Feito por um concurseiro, para concurseiros. Projeto aberto (MIT), roda inteiro 
 <div align="center">
 <table>
   <tr>
-    <td align="center"><img src=".github/screenshots/como-funciona.png" alt="Como funciona — 4 passos" width="440"/><br/><sub>Do edital ao domínio, em 4 passos</sub></td>
-    <td align="center"><img src=".github/screenshots/login.png" alt="Login com Google e GitHub" width="440"/><br/><sub>Login social + Three.js</sub></td>
+    <td align="center" width="50%"><img src=".github/screenshots/novo-concurso.png" alt="Formulário de novo concurso com o PDF anexado e os campos recolhidos" width="460"/><br/><sub><b>Zero digitação</b> — anexou o PDF, os campos somem. Nome, banca e cargo saem do documento</sub></td>
+    <td align="center" width="50%"><img src=".github/screenshots/questoes-da-prova.png" alt="Questões importadas de uma prova oficial, com filtro por origem" width="460"/><br/><sub><b>Questões reais da prova</b> — badge de origem, numeração original e peso da disciplina</sub></td>
+  </tr>
+  <tr>
+    <td align="center"><img src=".github/screenshots/plano.png" alt="Plano de estudos por disciplina" width="460"/><br/><sub>Plano extraído do documento, com progresso por disciplina</sub></td>
+    <td align="center"><img src=".github/screenshots/estatisticas.png" alt="Estatísticas de desempenho" width="460"/><br/><sub>Acertos, evolução e desempenho por disciplina</sub></td>
+  </tr>
+  <tr>
+    <td align="center"><img src=".github/screenshots/login.png" alt="Tela de login com Google e GitHub" width="460"/><br/><sub>Login social (Google · GitHub) com fundo Three.js</sub></td>
+    <td align="center"><img src=".github/screenshots/mobile.png" alt="App em tela de celular" width="200"/><br/><sub>PWA instalável, responsivo</sub></td>
+  </tr>
+  <tr>
+    <td align="center" colspan="2"><img src=".github/screenshots/landing-hero.png" alt="Landing page pública do gabarito_AI" width="700"/><br/><sub>Landing pública em <code>/sobre</code></sub></td>
   </tr>
 </table>
 </div>
+
+> Todos os prints são do app rodando, com um concurso montado de ponta a ponta pela própria pipeline a partir do PDF de uma prova real — nenhum dado foi inserido à mão.
 
 ---
 
