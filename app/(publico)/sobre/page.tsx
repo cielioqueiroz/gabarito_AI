@@ -6,7 +6,7 @@ import {
 } from 'lucide-react'
 import LandingFx from '@/components/LandingFx'
 import BancasMarquee from '@/components/BancasMarquee'
-import { ogImage, twitterImage } from '../shared-metadata'
+import { ogImage, twitterImage } from '@/app/shared-metadata'
 
 export const metadata: Metadata = {
   title: 'gabarito_AI — estude concursos com IA',

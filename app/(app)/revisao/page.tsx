@@ -1,12 +1,9 @@
-import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
+import { requireSession } from '@/lib/auth'
 import { isDue } from '@/lib/leitner'
 import RevisaoClient from '@/components/RevisaoClient'
 
 export default async function RevisaoPage() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/login')
+  const { supabase, user } = await requireSession()
 
   const { data: concursos } = await supabase
     .from('concursos').select('id').eq('user_id', user.id)

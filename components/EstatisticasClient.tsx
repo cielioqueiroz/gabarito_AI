@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
 import { BarChart3 } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
-import ShellLayout from './ShellLayout'
+import Page from './Page'
 import ProgressBar from './ProgressBar'
 import { EmptyIllustration } from './ui/EmptyIllustration'
 
@@ -48,20 +48,17 @@ export default function EstatisticasClient({ respostas: allResp, disciplinaStats
   const totCards      = concursoStats.reduce((a, c) => a + Number(c.flashcards_total), 0)
   const totDominados  = concursoStats.reduce((a, c) => a + Number(c.flashcards_dominados), 0)
 
-  if (totalResp === 0 && allConcursoStats.length === 0) {
-    return (
-      <ShellLayout largura="3xl" title="Estatísticas">
+  const semDados = totalResp === 0 && allConcursoStats.length === 0
+
+  return (
+    <Page title="Estatísticas">
+      {semDados ? (
         <div className="py-8 text-center">
           <EmptyIllustration variant="chart" className="mb-5 text-muted-foreground" />
           <h2 className="font-bold text-foreground text-lg mb-2">Sem dados ainda</h2>
           <p className="text-muted-foreground text-sm">Estude flashcards e responda questões para ver estatísticas aqui.</p>
         </div>
-      </ShellLayout>
-    )
-  }
-
-  return (
-    <ShellLayout largura="3xl" title="Estatísticas">
+      ) : (
       <div className="space-y-6">
         {concursos.length > 0 && (
           <div className="flex items-center gap-2 flex-wrap">
@@ -161,6 +158,7 @@ export default function EstatisticasClient({ respostas: allResp, disciplinaStats
           </CardContent></Card>
         )}
       </div>
-    </ShellLayout>
+      )}
+    </Page>
   )
 }

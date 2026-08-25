@@ -12,7 +12,7 @@ import FlashcardTab from './FlashcardTab'
 import QuestaoTab  from './QuestaoTab'
 import ResumoTab   from './ResumoTab'
 import ProgressBar from './ProgressBar'
-import ShellLayout  from './ShellLayout'
+import Page from './Page'
 
 interface Props {
   concurso:    Concurso
@@ -59,7 +59,7 @@ export default function ConcursoDetail({ concurso, disciplinas, topicos, flashca
   )
 
   return (
-    <ShellLayout largura="3xl" title={concurso.nome} headerRight={headerRight}>
+    <Page title={concurso.nome} headerRight={headerRight}>
       <div>
         {/* Meta badges */}
         <div className="flex flex-wrap gap-2 mb-6">
@@ -131,6 +131,6 @@ export default function ConcursoDetail({ concurso, disciplinas, topicos, flashca
           </motion.div>
         </AnimatePresence>
       </div>
-    </ShellLayout>
+    </Page>
   )
 }

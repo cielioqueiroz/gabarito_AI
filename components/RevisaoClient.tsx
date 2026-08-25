@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
-import ShellLayout from './ShellLayout'
+import Page from './Page'
 import FlashcardStudy from './FlashcardStudy'
 import type { Flashcard } from '@/types'
 
@@ -20,9 +20,11 @@ export default function RevisaoClient({ flashcards: initial, disciplinaMap }: Pr
 
   const discNameOf = (card: Flashcard) => disciplinaMap[card.disciplina_id] ?? ''
 
-  if (cards.length === 0 || done) {
-    return (
-      <ShellLayout largura="lg" title="Revisão do Dia">
+  const semCards = cards.length === 0 || done
+
+  return (
+    <Page title="Revisão do Dia">
+      {semCards ? (
         <div className="py-8 text-center">
           <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: 'spring', stiffness: 200 }}>
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 mb-6">
@@ -41,13 +43,7 @@ export default function RevisaoClient({ flashcards: initial, disciplinaMap }: Pr
             <Button onClick={() => router.push('/')}>Voltar ao Dashboard</Button>
           </motion.div>
         </div>
-      </ShellLayout>
-    )
-  }
-
-  return (
-    <ShellLayout largura="lg" title="Revisão do Dia">
-      <div>
+      ) : (
         <FlashcardStudy
           cards={cards}
           discNameOf={discNameOf}
@@ -57,7 +53,7 @@ export default function RevisaoClient({ flashcards: initial, disciplinaMap }: Pr
           }}
           onFinish={() => setDone(true)}
         />
-      </div>
-    </ShellLayout>
+      )}
+    </Page>
   )
 }

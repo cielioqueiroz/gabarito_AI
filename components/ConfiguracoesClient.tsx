@@ -9,7 +9,7 @@ import { useToast } from '@/lib/toast'
 import { Button } from '@/components/ui/button'
 import { Input, FieldError } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import ShellLayout from './ShellLayout'
+import Page from './Page'
 
 interface Props {
   userId: string
@@ -52,7 +52,7 @@ export default function ConfiguracoesClient({ email, initialName }: Props) {
   }
 
   return (
-    <ShellLayout largura="2xl" title="Configurações">
+    <Page title="Configurações">
       <div>
         <motion.div
           variants={stagger}
@@ -182,6 +182,6 @@ export default function ConfiguracoesClient({ email, initialName }: Props) {
 
         </motion.div>
       </div>
-    </ShellLayout>
+    </Page>
   )
 }
