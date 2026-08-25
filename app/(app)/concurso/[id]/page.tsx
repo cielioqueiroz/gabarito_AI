@@ -1,5 +1,5 @@
-import { notFound, redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
+import { notFound } from 'next/navigation'
+import { requireSession } from '@/lib/auth'
 import ConcursoDetail from '@/components/ConcursoDetail'
 
 interface Props {
@@ -8,9 +8,7 @@ interface Props {
 
 export default async function ConcursoPage({ params }: Props) {
   const { id } = await params
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/login')
+  const { supabase } = await requireSession()
 
   const { data: concurso } = await supabase
     .from('concursos')

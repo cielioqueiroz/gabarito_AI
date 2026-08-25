@@ -1,11 +1,8 @@
-import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
+import { requireSession } from '@/lib/auth'
 import EstatisticasClient from '@/components/EstatisticasClient'
 
 export default async function EstatisticasPage() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/login')
+  const { supabase } = await requireSession()
 
   const [{ data: respostas }, { data: discStats }, { data: concursoStats }, { data: concursos }] = await Promise.all([
     supabase.from('respostas').select('acertou, respondido_em, questao_id, questoes(disciplina_id, disciplinas(concurso_id))').order('respondido_em', { ascending: false }).limit(500),

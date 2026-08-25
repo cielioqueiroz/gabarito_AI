@@ -8,7 +8,7 @@ import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import ConcursoCard from './ConcursoCard'
 import NovoConcursoForm from './NovoConcursoForm'
-import ShellLayout from './ShellLayout'
+import Page from './Page'
 import type { Concurso } from '@/types'
 
 interface ConcursoStat {
@@ -42,7 +42,7 @@ export default function ConcursosClient({ stats }: { stats: ConcursoStat[] }) {
   )
 
   return (
-    <ShellLayout largura="4xl" title="Meus Concursos" headerRight={headerRight}>
+    <Page title="Meus Concursos" headerRight={headerRight}>
       <div>
 
         {/* Summary line */}
@@ -110,6 +110,6 @@ export default function ConcursosClient({ stats }: { stats: ConcursoStat[] }) {
           </motion.div>
         )}
       </div>
-    </ShellLayout>
+    </Page>
   )
 }

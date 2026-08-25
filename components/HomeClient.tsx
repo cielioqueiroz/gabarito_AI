@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import ConcursoCard from './ConcursoCard'
 import NovoConcursoForm from './NovoConcursoForm'
-import ShellLayout from './ShellLayout'
+import Page from './Page'
 import { OnboardingTour } from './OnboardingTour'
 import { EmptyIllustration } from './ui/EmptyIllustration'
 import BancasMarquee from './BancasMarquee'
@@ -67,7 +67,7 @@ export default function HomeClient({ stats, userEmail, userName }: Props) {
   )
 
   return (
-    <ShellLayout largura="3xl" title="Dashboard" headerRight={headerRight}>
+    <Page title="Dashboard" headerRight={headerRight}>
       <div>
 
         {/* Greeting */}
@@ -173,6 +173,6 @@ export default function HomeClient({ stats, userEmail, userName }: Props) {
         </div>
       </div>
       <OnboardingTour />
-    </ShellLayout>
+    </Page>
   )
 }
