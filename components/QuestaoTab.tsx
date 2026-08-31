@@ -49,6 +49,11 @@ export default function QuestaoTab({ disciplinas, questoes, topicos = [] }: Prop
       const data = await res.json() as { acertou: boolean; correta: string; explicacao: string | null }
       setStates(prev => ({ ...prev, [questao.id]: { selected: letra, revealed: true, correta: data.correta, explicacao: data.explicacao } }))
     } catch {
+      setStates(prev => {
+        const next = { ...prev }
+        delete next[questao.id]
+        return next
+      })
       toast.error('Erro ao registrar resposta')
     }
   }

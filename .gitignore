@@ -42,7 +42,6 @@ next-env.d.ts
 
 # project meta / ai instructions
 CLAUDE.md
-AGENTS.md
 docs/
 gabarito-briefing.md
 

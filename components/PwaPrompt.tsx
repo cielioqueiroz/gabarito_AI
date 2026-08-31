@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Smartphone, X, Bell } from 'lucide-react'
 import { Button } from './ui/button'
@@ -18,6 +18,7 @@ export function PwaPrompt() {
   const [installEvent, setInstallEvent] = useState<BeforeInstallPromptEvent | null>(null)
   const [showInstall, setShowInstall] = useState(false)
   const [showNotif, setShowNotif] = useState(false)
+  const installEventRef = useRef<BeforeInstallPromptEvent | null>(null)
 
   useEffect(() => {
     if (typeof window === 'undefined' || !('serviceWorker' in navigator)) return
@@ -34,7 +35,9 @@ export function PwaPrompt() {
       e.preventDefault()
       const already = localStorage.getItem(INSTALL_KEY)
       if (already) return
-      setInstallEvent(e as BeforeInstallPromptEvent)
+      const event = e as BeforeInstallPromptEvent
+      installEventRef.current = event
+      setInstallEvent(event)
       if (onboardingDone) setShowInstall(true)
     }
     window.addEventListener('beforeinstallprompt', onBeforeInstall)
@@ -47,14 +50,14 @@ export function PwaPrompt() {
         Notification.permission === 'default' &&
         !localStorage.getItem(NOTIF_KEY)
       ) {
-        setShowNotif(true)
+        setTimeout(() => setShowNotif(true), 0)
       }
     } catch {}
 
     // Re-check when onboarding closes. Storage events don't fire same-tab, so
     // OnboardingTour dispatches a CustomEvent instead.
     function onOnboardingDone() {
-      if (installEvent) setShowInstall(true)
+      if (installEventRef.current) setShowInstall(true)
       try {
         if ('Notification' in window && Notification.permission === 'default' && !localStorage.getItem(NOTIF_KEY)) {
           setShowNotif(true)

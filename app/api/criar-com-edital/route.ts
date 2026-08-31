@@ -70,7 +70,7 @@ async function salvarPlano(
 export async function POST(req: NextRequest) {
   const auth = await requireAuth()
   if (auth instanceof NextResponse) return auth
-  const rl = checkRateLimit(auth.userId, 'criar-edital', 5)
+  const rl = await checkRateLimit(auth.supabase, auth.userId, 'criar-edital', 5)
   if (rl) return rl
 
   let formData: FormData

@@ -42,12 +42,16 @@ button, a, [role="button"], label[for],
 select, input[type="checkbox"], input[type="radio"] {
   cursor: pointer;
 }
+button:disabled, select:disabled, input:disabled {
+  cursor: not-allowed;
+}
 
 /* ── Scrollbar ── */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #26262F; border-radius: 99px; }
 ::-webkit-scrollbar-thumb:hover { background: #34343F; }
+* { scrollbar-width: thin; scrollbar-color: #26262F transparent; }
 
 /* ── Focus ring (azul-caneta) ── */
 *:focus-visible {
@@ -120,6 +124,9 @@ h1, h2 { font-family: var(--font-display), system-ui, sans-serif; }
   50%       { box-shadow: 0 0 44px rgba(74,114,232,0.30); }
 }
 .animate-glow { animation: glow-pulse 3s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .animate-shimmer, .animate-glow { animation: none; }
+}
 
 /* ── Ambient light blobs (subtle, azul + neutro) ── */
 .bg-blobs::before,
@@ -203,7 +210,6 @@ h1, h2 { font-family: var(--font-display), system-ui, sans-serif; }
   display: flex;
   width: max-content;
   animation: marquee-x 42s linear infinite;
-  will-change: transform;
 }
 .marquee-viewport:hover .marquee-track { animation-play-state: paused; }
 @media (prefers-reduced-motion: reduce) {

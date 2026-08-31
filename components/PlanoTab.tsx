@@ -31,7 +31,11 @@ export default function PlanoTab({ disciplinas, topicos: initialTopicos, concurs
   async function toggleTopico(topico: Topico) {
     const updated = !topico.estudado
     setTopicos(prev => prev.map(t => t.id === topico.id ? { ...t, estudado: updated } : t))
-    await createClient().from('topicos').update({ estudado: updated }).eq('id', topico.id)
+    const { error } = await createClient().from('topicos').update({ estudado: updated }).eq('id', topico.id)
+    if (error) {
+      setTopicos(prev => prev.map(t => t.id === topico.id ? topico : t))
+      toast.error('Não consegui salvar o tópico', 'O estado anterior foi restaurado.')
+    }
   }
 
   async function handleGerarPlano(e: React.FormEvent) {
@@ -60,7 +64,8 @@ export default function PlanoTab({ disciplinas, topicos: initialTopicos, concurs
   function toggleExpand(id: string) {
     setExpanded(prev => {
       const next = new Set(prev)
-      next.has(id) ? next.delete(id) : next.add(id)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
       return next
     })
   }

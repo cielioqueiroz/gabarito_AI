@@ -8,6 +8,7 @@ import type { Flashcard } from '@/types'
 import { advanceBox } from '@/lib/leitner'
 import { createClient } from '@/lib/supabase/client'
 import { useMotion } from '@/lib/motion'
+import { useToast } from '@/lib/toast'
 
 type BoxVariant = 'destructive' | 'amber' | 'default' | 'emerald'
 const BOX_VARIANT: Record<number, BoxVariant> = {
@@ -71,18 +72,21 @@ export default function FlashcardStudy({ cards, discNameOf, onAnswer, onExit, on
   const [history, setHistory] = useState<Flashcard[]>([])
   const [busy, setBusy] = useState(false)
   const { reduce } = useMotion()
+  const toast = useToast()
   const current = cards[index]
   const progress = cards.length === 0 ? 0 : ((index + (flipped ? 0.5 : 0)) / cards.length) * 100
 
   // Latest values captured in a ref so the keydown listener stays stable
   // (registered once) but still reads current state on each key press.
   const stateRef = useRef({ flipped, busy, historyLen: history.length, hasCurrent: !!current })
-  stateRef.current = { flipped, busy, historyLen: history.length, hasCurrent: !!current }
   const handlersRef = useRef<{ answer: (a: boolean) => void; undo: () => void; toggleFlip: () => void }>({
     answer: () => {}, undo: () => {}, toggleFlip: () => {},
   })
 
   useEffect(() => { writeSession(sessionKey, index, cards) }, [index, sessionKey, cards])
+  useEffect(() => {
+    stateRef.current = { flipped, busy, historyLen: history.length, hasCurrent: !!current }
+  }, [flipped, busy, history.length, current])
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -104,32 +108,48 @@ export default function FlashcardStudy({ cards, discNameOf, onAnswer, onExit, on
     setBusy(true)
     const { box, proxRevisao } = advanceBox(current.box, acertou)
     const updated: Flashcard = { ...current, box, prox_revisao: proxRevisao.toISOString() }
-    setHistory(prev => [...prev, current])
-    await createClient().from('flashcards').update({ box, prox_revisao: proxRevisao.toISOString() }).eq('id', current.id)
-    onAnswer(current, updated)
-    setFlipped(false)
-    if (index + 1 >= cards.length) { clearSession(sessionKey); onFinish?.() }
-    else setIndex(i => i + 1)
-    setBusy(false)
+    try {
+      const { error } = await createClient().from('flashcards')
+        .update({ box, prox_revisao: proxRevisao.toISOString() }).eq('id', current.id)
+      if (error) throw error
+      setHistory(prev => [...prev, current])
+      onAnswer(current, updated)
+      setFlipped(false)
+      if (index + 1 >= cards.length) { clearSession(sessionKey); onFinish?.() }
+      else setIndex(i => i + 1)
+    } catch {
+      toast.error('Não consegui salvar a revisão', 'Seu card não avançou. Tente novamente.')
+    } finally {
+      setBusy(false)
+    }
   }
 
   async function undo() {
     if (history.length === 0 || busy) return
     setBusy(true)
     const previous = history[history.length - 1]
-    await createClient().from('flashcards').update({ box: previous.box, prox_revisao: previous.prox_revisao }).eq('id', previous.id)
-    onAnswer(previous, previous)
-    setHistory(prev => prev.slice(0, -1))
-    setIndex(i => Math.max(0, i - 1))
-    setFlipped(false)
-    setBusy(false)
+    try {
+      const { error } = await createClient().from('flashcards')
+        .update({ box: previous.box, prox_revisao: previous.prox_revisao }).eq('id', previous.id)
+      if (error) throw error
+      onAnswer(previous, previous)
+      setHistory(prev => prev.slice(0, -1))
+      setIndex(i => Math.max(0, i - 1))
+      setFlipped(false)
+    } catch {
+      toast.error('Não consegui desfazer', 'A revisão anterior foi mantida.')
+    } finally {
+      setBusy(false)
+    }
   }
 
-  handlersRef.current = {
-    answer: handleAnswer,
-    undo,
-    toggleFlip: () => setFlipped(v => !v),
-  }
+  useEffect(() => {
+    handlersRef.current = {
+      answer: handleAnswer,
+      undo,
+      toggleFlip: () => setFlipped(v => !v),
+    }
+  })
 
   if (!current) return null
   const discNome = discNameOf(current)

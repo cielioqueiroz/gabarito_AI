@@ -63,14 +63,22 @@ export function PlanoStreamPreview({ concursoId, texto, onComplete, onCancel }: 
 
   async function persist() {
     setSavingFinal(true)
-    // Fallback: chama gerar-plano estruturado para gravar de forma canônica
+    setError(null)
     try {
-      await fetch('/api/gerar-plano', {
+      const res = await fetch('/api/gerar-plano', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ texto, concursoId }),
       })
+      if (!res.ok) {
+        const data = await res.json().catch(() => null) as { error?: string } | null
+        throw new Error(data?.error ?? 'Erro ao salvar o plano.')
+      }
       onComplete()
-    } finally { setSavingFinal(false) }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Erro ao salvar o plano.')
+    } finally {
+      setSavingFinal(false)
+    }
   }
 
   return (

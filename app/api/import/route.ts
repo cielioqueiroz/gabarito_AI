@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { requireAuth, checkRateLimit, assertDisciplinaOwnership } from '@/lib/apiHelpers'
+import { requireAuth, checkRateLimit, assertDisciplinaOwnership, readJsonObject } from '@/lib/apiHelpers'
 
 export const runtime = 'nodejs'
 
@@ -8,10 +8,13 @@ const MAX_LINES = 500
 export async function POST(req: NextRequest) {
   const auth = await requireAuth()
   if (auth instanceof NextResponse) return auth
-  const rl = checkRateLimit(auth.userId, 'import-deck', 5)
+  const rl = await checkRateLimit(auth.supabase, auth.userId, 'import-deck', 5)
   if (rl) return rl
 
-  const { disciplinaId, content } = await req.json()
+  const body = await readJsonObject(req)
+  if (body instanceof NextResponse) return body
+  const disciplinaId = typeof body.disciplinaId === 'string' ? body.disciplinaId : ''
+  const content = typeof body.content === 'string' ? body.content.slice(0, 2 * 1024 * 1024) : null
   if (!disciplinaId || typeof content !== 'string') {
     return NextResponse.json({ error: 'disciplinaId e content são obrigatórios' }, { status: 400 })
   }

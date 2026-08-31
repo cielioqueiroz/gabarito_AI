@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
-import { BarChart3 } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import Page from './Page'
 import ProgressBar from './ProgressBar'

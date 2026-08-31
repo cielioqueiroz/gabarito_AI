@@ -1,17 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { streamGeminiText, wrapEdital } from '@/lib/anthropic'
-import { requireAuth, checkRateLimit, assertConcursoOwnership } from '@/lib/apiHelpers'
+import { requireAuth, checkRateLimit, assertConcursoOwnership, readJsonObject } from '@/lib/apiHelpers'
 
 export const runtime = 'nodejs'
-export const maxDuration = 60
+export const maxDuration = 300
 
 export async function POST(req: NextRequest) {
   const auth = await requireAuth()
   if (auth instanceof NextResponse) return auth
-  const rl = checkRateLimit(auth.userId, 'stream-plano', 5)
+  const rl = await checkRateLimit(auth.supabase, auth.userId, 'stream-plano', 5)
   if (rl) return rl
 
-  const { texto, concursoId } = await req.json()
+  const body = await readJsonObject(req)
+  if (body instanceof NextResponse) return body
+  const texto = typeof body.texto === 'string' ? body.texto.trim() : ''
+  const concursoId = typeof body.concursoId === 'string' ? body.concursoId : ''
   if (!texto || !concursoId) return NextResponse.json({ error: 'texto e concursoId obrigatórios' }, { status: 400 })
   if (!(await assertConcursoOwnership(auth.supabase, auth.userId, concursoId))) {
     return NextResponse.json({ error: 'Concurso não encontrado' }, { status: 404 })
@@ -37,8 +40,8 @@ export async function POST(req: NextRequest) {
           if (abort.signal.aborted) break
           controller.enqueue(encoder.encode(chunk))
         }
-      } catch {
-        // Aborted or stream error — silent close
+      } catch (err) {
+        if (!abort.signal.aborted) controller.error(err)
       } finally {
         try { controller.close() } catch {}
       }

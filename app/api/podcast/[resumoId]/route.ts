@@ -23,7 +23,7 @@ function toNarration(md: string): string {
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ resumoId: string }> }) {
   const auth = await requireAuth()
   if (auth instanceof NextResponse) return auth
-  const rl = checkRateLimit(auth.userId, 'podcast', 20)
+  const rl = await checkRateLimit(auth.supabase, auth.userId, 'podcast', 20)
   if (rl) return rl
 
   const { resumoId } = await params
@@ -43,10 +43,10 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ res
 
     const buf: Buffer = await new Promise((resolve, reject) => {
       const acc: Buffer[] = []
+      const timeout = setTimeout(() => reject(new Error('TTS timeout')), 45000)
       audioStream.on('data', (c: Buffer) => acc.push(c))
-      audioStream.on('end', () => resolve(Buffer.concat(acc)))
-      audioStream.on('error', reject)
-      setTimeout(() => reject(new Error('TTS timeout')), 45000)
+      audioStream.on('end', () => { clearTimeout(timeout); resolve(Buffer.concat(acc)) })
+      audioStream.on('error', err => { clearTimeout(timeout); reject(err) })
     })
     if (!buf.length) throw new Error('empty audio')
 

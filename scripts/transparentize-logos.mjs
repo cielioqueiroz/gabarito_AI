@@ -1,7 +1,7 @@
 // Torna o fundo branco dos logos transparente, preservando as cores originais.
 // Só mexe no canal alpha de pixels quase-brancos; as cores da marca ficam intactas.
 import sharp from 'sharp'
-import { readFileSync, writeFileSync } from 'node:fs'
+import { writeFileSync } from 'node:fs'
 
 const files = ['cebraspe', 'fgv', 'cesgranrio', 'ibfc'].map(n => `public/bancas/${n}.png`)
 

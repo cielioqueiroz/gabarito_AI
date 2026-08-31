@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Dialog } from './dialog'
 import { Button } from './button'
 import { Input } from './input'
@@ -25,18 +25,21 @@ export function ConfirmDialog({
   const [typed, setTyped] = useState('')
   const [busy, setBusy] = useState(false)
 
-  useEffect(() => { if (open) setTyped('') }, [open])
-
   const canConfirm = requireTypedName ? typed.trim() === requireTypedName.trim() : true
+
+  function handleClose() {
+    setTyped('')
+    onClose()
+  }
 
   async function handleConfirm() {
     if (!canConfirm) return
     setBusy(true)
-    try { await onConfirm() } finally { setBusy(false); onClose() }
+    try { await onConfirm() } finally { setBusy(false); handleClose() }
   }
 
   return (
-    <Dialog open={open} onClose={onClose} title={title} description={description}>
+    <Dialog open={open} onClose={handleClose} title={title} description={description}>
       {requireTypedName && (
         <div className="mb-4">
           <label className="block font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5">
@@ -46,7 +49,7 @@ export function ConfirmDialog({
         </div>
       )}
       <div className="flex gap-2 justify-end">
-        <Button variant="outline" onClick={onClose}>{cancelLabel}</Button>
+        <Button variant="outline" onClick={handleClose}>{cancelLabel}</Button>
         <Button
           variant={destructive ? 'destructive' : 'default'}
           disabled={!canConfirm || busy}

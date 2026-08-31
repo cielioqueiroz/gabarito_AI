@@ -36,7 +36,7 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   devIndicators: false,
-  serverExternalPackages: ['pdf-parse', 'msedge-tts', 'youtube-transcript'],
+  serverExternalPackages: ['msedge-tts', 'youtube-transcript'],
   poweredByHeader: false,
   async headers() {
     return [{ source: '/(.*)', headers: securityHeaders }]

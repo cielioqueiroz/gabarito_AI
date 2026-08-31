@@ -332,7 +332,7 @@ npm run build      # build de produção
 
 1. Importe o repositório e configure as 3 variáveis de ambiente acima.
 2. Cada push na `main` gera deploy automático.
-3. Para múltiplas instâncias em produção, troque o rate limiter in-memory por `@upstash/ratelimit`.
+3. Aplique as migrations antes do deploy: o rate limit compartilhado usa a função `check_rate_limit` no Postgres e funciona entre instâncias serverless.
 
 </details>
 

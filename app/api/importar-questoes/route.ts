@@ -28,7 +28,7 @@ const MAX_DISCIPLINAS_POR_LOTE = 4
 export async function POST(req: NextRequest) {
   const auth = await requireAuth()
   if (auth instanceof NextResponse) return auth
-  const rl = checkRateLimit(auth.userId, 'importar-questoes', 30)
+  const rl = await checkRateLimit(auth.supabase, auth.userId, 'importar-questoes', 30)
   if (rl) return rl
 
   let formData: FormData
@@ -136,19 +136,33 @@ export async function POST(req: NextRequest) {
   const MAX_ENUNCIADO = 5000
   const MAX_ALTERNATIVAS = 6
   const MAX_QUESTOES = 60
+  const novasNoLote = new Set<string>()
 
   const linhas = (extraido.questoes ?? []).slice(0, MAX_QUESTOES).flatMap(q => {
     const disciplinaId = porNome.get(q.disciplina?.toLowerCase().trim() ?? '')
     if (!disciplinaId) return []
     if (!q.enunciado?.trim() || !Array.isArray(q.alternativas) || q.alternativas.length < 2) return []
 
+    const alternativasVistas = new Set<string>()
+    const alternativas = q.alternativas.slice(0, MAX_ALTERNATIVAS).flatMap(a => {
+      const letra = (a.letra ?? '').trim().toUpperCase().slice(0, 1)
+      const texto = (a.texto ?? '').trim().slice(0, MAX_ENUNCIADO)
+      if (!LETRAS.has(letra) || !texto || alternativasVistas.has(letra)) return []
+      alternativasVistas.add(letra)
+      return [{ letra, texto }]
+    })
+    if (alternativas.length < 2) return []
+
     const correta = (q.correta ?? '').trim().toUpperCase().slice(0, 1)
     if (!LETRAS.has(correta)) return []
-    if (!q.alternativas.some(a => (a.letra ?? '').trim().toUpperCase() === correta)) return []
+    if (!alternativas.some(a => a.letra === correta)) return []
 
     // `numero` vai para uma coluna int: fora da faixa de uma prova real, é lixo.
     const numero = Number.isInteger(q.numero) && q.numero > 0 && q.numero <= 500 ? q.numero : null
-    if (numero != null && jaTem.has(`${disciplinaId}:${numero}`)) return []
+    if (numero == null) return []
+    const chave = `${disciplinaId}:${numero}`
+    if (jaTem.has(chave) || novasNoLote.has(chave)) return []
+    novasNoLote.add(chave)
 
     // O modelo às vezes repete as alternativas dentro do enunciado, mesmo
     // instruído a não fazer — sem isto a tela mostra as opções duas vezes.
@@ -157,10 +171,7 @@ export async function POST(req: NextRequest) {
     return [{
       disciplina_id: disciplinaId,
       enunciado: enunciado.slice(0, MAX_ENUNCIADO),
-      alternativas: q.alternativas.slice(0, MAX_ALTERNATIVAS).map(a => ({
-        letra: (a.letra ?? '').trim().toUpperCase().slice(0, 1),
-        texto: (a.texto ?? '').trim().slice(0, MAX_ENUNCIADO),
-      })),
+      alternativas,
       correta,
       explicacao: q.explicacao?.trim().slice(0, MAX_ENUNCIADO) || null,
       // A coluna tem CHECK: valor inventado pelo modelo quebraria o insert.
