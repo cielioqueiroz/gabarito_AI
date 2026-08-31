@@ -1,354 +1,176 @@
-'use client'
+import Link from 'next/link'
+import type { Metadata } from 'next'
+import {
+  ArrowUpRight,
+  BookOpenCheck,
+  BrainCircuit,
+  Check,
+  FileText,
+  PenLine,
+  Repeat2,
+} from 'lucide-react'
+import LoginForm from './LoginForm'
 
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import dynamic from 'next/dynamic'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Mail, Lock, User, ArrowRight, Sparkles, PenLine, BrainCircuit, Target } from 'lucide-react'
-import { createClient } from '@/lib/supabase/client'
-import { useToast } from '@/lib/toast'
-import { t } from '@/lib/i18n'
-import { Button } from '@/components/ui/button'
-import { Input, FieldError } from '@/components/ui/input'
-import BancasMarquee from '@/components/BancasMarquee'
+export const metadata: Metadata = {
+  title: 'Entrar',
+  description: 'Entre no gabarito_AI e continue seu plano de estudos para concursos públicos.',
+  robots: { index: false, follow: true },
+}
 
-const ThreeBackground = dynamic(() => import('@/components/ThreeBackground'), { ssr: false })
+const etapas = [
+  { numero: '01', titulo: 'Edital lido', detalhe: 'conteúdo organizado pela IA', icon: FileText },
+  { numero: '02', titulo: 'Plano em ação', detalhe: 'prioridades no ritmo da prova', icon: BookOpenCheck },
+  { numero: '03', titulo: 'Revisão no ponto', detalhe: 'Leitner antes de esquecer', icon: Repeat2 },
+]
 
-type Tab = 'login' | 'signup' | 'forgot'
-type Errors = Record<string, string>
+const topicos = [
+  { nome: 'Direito Constitucional', progresso: 78, cor: 'bg-[#8BA7F5]' },
+  { nome: 'Língua Portuguesa', progresso: 61, cor: 'bg-[#607FDF]' },
+  { nome: 'Raciocínio Lógico', progresso: 43, cor: 'bg-[#4064D8]' },
+]
 
 export default function LoginPage() {
-  const router  = useRouter()
-  const toast   = useToast()
-  const [tab, setTab] = useState<Tab>('login')
-
-  const [email, setEmail]         = useState('')
-  const [password, setPassword]   = useState('')
-  const [nome, setNome]           = useState('')
-  const [sobrenome, setSobrenome] = useState('')
-  const [pais, setPais]           = useState('')
-  const [cidade, setCidade]       = useState('')
-  const [telefone, setTelefone]   = useState('')
-
-  const [errors, setErrors]   = useState<Errors>({})
-  const [loading, setLoading] = useState(false)
-
-  useEffect(() => {
-    const err = new URLSearchParams(window.location.search).get('error')
-    if (err) {
-      toast.error('Não foi possível entrar', decodeURIComponent(err))
-      window.history.replaceState({}, '', '/login')
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  function switchTab(t: Tab) {
-    setTab(t); setErrors({})
-  }
-
-  function clearError(field: string) {
-    setErrors(prev => {
-      if (!prev[field]) return prev
-      const next = { ...prev }; delete next[field]; return next
-    })
-  }
-
-  function validate(): boolean {
-    const e: Errors = {}
-    const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!email.trim())             e.email = 'Informe seu e-mail.'
-    else if (!emailRe.test(email)) e.email = 'E-mail inválido.'
-    if (tab !== 'forgot') {
-      if (!password)                 e.password = 'Informe sua senha.'
-      else if (password.length < 6)  e.password = 'Mínimo de 6 caracteres.'
-    }
-    if (tab === 'signup') {
-      if (!nome.trim())      e.nome = 'Informe seu nome.'
-      if (!sobrenome.trim()) e.sobrenome = 'Informe seu sobrenome.'
-    }
-    setErrors(e)
-    return Object.keys(e).length === 0
-  }
-
-  async function handleOAuth(provider: 'google' | 'github') {
-    setLoading(true)
-    const supabase = createClient()
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider,
-      options: { redirectTo: `${window.location.origin}/auth/callback?next=/` },
-    })
-    if (error) toast.error(`Erro ao entrar com ${provider === 'google' ? 'Google' : 'GitHub'}`, error.message)
-    setLoading(false)
-  }
-
-  async function handleSubmit(ev: React.FormEvent) {
-    ev.preventDefault()
-    if (!validate()) {
-      toast.warning('Verifique os campos', 'Há informações pendentes no formulário.')
-      return
-    }
-    setLoading(true)
-    const supabase = createClient()
-
-    if (tab === 'forgot') {
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/auth/callback?next=/redefinir-senha`,
-      })
-      if (error) toast.error('Erro', error.message)
-      else {
-        toast.success('E-mail enviado!', 'Verifique sua caixa para redefinir a senha.')
-        setTab('login')
-      }
-      setLoading(false)
-      return
-    }
-
-    if (tab === 'login') {
-      const { error } = await supabase.auth.signInWithPassword({ email, password })
-      if (error) {
-        toast.error('Não foi possível entrar', 'E-mail ou senha incorretos.')
-      } else {
-        toast.success('Bem-vindo de volta!')
-        router.push('/'); router.refresh()
-      }
-    } else {
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback?next=/`,
-          data: {
-            full_name:  `${nome.trim()} ${sobrenome.trim()}`,
-            first_name: nome.trim(),
-            last_name:  sobrenome.trim(),
-            country:    pais.trim()     || null,
-            city:       cidade.trim()   || null,
-            phone:      telefone.trim() || null,
-          },
-        },
-      })
-      if (error) {
-        toast.error('Erro ao criar conta', error.message)
-      } else {
-        toast.success('Conta criada!', 'Verifique seu e-mail para confirmar o cadastro.')
-        setTab('login')
-      }
-    }
-    setLoading(false)
-  }
-
-  const submitLabel = loading ? 'Aguarde…' : tab === 'login' ? t.auth.signIn : tab === 'signup' ? t.auth.signUp : t.auth.resetPassword
-
   return (
-    /* O par de painéis é limitado e centralizado: esticado de borda a borda
-       numa tela de 1920px, o formulário ficava a 480px do centro, encostado na
-       borda direita, com um vazio preto em volta. Limitado, o conjunto fica no
-       meio da tela e o respiro dos dois lados passa a ser intencional. */
-    <div className="min-h-screen bg-background text-foreground">
-    <div className="mx-auto flex min-h-screen w-full max-w-[1440px] flex-col lg:grid lg:grid-cols-2">
-      {/* ── Left brand panel ── */}
-      <aside className="relative hidden overflow-hidden bg-gradient-to-br from-[#0B0B0F] via-[#15151A] to-[#101014] p-12 lg:flex lg:flex-col lg:justify-between">
-        <div aria-hidden className="pointer-events-none absolute inset-0">
-          <div className="absolute inset-0 opacity-[0.15]" style={{ backgroundImage: 'linear-gradient(#26262F 1px, transparent 1px), linear-gradient(90deg, #26262F 1px, transparent 1px)', backgroundSize: '48px 48px' }} />
-          <div className="absolute -top-24 -left-16 h-96 w-96 rounded-full bg-[#4A72E8]/15 blur-[110px]" />
-          <div className="absolute bottom-0 right-0 h-96 w-96 rounded-full bg-[#4A72E8]/12 blur-[120px]" />
-          <ThreeBackground className="absolute inset-0 h-full w-full" pointOpacity={0.4} />
-        </div>
+    <div className="relative min-h-[100dvh] overflow-x-hidden bg-[#0D0E13] text-[#F4F4F0]">
+      <div aria-hidden className="pointer-events-none fixed inset-0">
+        <div
+          className="absolute inset-0 opacity-[0.32]"
+          style={{
+            backgroundImage:
+              'linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px)',
+            backgroundSize: '64px 64px',
+            maskImage: 'linear-gradient(to right, #000 0%, #000 58%, transparent 84%)',
+            WebkitMaskImage: 'linear-gradient(to right, #000 0%, #000 58%, transparent 84%)',
+          }}
+        />
+        <div className="absolute -left-56 top-1/3 h-[620px] w-[620px] rounded-full bg-[#3556C4]/10 blur-[150px]" />
+        <div className="absolute left-[48%] top-0 h-80 w-px rotate-[18deg] bg-gradient-to-b from-transparent via-[#4A72E8]/35 to-transparent" />
+      </div>
 
-        <div className="relative z-10 flex items-center gap-3">
-          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#4A72E8] shadow-[inset_0_1px_0_rgba(255,255,255,0.4),0_4px_14px_-4px_rgba(74,114,232,0.6)]">
-            <PenLine size={19} className="text-white" />
-          </span>
-          <span className="font-mono text-lg font-bold tracking-tight">
-            gabarito<span className="text-[#4A72E8]">_AI</span>
-          </span>
-          <span className="ml-1 inline-flex items-center gap-1 rounded-full border border-[#4A72E8]/30 bg-[#4A72E8]/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-widest text-[#A8BCF8]">
-            <Sparkles size={10} /> IA
-          </span>
-        </div>
+      <main className="relative mx-auto grid min-h-[100dvh] w-full max-w-[1600px] lg:grid-cols-[minmax(0,1.12fr)_minmax(440px,0.88fr)]">
+        <section className="relative flex min-w-0 flex-col px-5 pb-8 pt-5 sm:px-10 sm:pt-8 lg:min-h-[100dvh] lg:px-14 lg:pb-10 lg:pt-10 xl:px-20">
+          <header className="flex items-center justify-between">
+            <Link href="/sobre" className="group inline-flex items-center gap-3" aria-label="gabarito_AI — página inicial">
+              <span className="flex h-10 w-10 items-center justify-center rounded-[14px] bg-[#4064D8] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.35),0_10px_30px_-12px_rgba(74,114,232,0.8)] transition-transform duration-200 group-hover:-rotate-3">
+                <PenLine size={18} strokeWidth={2.2} />
+              </span>
+              <span className="font-mono text-[15px] font-bold tracking-[-0.03em]">
+                gabarito<span className="text-[#A8BCF8]">_AI</span>
+              </span>
+            </Link>
 
-        <div className="relative z-10 max-w-md">
-          <h1 className="text-4xl font-bold leading-[1.1] tracking-tight xl:text-5xl">
-            Conquiste a sua<br />
-            <span className="hl-mark">Aprovação Pública</span>
-          </h1>
-          <p className="mt-5 text-lg leading-relaxed text-[#9C9CA6]">
-            Suba o edital e deixe a IA montar seu plano, flashcards e questões. Estude com método e acompanhe cada avanço.
-          </p>
-          <ul className="mt-8 space-y-3">
-            {[
-              { icon: BrainCircuit, text: 'Plano de estudos gerado a partir do edital' },
-              { icon: Target, text: 'Repetição espaçada (Leitner) para fixar de vez' },
-              { icon: Sparkles, text: 'Resumos, questões e podcast em voz neural' },
-            ].map(f => {
-              const Icon = f.icon
-              return (
-                <li key={f.text} className="flex items-center gap-3 text-sm text-[#9C9CA6]">
-                  <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg border border-[#4A72E8]/20 bg-[#4A72E8]/10">
-                    <Icon size={15} className="text-[#4A72E8]" />
+            <Link
+              href="/sobre"
+              aria-label="Conheça o método gabarito_AI"
+              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#2A2C35] bg-[#15161C]/70 text-xs font-semibold text-[#B8B9C2] transition-colors hover:border-[#4A72E8]/45 hover:text-white sm:w-auto sm:gap-1.5 sm:px-4"
+            >
+              <span className="hidden sm:inline">Conheça o método</span> <ArrowUpRight size={14} />
+            </Link>
+          </header>
+
+          <div className="flex flex-1 flex-col justify-center pb-2 pt-12 sm:pt-16 lg:py-12">
+            <div className="max-w-3xl">
+              <p className="mb-5 flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.24em] text-[#A8BCF8]">
+                <span className="h-px w-8 bg-[#4A72E8]" />
+                Sua preparação, com método
+              </p>
+              <h1 className="max-w-[760px] text-[2.6rem] font-bold leading-[0.98] tracking-[-0.055em] sm:text-6xl lg:text-[4.3rem] xl:text-[5rem]">
+                O edital vira plano.
+                <span className="mt-1 block text-[#858792]">O plano vira rotina.</span>
+              </h1>
+              <p className="mt-6 max-w-xl text-[15px] leading-7 text-[#A5A6AF] sm:text-base">
+                Um console de estudos que organiza o que cai, mostra o que revisar e mantém sua preparação avançando todos os dias.
+              </p>
+            </div>
+
+            <div className="relative mt-10 hidden max-w-[760px] lg:block xl:mt-12">
+              <div aria-hidden className="absolute -inset-5 rounded-[2rem] bg-[#4A72E8]/[0.06] blur-2xl" />
+              <div className="relative overflow-hidden rounded-[1.6rem] border border-[#2A2C35] bg-[#15161C]/95 shadow-[0_35px_80px_-40px_rgba(0,0,0,0.95)]">
+                <div className="flex items-center justify-between border-b border-[#292A33] px-6 py-4">
+                  <div className="flex items-center gap-3">
+                    <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-[#4A72E8]/25 bg-[#4A72E8]/10">
+                      <BrainCircuit size={17} className="text-[#8BA7F5]" />
+                    </span>
+                    <div>
+                      <p className="font-mono text-[9px] uppercase tracking-[0.22em] text-[#8D8F99]">Dossiê de estudo</p>
+                      <p className="mt-0.5 text-sm font-bold">Analista Judiciário · Área Administrativa</p>
+                    </div>
+                  </div>
+                  <span className="inline-flex items-center gap-2 rounded-full border border-emerald-400/15 bg-emerald-400/[0.07] px-3 py-1.5 font-mono text-[9px] uppercase tracking-wider text-emerald-300">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" /> ativo
                   </span>
-                  {f.text}
-                </li>
+                </div>
+
+                <div className="grid grid-cols-[1fr_220px]">
+                  <div className="space-y-4 p-6">
+                    <div className="flex items-end justify-between">
+                      <div>
+                        <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#8D8F99]">Progresso do edital</p>
+                        <p className="mt-1 text-2xl font-bold tracking-tight">64% concluído</p>
+                      </div>
+                      <span className="font-mono text-[10px] text-[#8BA7F5]">+12% esta semana</span>
+                    </div>
+
+                    <div className="space-y-3">
+                      {topicos.map(topico => (
+                        <div key={topico.nome}>
+                          <div className="mb-1.5 flex justify-between text-[11px]">
+                            <span className="text-[#C7C8CE]">{topico.nome}</span>
+                            <span className="font-mono text-[#92949E]">{topico.progresso}%</span>
+                          </div>
+                          <div className="h-1.5 overflow-hidden rounded-full bg-[#24262E]">
+                            <div className={`h-full rounded-full ${topico.cor}`} style={{ width: `${topico.progresso}%` }} />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="border-l border-[#292A33] bg-[#111218] p-5">
+                    <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#8D8F99]">Próxima sessão</p>
+                    <p className="mt-4 text-4xl font-bold tracking-[-0.06em]">18</p>
+                    <p className="mt-0.5 text-xs text-[#92949E]">cards para revisar</p>
+                    <div className="my-5 h-px bg-[#292A33]" />
+                    <div className="space-y-2 text-[11px] text-[#A5A6AF]">
+                      <p className="flex items-center gap-2"><Check size={13} className="text-[#8BA7F5]" /> 8 questões comentadas</p>
+                      <p className="flex items-center gap-2"><Check size={13} className="text-[#8BA7F5]" /> 24 min estimados</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="hidden grid-cols-3 border-t border-[#262832] pt-6 lg:grid">
+            {etapas.map(etapa => {
+              const Icon = etapa.icon
+              return (
+                <div key={etapa.numero} className="flex items-center gap-3 border-r border-[#262832] px-5 first:pl-0 last:border-r-0">
+                  <span className="font-mono text-[10px] text-[#858792]">{etapa.numero}</span>
+                  <Icon size={15} className="text-[#7895EB]" />
+                  <div>
+                    <p className="text-xs font-bold text-[#D8D9DE]">{etapa.titulo}</p>
+                    <p className="mt-0.5 text-[10px] text-[#858792]">{etapa.detalhe}</p>
+                  </div>
+                </div>
               )
             })}
-          </ul>
-        </div>
-
-        <div className="relative z-10 -mx-12">
-          <BancasMarquee />
-        </div>
-
-        <p className="relative z-10 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-          gabarito_AI · console de estudos para concursos
-        </p>
-      </aside>
-
-      {/* ── Right form panel ── */}
-      <main className="relative flex items-center justify-center px-4 py-10 sm:px-8">
-        <div className="w-full max-w-sm">
-          {/* Mobile logo */}
-          <div className="mb-8 flex items-center justify-center gap-2 lg:hidden">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#4A72E8] shadow-[inset_0_1px_0_rgba(255,255,255,0.4)]">
-              <PenLine size={17} className="text-white" />
-            </span>
-            <span className="font-mono text-lg font-bold tracking-tight">
-              gabarito<span className="text-[#4A72E8]">_AI</span>
-            </span>
           </div>
+        </section>
 
-          <div className="mb-6">
-            <h2 className="text-2xl font-bold tracking-tight">
-              {tab === 'login' ? 'Bem-vindo de volta' : tab === 'signup' ? 'Crie sua conta' : 'Recuperar senha'}
-            </h2>
-            <p className="mt-1 text-sm text-muted">
-              {tab === 'login' ? 'Entre para continuar seus estudos.' : tab === 'signup' ? 'Comece a estudar com IA hoje.' : 'Enviaremos um link para redefinir.'}
+        <section className="relative flex min-w-0 items-center justify-center border-t border-[#282A33] bg-[#121318]/90 px-5 py-10 backdrop-blur-sm sm:px-10 lg:min-h-[100dvh] lg:border-l lg:border-t-0 lg:px-12 xl:px-16">
+          <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+            <div className="absolute -right-24 top-20 h-72 w-72 rounded-full bg-[#4A72E8]/[0.055] blur-[100px]" />
+            <span className="absolute right-8 top-8 hidden font-mono text-[9px] uppercase tracking-[0.25em] text-[#353741] lg:block">acesso seguro / 01</span>
+          </div>
+          <div className="relative w-full max-w-[440px]">
+            <LoginForm />
+            <p className="mt-8 text-center text-[11px] text-[#858792]">
+              © {new Date().getFullYear()} Cielio Queiroz · feito para quem estuda com propósito
             </p>
           </div>
-
-          {/* Tabs */}
-          {tab !== 'forgot' && (
-            <div className="mb-6 flex gap-1 rounded-xl border border-border bg-elevated/60 p-1">
-              {(['login', 'signup'] as const).map(k => (
-                <button
-                  key={k}
-                  onClick={() => switchTab(k)}
-                  className={`flex-1 rounded-lg py-1.5 text-sm font-semibold transition-all duration-200 cursor-pointer ${
-                    tab === k ? 'bg-gradient-to-r from-[#4A72E8]/15 to-[#4A72E8]/10 text-[#A8BCF8] shadow-sm' : 'text-muted-foreground hover:text-muted'
-                  }`}
-                >
-                  {k === 'login' ? 'Entrar' : 'Criar conta'}
-                </button>
-              ))}
-            </div>
-          )}
-
-          {/* Social */}
-          {tab !== 'forgot' && (
-            <>
-              <div className="grid grid-cols-2 gap-3">
-                <button
-                  type="button"
-                  onClick={() => handleOAuth('google')}
-                  disabled={loading}
-                  className="inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-border bg-elevated/40 text-sm font-semibold text-foreground transition-colors hover:border-[#4A72E8]/40 hover:bg-elevated disabled:opacity-50 cursor-pointer"
-                >
-                  <svg width="16" height="16" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
-                  Google
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleOAuth('github')}
-                  disabled={loading}
-                  className="inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-border bg-elevated/40 text-sm font-semibold text-foreground transition-colors hover:border-[#4A72E8]/40 hover:bg-elevated disabled:opacity-50 cursor-pointer"
-                >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.37.5 0 5.87 0 12.5c0 5.3 3.44 9.8 8.21 11.39.6.11.82-.26.82-.58 0-.29-.01-1.04-.02-2.04-3.34.73-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.09-.75.08-.73.08-.73 1.21.09 1.84 1.24 1.84 1.24 1.07 1.84 2.81 1.31 3.5 1 .11-.78.42-1.31.76-1.61-2.67-.3-5.47-1.34-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 016 0c2.29-1.55 3.3-1.23 3.3-1.23.66 1.66.25 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.8 5.63-5.48 5.92.43.37.81 1.1.81 2.22 0 1.6-.01 2.9-.01 3.29 0 .32.22.7.83.58A12 12 0 0024 12.5C24 5.87 18.63.5 12 .5z"/></svg> GitHub
-                </button>
-              </div>
-              <div className="my-5 flex items-center gap-3">
-                <div className="h-px flex-1 bg-border" />
-                <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">{t.auth.or}</span>
-                <div className="h-px flex-1 bg-border" />
-              </div>
-            </>
-          )}
-
-          <motion.form key={tab} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2 }} onSubmit={handleSubmit} noValidate className="space-y-3">
-            <AnimatePresence>
-              {tab === 'signup' && (
-                <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.25 }} className="space-y-3 overflow-hidden">
-                  <div className="grid grid-cols-2 gap-2">
-                    <div>
-                      <div className="relative">
-                        <User size={15} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                        <Input value={nome} onChange={e => { setNome(e.target.value); clearError('nome') }} aria-invalid={!!errors.nome} placeholder="Nome" className="h-11 pl-9" />
-                      </div>
-                      <FieldError>{errors.nome}</FieldError>
-                    </div>
-                    <div>
-                      <Input value={sobrenome} onChange={e => { setSobrenome(e.target.value); clearError('sobrenome') }} aria-invalid={!!errors.sobrenome} placeholder="Sobrenome" className="h-11" />
-                      <FieldError>{errors.sobrenome}</FieldError>
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-2">
-                    <Input value={pais} onChange={e => setPais(e.target.value)} placeholder="País" className="h-11" />
-                    <Input value={cidade} onChange={e => setCidade(e.target.value)} placeholder="Cidade" className="h-11" />
-                  </div>
-                  <Input type="tel" value={telefone} onChange={e => setTelefone(e.target.value)} placeholder="Telefone (opcional)" className="h-11" />
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            <div>
-              <div className="relative">
-                <Mail size={15} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                <Input type="email" value={email} onChange={e => { setEmail(e.target.value); clearError('email') }} aria-invalid={!!errors.email} placeholder="seu@email.com" className="h-11 pl-9" />
-              </div>
-              <FieldError>{errors.email}</FieldError>
-            </div>
-
-            {tab !== 'forgot' && (
-              <div>
-                <div className="mb-1.5 flex items-center justify-between">
-                  {tab === 'login' && (
-                    <button type="button" onClick={() => switchTab('forgot')} className="ml-auto cursor-pointer font-mono text-[10px] uppercase tracking-widest text-[#A8BCF8] transition-colors hover:text-foreground">
-                      {t.auth.forgotPassword}
-                    </button>
-                  )}
-                </div>
-                <div className="relative">
-                  <Lock size={15} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                  <Input type="password" value={password} onChange={e => { setPassword(e.target.value); clearError('password') }} aria-invalid={!!errors.password} placeholder="••••••••" className="h-11 pl-9" />
-                </div>
-                <FieldError>{errors.password}</FieldError>
-                {tab === 'signup' && !errors.password && <p className="mt-1 text-[11px] text-muted-foreground">Mínimo 6 caracteres.</p>}
-              </div>
-            )}
-
-            {tab === 'forgot' && (
-              <button type="button" onClick={() => switchTab('login')} className="cursor-pointer text-[11px] text-[#A8BCF8] hover:text-foreground">← Voltar para entrar</button>
-            )}
-
-            <Button type="submit" disabled={loading} className="h-11 w-full text-[15px]" size="lg">
-              {submitLabel}
-              {!loading && tab === 'login' && <ArrowRight size={16} />}
-            </Button>
-          </motion.form>
-
-          <p className="mt-8 text-center font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-            gabarito_AI · ©{new Date().getFullYear()}{' '}
-            <a
-              href="https://cielioqueiroz.github.io/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-bold text-[#A8BCF8] transition-colors hover:text-foreground"
-              title="Portfólio de Cielio Queiroz"
-            >
-              Cielio Queiroz
-            </a>
-          </p>
-        </div>
+        </section>
       </main>
-    </div>
     </div>
   )
 }
