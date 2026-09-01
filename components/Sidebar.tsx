@@ -7,6 +7,7 @@ import { motion } from 'framer-motion'
 import { useTheme } from '@/lib/theme'
 import { createClient } from '@/lib/supabase/client'
 import { cn } from '@/lib/utils'
+import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
 import {
   LayoutDashboard, BookOpen, CalendarCheck,
   BarChart3, Settings, Sun, Moon, LogOut, PenLine,
@@ -27,6 +28,7 @@ export default function Sidebar({ onMobileClose }: Props) {
   const router           = useRouter()
   const { theme, toggle } = useTheme()
   const [badges, setBadges] = useState<Record<BadgeKey, number>>({ revisao: 0 })
+  const [signOutOpen, setSignOutOpen] = useState(false)
   const previousRef = useRef<number | null>(null)
 
   useEffect(() => {
@@ -159,13 +161,22 @@ export default function Sidebar({ onMobileClose }: Props) {
         </Link>
 
         <button
-          onClick={handleSignOut}
+          onClick={() => setSignOutOpen(true)}
           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-muted hover:bg-rose-500/10 hover:text-rose-400 transition-all duration-150 cursor-pointer group"
         >
           <LogOut size={16} className="flex-shrink-0 text-muted-foreground group-hover:text-rose-400 transition-colors" />
           Sair
         </button>
       </div>
+
+      <ConfirmDialog
+        open={signOutOpen}
+        onClose={() => setSignOutOpen(false)}
+        onConfirm={handleSignOut}
+        title="Sair da sua conta?"
+        description="Você precisará entrar novamente para acessar seus planos, revisões e estatísticas."
+        confirmLabel="Sim, sair"
+      />
     </aside>
   )
 }

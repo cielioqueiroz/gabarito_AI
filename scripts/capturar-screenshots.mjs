@@ -7,6 +7,7 @@ const BASE_URL = process.env.SCREENSHOT_BASE_URL || 'http://localhost:3000'
 const EMAIL = process.env.SCREENSHOT_EMAIL
 const PASSWORD = process.env.SCREENSHOT_PASSWORD
 const PUBLIC_ONLY = process.env.SCREENSHOT_PUBLIC_ONLY === '1'
+const SCREENSHOT_THEME = process.env.SCREENSHOT_THEME || 'dark'
 const CHROME_PATH = process.env.CHROME_PATH || 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'
 const OUTPUT_DIR = resolve('.github/screenshots')
 const PORT = 9333
@@ -14,6 +15,9 @@ const PROFILE_DIR = join(tmpdir(), `gabarito-screenshots-${process.pid}`)
 
 if (!PUBLIC_ONLY && (!EMAIL || !PASSWORD)) {
   throw new Error('Defina SCREENSHOT_EMAIL e SCREENSHOT_PASSWORD para capturar as telas autenticadas.')
+}
+if (!['dark', 'light'].includes(SCREENSHOT_THEME)) {
+  throw new Error('SCREENSHOT_THEME precisa ser dark ou light.')
 }
 
 await mkdir(OUTPUT_DIR, { recursive: true })
@@ -150,6 +154,17 @@ try {
   await viewport(1440, 1000)
 
   await navigate('/login')
+  await evaluate(`
+    localStorage.setItem('gabarito-theme-v2', ${JSON.stringify(SCREENSHOT_THEME)})
+    document.documentElement.classList.toggle('dark', ${JSON.stringify(SCREENSHOT_THEME)} === 'dark')
+    location.reload()
+  `)
+  await waitFor(
+    () => evaluate("document.documentElement.classList.contains('dark')")
+      .then(isDark => isDark === (SCREENSHOT_THEME === 'dark')),
+    `tema ${SCREENSHOT_THEME}`,
+  )
+  await wait(500)
   await screenshot('login.png')
 
   await navigate('/sobre')

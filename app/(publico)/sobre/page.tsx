@@ -62,8 +62,6 @@ const faqs = [
   { q: 'Meus dados ficam seguros?', a: 'Ficam. Todas as tabelas têm Row Level Security no PostgreSQL, então cada usuário só acessa os próprios dados.' },
 ]
 
-const tech = ['Next.js 16', 'Google Gemini', 'Supabase', 'PostgreSQL + RLS', 'Sistema Leitner']
-
 export default function SobrePage() {
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
@@ -224,15 +222,6 @@ export default function SobrePage() {
             </div>
           </div>
 
-          {/* tech strip (honest proof) */}
-          <div className="fade-up mt-14" style={{ animationDelay: '420ms' }}>
-            <p className="mb-4 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Construído com</p>
-            <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
-              {tech.map(t => (
-                <span key={t} className="font-mono text-sm text-muted-foreground transition-colors hover:text-muted">{t}</span>
-              ))}
-            </div>
-          </div>
         </section>
 
         {/* ── Carrossel de bancas (infinito) ── */}
@@ -382,14 +371,6 @@ export default function SobrePage() {
             <span className="h-1.5 w-1.5 rounded-full bg-brand animate-pulse" />
             feito para concurseiros
           </span>
-          <a
-            href="https://github.com/cielioqueiroz/gabarito_AI"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-xs text-muted transition-all hover:-translate-y-0.5 hover:text-foreground"
-          >
-            GitHub ↗
-          </a>
         </div>
       </footer>
     </div>

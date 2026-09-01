@@ -8,6 +8,7 @@ import { createClient } from '@/lib/supabase/client'
 import { useToast } from '@/lib/toast'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
+import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
 import ProgressBar from './ProgressBar'
 import { PlanoStreamPreview } from './PlanoStreamPreview'
 import type { Disciplina, Topico } from '@/types'
@@ -27,6 +28,8 @@ export default function PlanoTab({ disciplinas, topicos: initialTopicos, concurs
   const [showImport, setShowImport]   = useState(false)
   const [expanded, setExpanded] = useState<Set<string>>(new Set(disciplinas.map(d => d.id)))
   const [streamMode, setStreamMode] = useState(false)
+  const [pendingAction, setPendingAction] = useState<'generate' | 'stream' | null>(null)
+  const [cancelImportOpen, setCancelImportOpen] = useState(false)
 
   async function toggleTopico(topico: Topico) {
     const updated = !topico.estudado
@@ -38,12 +41,26 @@ export default function PlanoTab({ disciplinas, topicos: initialTopicos, concurs
     }
   }
 
-  async function handleGerarPlano(e: React.FormEvent) {
-    e.preventDefault()
+  function requestPlano(action: 'generate' | 'stream') {
     if (!editaisText.trim()) {
       toast.warning('Cole o edital', 'Adicione o conteúdo programático antes de gerar.')
       return
     }
+    setPendingAction(action)
+  }
+
+  function closeImport() {
+    setEditaisText('')
+    setStreamMode(false)
+    setShowImport(false)
+  }
+
+  function requestCloseImport() {
+    if (editaisText.trim()) setCancelImportOpen(true)
+    else closeImport()
+  }
+
+  async function handleGerarPlano() {
     setGenerating(true)
     try {
       const res = await fetch('/api/gerar-plano', {
@@ -70,6 +87,33 @@ export default function PlanoTab({ disciplinas, topicos: initialTopicos, concurs
     })
   }
 
+  const confirmationDialogs = (
+    <>
+      <ConfirmDialog
+        open={pendingAction !== null}
+        onClose={() => setPendingAction(null)}
+        onConfirm={async () => {
+          if (pendingAction === 'stream') setStreamMode(true)
+          else await handleGerarPlano()
+        }}
+        title={disciplinas.length > 0 ? 'Reimportar este edital?' : 'Gerar plano com IA?'}
+        description={disciplinas.length > 0
+          ? 'A nova leitura pode adicionar disciplinas e tópicos ao concurso. O progresso já registrado será preservado.'
+          : 'A IA analisará o conteúdo informado e criará disciplinas e tópicos para este concurso.'}
+        confirmLabel={pendingAction === 'stream' ? 'Iniciar preview' : 'Gerar plano'}
+      />
+      <ConfirmDialog
+        open={cancelImportOpen}
+        onClose={() => setCancelImportOpen(false)}
+        onConfirm={closeImport}
+        title="Descartar o edital colado?"
+        description="O texto informado será removido e ainda não terá sido processado pela IA."
+        confirmLabel="Descartar texto"
+        destructive
+      />
+    </>
+  )
+
   if (disciplinas.length === 0) {
     return (
       <div className="space-y-4">
@@ -87,14 +131,15 @@ export default function PlanoTab({ disciplinas, topicos: initialTopicos, concurs
               <ImportEditalForm
                 value={editaisText}
                 onChange={setEditaisText}
-                onSubmit={handleGerarPlano}
-                onStream={() => setStreamMode(true)}
-                onCancel={() => setShowImport(false)}
+                onSubmit={() => requestPlano('generate')}
+                onStream={() => requestPlano('stream')}
+                onCancel={requestCloseImport}
                 loading={generating}
               />
             </motion.div>
           )}
         </AnimatePresence>
+        {confirmationDialogs}
       </div>
     )
   }
@@ -103,7 +148,7 @@ export default function PlanoTab({ disciplinas, topicos: initialTopicos, concurs
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <p className="text-muted-foreground text-sm">{disciplinas.length} disciplinas</p>
-        <button onClick={() => setShowImport(v => !v)} className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-brand hover:text-brand transition-colors cursor-pointer">
+        <button onClick={() => showImport ? requestCloseImport() : setShowImport(true)} className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-brand hover:text-brand transition-colors cursor-pointer">
           <Sparkles size={11} /> Reimportar edital
         </button>
       </div>
@@ -122,9 +167,9 @@ export default function PlanoTab({ disciplinas, topicos: initialTopicos, concurs
               <ImportEditalForm
                 value={editaisText}
                 onChange={setEditaisText}
-                onSubmit={handleGerarPlano}
-                onStream={() => setStreamMode(true)}
-                onCancel={() => setShowImport(false)}
+                onSubmit={() => requestPlano('generate')}
+                onStream={() => requestPlano('stream')}
+                onCancel={requestCloseImport}
                 loading={generating}
               />
             )}
@@ -189,12 +234,14 @@ export default function PlanoTab({ disciplinas, topicos: initialTopicos, concurs
           </Card>
         )
       })}
+
+      {confirmationDialogs}
     </div>
   )
 }
 
 function ImportEditalForm({ value, onChange, onSubmit, onStream, onCancel, loading }: {
-  value: string; onChange: (v: string) => void; onSubmit: (e: React.FormEvent) => void
+  value: string; onChange: (v: string) => void; onSubmit: () => void
   onStream: () => void; onCancel: () => void; loading: boolean
 }) {
   return (
@@ -202,7 +249,7 @@ function ImportEditalForm({ value, onChange, onSubmit, onStream, onCancel, loadi
       <CardContent className="pt-4">
         <h3 className="font-semibold text-foreground mb-1 text-sm">Importar edital com IA</h3>
         <p className="text-muted-foreground text-xs mb-3">Cole o conteúdo programático do edital. A IA vai organizar em disciplinas e tópicos.</p>
-        <form onSubmit={onSubmit} className="space-y-3">
+        <form onSubmit={event => { event.preventDefault(); onSubmit() }} className="space-y-3">
           <textarea
             value={value}
             onChange={e => onChange(e.target.value)}

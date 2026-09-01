@@ -247,6 +247,8 @@ export default async function AlgoPage() {
 
 Identidade **"Papel de Prova"**: marfim, tinta, areia e vermelho de revisão. Tokens em `app/globals.css`: tema claro em `:root`, escuro em `html.dark`.
 
+O tema escuro é o padrão inicial. A escolha salva em `gabarito-theme-v2` continua prevalecendo para quem alternar manualmente; a chave foi versionada para não herdar o antigo claro padrão como se fosse escolha explícita.
+
 - Use os tokens semânticos (`bg-background`, `bg-surface`, `bg-elevated`, `text-foreground`, `text-muted`, `text-muted-foreground`, `border-border`, `brand`, `brand-solid`, `brand-soft`). Hex cru só em arte estática que não recebe CSS, como Open Graph e ícone.
 - **Contraste WCAG AA é requisito.** Use os tokens `brand`, `brand-solid` e `brand-soft`, nunca um vermelho cru no componente. `#9C2F25` sobre o papel rende 6.22:1; `#B33A2B` com branco rende 5.90:1; no tema escuro, `brand` vira `#E39B86` (7.10:1). Está documentado em `components/ui/button.tsx` — respeite.
 - Evite estética genérica de IA: sem neon, glow, glassmorphism, blobs luminosos, grids tecnológicos ou gradientes de marca. A linguagem é editorial: linhas de folha, bordas secas, sombras deslocadas e tipografia Newsreader + Archivo.
@@ -258,6 +260,7 @@ Identidade **"Papel de Prova"**: marfim, tinta, areia e vermelho de revisão. To
 - Acessibilidade já implementada e que não pode regredir: skip link, foco preso no drawer mobile, `Esc` devolvendo o foco ao botão que abriu, `aria-label` / `aria-expanded` nos controles.
 - Texto de UI reutilizável vai em `lib/i18n.ts`. Feedback ao usuário via `useToast()`, nunca `alert()`.
 - Confirmação de ação destrutiva usa `components/ui/ConfirmDialog.tsx`.
+- Confirme também ações sensíveis de conta ou substituição de dados: sair, salvar perfil e reimportar edital. Não interrompa ações frequentes e reversíveis, como alternar tema, marcar tópico, responder questão ou navegar.
 
 ---
 

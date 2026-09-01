@@ -9,6 +9,7 @@ import { useToast } from '@/lib/toast'
 import { Button } from '@/components/ui/button'
 import { Input, FieldError } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
 import Page from './Page'
 
 interface Props {
@@ -24,17 +25,27 @@ export default function ConfiguracoesClient({ email, initialName }: Props) {
   const { theme, toggle } = useTheme()
   const toast = useToast()
   const [displayName, setDisplayName] = useState(initialName)
+  const [lastSavedName, setLastSavedName] = useState(initialName)
   const [saving, setSaving]   = useState(false)
   const [saved, setSaved]     = useState(false)
   const [nameError, setNameError] = useState('')
+  const [confirmNameOpen, setConfirmNameOpen] = useState(false)
 
-  async function handleSaveName(e: React.FormEvent) {
+  function handleSaveName(e: React.FormEvent) {
     e.preventDefault()
     if (!displayName.trim()) {
       setNameError('Informe um nome de exibição.')
       toast.warning('Nome obrigatório')
       return
     }
+    if (displayName.trim() === lastSavedName.trim()) {
+      toast.info('Nenhuma alteração', 'O nome informado já está salvo.')
+      return
+    }
+    setConfirmNameOpen(true)
+  }
+
+  async function saveName() {
     setSaving(true); setNameError(''); setSaved(false)
     try {
       const supabase = createClient()
@@ -42,6 +53,7 @@ export default function ConfiguracoesClient({ email, initialName }: Props) {
         data: { full_name: displayName.trim() },
       })
       if (error) throw new Error(error.message)
+      setLastSavedName(displayName.trim())
       setSaved(true)
       toast.success('Perfil atualizado', 'Seu nome foi salvo com sucesso.')
       setTimeout(() => setSaved(false), 3000)
@@ -52,9 +64,10 @@ export default function ConfiguracoesClient({ email, initialName }: Props) {
   }
 
   return (
-    <Page title="Configurações">
-      <div>
-        <motion.div
+    <>
+      <Page title="Configurações">
+        <div>
+          <motion.div
           variants={stagger}
           initial="hidden"
           animate="show"
@@ -180,8 +193,17 @@ export default function ConfiguracoesClient({ email, initialName }: Props) {
             </Card>
           </motion.div>
 
-        </motion.div>
-      </div>
-    </Page>
+          </motion.div>
+        </div>
+      </Page>
+      <ConfirmDialog
+        open={confirmNameOpen}
+        onClose={() => setConfirmNameOpen(false)}
+        onConfirm={saveName}
+        title="Salvar alteração do perfil?"
+        description={`Seu nome de exibição passará de “${lastSavedName || 'Sem nome'}” para “${displayName.trim()}”.`}
+        confirmLabel="Salvar alteração"
+      />
+    </>
   )
 }

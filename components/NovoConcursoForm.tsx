@@ -21,6 +21,7 @@ import { useToast } from '@/lib/toast'
 import { Button } from '@/components/ui/button'
 import { Input, FieldError } from '@/components/ui/input'
 import { Card, CardContent } from '@/components/ui/card'
+import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
 
 /**
  * O lote é medido em QUESTÕES, não em disciplinas: o que estoura o limite de
@@ -119,12 +120,19 @@ export default function NovoConcursoForm({ onCreated, onCancel }: Props) {
   const [arrastando, setArrastando] = useState(false)
   const [nomeError, setNomeError]   = useState('')
   const [fileError, setFileError]   = useState('')
+  const [cancelOpen, setCancelOpen] = useState(false)
 
   const [etapa, setEtapa] = useState<EtapaId | null>(null)
   const [progresso, setProgresso] = useState({ feitos: 0, total: 0, questoes: 0 })
   const inputRef = useRef<HTMLInputElement>(null)
 
   const ocupado = etapa !== null
+  const hasDraft = Boolean(nome.trim() || cargo.trim() || banca.trim() || ano.trim() || file)
+
+  function requestCancel() {
+    if (hasDraft) setCancelOpen(true)
+    else onCancel()
+  }
 
   function escolherArquivo(f: File | null) {
     setFileError('')
@@ -267,13 +275,14 @@ export default function NovoConcursoForm({ onCreated, onCancel }: Props) {
   const Icone = file?.type.startsWith('image/') ? ImageIcon : FileText
 
   return (
-    <Card>
-      <CardContent className="pt-5">
+    <>
+      <Card>
+        <CardContent className="pt-5">
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-semibold text-foreground">Novo concurso</h2>
           <button
             type="button"
-            onClick={onCancel}
+            onClick={requestCancel}
             disabled={ocupado}
             aria-label="Fechar"
             className="text-muted-foreground hover:text-muted cursor-pointer transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
@@ -429,11 +438,21 @@ export default function NovoConcursoForm({ onCreated, onCancel }: Props) {
             <Button type="submit" disabled={ocupado} className="flex-1">
               {ocupado ? 'Processando…' : file ? 'Criar e gerar plano com IA' : 'Criar concurso'}
             </Button>
-            <Button type="button" variant="outline" onClick={onCancel} disabled={ocupado}>Cancelar</Button>
+            <Button type="button" variant="outline" onClick={requestCancel} disabled={ocupado}>Cancelar</Button>
           </div>
         </form>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+      <ConfirmDialog
+        open={cancelOpen}
+        onClose={() => setCancelOpen(false)}
+        onConfirm={onCancel}
+        title="Descartar este rascunho?"
+        description="O arquivo selecionado e os dados preenchidos serão descartados."
+        confirmLabel="Descartar rascunho"
+        destructive
+      />
+    </>
   )
 }
 

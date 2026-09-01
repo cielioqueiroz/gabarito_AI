@@ -56,7 +56,7 @@ Feito por um concurseiro, para concurseiros. Projeto aberto (MIT), roda inteiro 
 | 📊 | **Estatísticas** | KPIs de acerto, gráfico dos últimos 7 dias e desempenho por disciplina |
 | ⌨️ | **Atalhos** | `Espaço` vira o card · `1/J` errei · `2/K` acertei · `U` desfazer |
 | 🔐 | **Acesso seguro** | E-mail/senha ou Google, com PKCE via Supabase Auth |
-| 📱 | **PWA + responsivo** | Instalável em mobile/desktop, dark/light sem FOUC |
+| 📱 | **PWA + responsivo** | Instalável em mobile/desktop, tema escuro por padrão e alternância sem FOUC |
 
 <div align="center">
 <table>

@@ -48,12 +48,12 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: '#F2EBDD',
+  themeColor: '#24211D',
   width: 'device-width',
   initialScale: 1,
 }
 
-const themeInitScript = `(function(){try{var t=localStorage.getItem('gabarito-theme')||'light';document.documentElement.classList.toggle('dark',t==='dark')}catch(e){}})();`
+const themeInitScript = `(function(){var t='dark';try{t=localStorage.getItem('gabarito-theme-v2')||'dark'}catch(e){}document.documentElement.classList.toggle('dark',t==='dark')})();`
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

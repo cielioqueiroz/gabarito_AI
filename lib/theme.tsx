@@ -3,9 +3,10 @@
 import { createContext, useContext, useState } from 'react'
 
 type Theme = 'dark' | 'light'
+const THEME_STORAGE_KEY = 'gabarito-theme-v2'
 
 const ThemeContext = createContext<{ theme: Theme; toggle: () => void }>({
-  theme: 'light',
+  theme: 'dark',
   toggle: () => {},
 })
 
@@ -18,14 +19,14 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   // dentro de um efeito que dependia do próprio estado — renderização em
   // cascata sem nenhum ganho.
   const [theme, setTheme] = useState<Theme>(() => {
-    if (typeof document === 'undefined') return 'light'
+    if (typeof document === 'undefined') return 'dark'
     return document.documentElement.classList.contains('dark') ? 'dark' : 'light'
   })
 
   function toggle() {
     setTheme(prev => {
       const next = prev === 'dark' ? 'light' : 'dark'
-      localStorage.setItem('gabarito-theme', next)
+      localStorage.setItem(THEME_STORAGE_KEY, next)
       document.documentElement.classList.toggle('dark', next === 'dark')
       return next
     })
