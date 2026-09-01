@@ -4,7 +4,7 @@
 
 @theme inline {
   --font-sans: var(--font-sans-c);
-  --font-mono: var(--font-geist-mono);
+  --font-mono: var(--font-mono-c);
 
   /* Semantic color tokens — resolved from CSS vars below */
   --color-background:       var(--c-bg);
@@ -14,27 +14,41 @@
   --color-foreground:       var(--c-text);
   --color-muted:            var(--c-muted);
   --color-muted-foreground: var(--c-dimmed);
+  --color-brand:             var(--c-brand);
+  --color-brand-solid:       var(--c-brand-solid);
+  --color-brand-soft:        var(--c-brand-soft);
+  --color-paper:             var(--c-paper);
+  --color-ink:               var(--c-ink);
 }
 
-/* ── Design tokens — light default, dark override ──
-   Identidade "Meia-noite & Azul-caneta": carvão quente + azul de caneta. */
+/* ── Identidade "Papel de prova": marfim, tinta, areia e vermelho de revisão. */
 :root {
-  --c-bg:       #F6F6F3;   /* papel */
-  --c-surface:  #FFFFFF;
-  --c-elevated: #ECECE7;
-  --c-border:   #DEDED8;
-  --c-text:     #17171D;   /* tinta */
-  --c-muted:    #5C5C66;
-  --c-dimmed:   #8A8A94;
+  --c-bg:          #F2EBDD;
+  --c-surface:     #FFFDF7;
+  --c-elevated:    #E8DECB;
+  --c-border:      #CFC2AB;
+  --c-text:        #24211D;
+  --c-muted:       #625B51;
+  --c-dimmed:      #6F665A;
+  --c-brand:       #9C2F25;
+  --c-brand-solid: #B33A2B;
+  --c-brand-soft:  #EAD2C7;
+  --c-paper:       #F2EBDD;
+  --c-ink:         #24211D;
 }
 html.dark {
-  --c-bg:       #101014;   /* carvão quente */
-  --c-surface:  #17171D;   /* superfície sólida */
-  --c-elevated: #1F1F28;   /* elevado */
-  --c-border:   #26262F;   /* borda discreta */
-  --c-text:     #F4F4F0;   /* quase-branco — títulos */
-  --c-muted:    #9C9CA6;   /* descrições */
-  --c-dimmed:   #8A8A94;   /* metadados — mínimo p/ WCAG AA (4.5:1) sobre --c-elevated */
+  --c-bg:          #24211D;
+  --c-surface:     #2D2924;
+  --c-elevated:    #39332C;
+  --c-border:      #554B40;
+  --c-text:        #F2EBDD;
+  --c-muted:       #C9BDAB;
+  --c-dimmed:      #B2A694;
+  --c-brand:       #E39B86;
+  --c-brand-solid: #B33A2B;
+  --c-brand-soft:  #4A302A;
+  --c-paper:       #F2EBDD;
+  --c-ink:         #24211D;
 }
 
 /* ── Global cursor ── */
@@ -49,13 +63,13 @@ button:disabled, select:disabled, input:disabled {
 /* ── Scrollbar ── */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #26262F; border-radius: 99px; }
-::-webkit-scrollbar-thumb:hover { background: #34343F; }
-* { scrollbar-width: thin; scrollbar-color: #26262F transparent; }
+::-webkit-scrollbar-thumb { background: var(--c-border); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: var(--c-muted); }
+* { scrollbar-width: thin; scrollbar-color: var(--c-border) transparent; }
 
-/* ── Focus ring (azul-caneta) ── */
+/* ── Focus ring ── */
 *:focus-visible {
-  outline: 2px solid #4A72E8;
+  outline: 2px solid var(--c-brand);
   outline-offset: 2px;
 }
 
@@ -87,11 +101,11 @@ select:-webkit-autofill {
 input:-webkit-autofill:focus,
 textarea:-webkit-autofill:focus {
   /* mantém o preenchimento escuro E um anel de foco limpo (sem dobrar) */
-  -webkit-box-shadow: 0 0 0 1000px var(--c-elevated) inset, 0 0 0 2px rgba(74, 114, 232, 0.55);
-  box-shadow: 0 0 0 1000px var(--c-elevated) inset, 0 0 0 2px rgba(74, 114, 232, 0.55);
+  -webkit-box-shadow: 0 0 0 1000px var(--c-elevated) inset, 0 0 0 2px color-mix(in srgb, var(--c-brand) 55%, transparent);
+  box-shadow: 0 0 0 1000px var(--c-elevated) inset, 0 0 0 2px color-mix(in srgb, var(--c-brand) 55%, transparent);
 }
 
-/* ── Display (Plus Jakarta Sans) for headings ── */
+/* ── Display editorial (Newsreader) ── */
 .font-display { font-family: var(--font-display), system-ui, sans-serif; }
 h1, h2 { font-family: var(--font-display), system-ui, sans-serif; }
 
@@ -118,28 +132,26 @@ h1, h2 { font-family: var(--font-display), system-ui, sans-serif; }
   animation: shimmer 1.5s infinite linear;
 }
 
-/* ── Glow pulse (azul-caneta) ── */
+/* Pulso contido para estados de processamento, sem halo neon. */
 @keyframes glow-pulse {
-  0%, 100% { box-shadow: 0 0 20px rgba(74,114,232,0.16); }
-  50%       { box-shadow: 0 0 44px rgba(74,114,232,0.30); }
+  0%, 100% { box-shadow: 0 0 0 1px color-mix(in srgb, var(--c-brand) 18%, transparent); }
+  50%       { box-shadow: 0 0 0 3px color-mix(in srgb, var(--c-brand) 12%, transparent); }
 }
 .animate-glow { animation: glow-pulse 3s ease-in-out infinite; }
 @media (prefers-reduced-motion: reduce) {
   .animate-shimmer, .animate-glow { animation: none; }
 }
 
-/* ── Ambient light blobs (subtle, azul + neutro) ── */
+/* Marcas de papel discretas no fundo, sem blobs luminosos. */
 .bg-blobs::before,
 .bg-blobs::after {
   content: '';
   position: fixed;
-  border-radius: 9999px;
-  filter: blur(130px);
   z-index: 0;
   pointer-events: none;
 }
-.bg-blobs::before { top: -180px; left: -120px; width: 520px; height: 520px; background: rgba(74,114,232,0.08); }
-.bg-blobs::after  { bottom: -220px; right: -140px; width: 560px; height: 560px; background: rgba(150,160,190,0.06); }
+.bg-blobs::before { top: 0; left: 4rem; width: 1px; height: 100%; background: color-mix(in srgb, var(--c-brand) 18%, transparent); }
+.bg-blobs::after  { top: 0; right: 4rem; width: 1px; height: 100%; background: color-mix(in srgb, var(--c-border) 60%, transparent); }
 
 /* ── Landing entrance (CSS-only, staggered via inline animation-delay) ── */
 @keyframes fade-up {
@@ -160,21 +172,17 @@ h1, h2 { font-family: var(--font-display), system-ui, sans-serif; }
   .float-y { animation: none; }
 }
 
-/* ── Brand gradient text (azul-caneta) ── */
+/* A marca agora usa tinta sólida; gradiente tecnológico foi removido. */
 .text-gradient-brand {
-  background: linear-gradient(120deg, #A8BCF8 0%, #4A72E8 55%, #3556C4 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
+  color: var(--c-brand);
 }
 
 /* ── Sublinhado de caneta: traço azul à mão sob palavras-chave (assinatura
    da marca). SVG inline com leve ondulação, como um sublinhado de prova. ── */
 .hl-mark {
-  color: #A8BCF8;
+  color: var(--c-brand);
   padding-bottom: 0.14em;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 8' preserveAspectRatio='none'%3E%3Cpath d='M2 5.5 Q 30 2.5, 60 5 T 118 4' fill='none' stroke='%234A72E8' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 8' preserveAspectRatio='none'%3E%3Cpath d='M2 5.5 Q 30 2.5, 60 5 T 118 4' fill='none' stroke='%23B33A2B' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: 0 100%;
   background-size: 100% 0.16em;
@@ -182,21 +190,10 @@ h1, h2 { font-family: var(--font-display), system-ui, sans-serif; }
   -webkit-box-decoration-break: clone;
 }
 
-/* ── Divisor vivo: hairline com gradiente que desliza devagar —
-   substitui as bordas duras de header/footer. ── */
-@keyframes divider-slide {
-  0%   { background-position: -60% 0; }
-  100% { background-position: 160% 0; }
-}
+/* Divisor editorial: uma linha de revisão curta sobre o filete neutro. */
 .divider-live {
   height: 1px;
-  background-image: linear-gradient(90deg, transparent 0%, rgba(74,114,232,0.55) 50%, transparent 100%);
-  background-size: 45% 100%;
-  background-repeat: no-repeat;
-  animation: divider-slide 7s ease-in-out infinite alternate;
-}
-@media (prefers-reduced-motion: reduce) {
-  .divider-live { animation: none; background-position: 50% 0; }
+  background: linear-gradient(90deg, var(--c-brand) 0 3.5rem, var(--c-border) 3.5rem 100%);
 }
 
 /* ── Marquee de bancas (carrossel infinito) ──
@@ -240,38 +237,15 @@ h1, h2 { font-family: var(--font-display), system-ui, sans-serif; }
   will-change: transform;
 }
 .card-interactive:hover {
-  transform: translateY(-4px);
-  border-radius: 1.15rem;
-  border-color: rgba(74, 114, 232, 0.45);
-  box-shadow: 0 18px 40px -20px rgba(0, 0, 0, 0.75),
-              0 0 0 1px rgba(74, 114, 232, 0.12),
-              0 8px 30px -12px rgba(74, 114, 232, 0.28);
+  transform: translateY(-2px);
+  border-radius: 0.85rem;
+  border-color: var(--c-brand);
+  box-shadow: 0 12px 24px -20px color-mix(in srgb, var(--c-ink) 40%, transparent);
 }
 @media (prefers-reduced-motion: reduce) {
   .card-interactive { transition: border-color 0.2s ease; }
   .card-interactive:hover { transform: none; border-radius: 0.75rem; }
 }
 
-/* Brilho que atravessa o card no hover (sheen diagonal) */
+/* Mantido por compatibilidade de classe; o brilho diagonal foi removido. */
 .card-sheen { position: relative; overflow: hidden; }
-.card-sheen::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(115deg, transparent 30%, rgba(168, 188, 248, 0.10) 48%, transparent 62%);
-  transform: translateX(-120%);
-  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
-  pointer-events: none;
-}
-.card-sheen:hover::after { transform: translateX(120%); }
-@media (prefers-reduced-motion: reduce) {
-  .card-sheen::after { display: none; }
-}
-
-/* ── Three.js canvas ── */
-#three-canvas {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-}

@@ -76,7 +76,7 @@ export default function PlanoTab({ disciplinas, topicos: initialTopicos, concurs
         <Card className="text-center py-10">
           <CardContent className="pt-0">
             <p className="text-muted-foreground text-sm mb-3">Nenhuma disciplina ainda.</p>
-            <button onClick={() => setShowImport(true)} className="text-[#4A72E8] text-sm font-semibold hover:text-[#A8BCF8] transition-colors cursor-pointer">
+            <button onClick={() => setShowImport(true)} className="text-brand text-sm font-semibold hover:text-brand transition-colors cursor-pointer">
               Importar edital com IA →
             </button>
           </CardContent>
@@ -103,7 +103,7 @@ export default function PlanoTab({ disciplinas, topicos: initialTopicos, concurs
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <p className="text-muted-foreground text-sm">{disciplinas.length} disciplinas</p>
-        <button onClick={() => setShowImport(v => !v)} className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-[#4A72E8] hover:text-[#A8BCF8] transition-colors cursor-pointer">
+        <button onClick={() => setShowImport(v => !v)} className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-brand hover:text-brand transition-colors cursor-pointer">
           <Sparkles size={11} /> Reimportar edital
         </button>
       </div>
@@ -175,7 +175,7 @@ export default function PlanoTab({ disciplinas, topicos: initialTopicos, concurs
                           type="checkbox"
                           checked={topico.estudado}
                           onChange={() => toggleTopico(topico)}
-                          className="mt-0.5 w-4 h-4 rounded border-border bg-elevated text-[#3556C4] focus:ring-2 focus:ring-[#4A72E8] focus:ring-offset-surface cursor-pointer flex-shrink-0 accent-[#4A72E8]"
+                          className="mt-0.5 w-4 h-4 rounded border-border bg-elevated text-brand-solid focus:ring-2 focus:ring-brand focus:ring-offset-surface cursor-pointer flex-shrink-0 accent-brand"
                         />
                         <span className={`text-sm leading-relaxed transition-colors ${topico.estudado ? 'text-muted-foreground line-through' : 'text-muted'}`}>
                           {topico.texto}
@@ -198,7 +198,7 @@ function ImportEditalForm({ value, onChange, onSubmit, onStream, onCancel, loadi
   onStream: () => void; onCancel: () => void; loading: boolean
 }) {
   return (
-    <Card className="border-[#4A72E8]/30">
+    <Card className="border-brand/30">
       <CardContent className="pt-4">
         <h3 className="font-semibold text-foreground mb-1 text-sm">Importar edital com IA</h3>
         <p className="text-muted-foreground text-xs mb-3">Cole o conteúdo programático do edital. A IA vai organizar em disciplinas e tópicos.</p>
@@ -208,7 +208,7 @@ function ImportEditalForm({ value, onChange, onSubmit, onStream, onCancel, loadi
             onChange={e => onChange(e.target.value)}
             rows={6}
             placeholder="Cole aqui o conteúdo programático do edital…"
-            className="w-full rounded-lg border border-border bg-elevated px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[#4A72E8] focus:border-transparent transition resize-none font-mono"
+            className="w-full rounded-lg border border-border bg-elevated px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent transition resize-none font-mono"
           />
           <div className="flex flex-wrap gap-2">
             <Button type="submit" disabled={loading || !value.trim()} className="flex-1 min-w-40">

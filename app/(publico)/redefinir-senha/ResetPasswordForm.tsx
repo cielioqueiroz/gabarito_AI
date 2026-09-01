@@ -70,9 +70,9 @@ export default function ResetPasswordForm() {
   return (
     <div>
       <div className="mb-8">
-        <p className="mb-3 font-mono text-[9px] uppercase tracking-[0.24em] text-[#7895EB]">Última etapa</p>
-        <h2 className="text-3xl font-bold tracking-[-0.045em] text-[#F4F4F0] sm:text-[2.15rem]">Crie sua nova senha</h2>
-        <p className="mt-2 text-sm leading-6 text-[#898B95]">Escolha uma senha que você ainda não usa em outros serviços.</p>
+        <p className="mb-3 font-mono text-[9px] uppercase tracking-[0.24em] text-brand">Última etapa</p>
+        <h2 className="text-3xl font-bold tracking-[-0.045em] text-foreground sm:text-[2.15rem]">Crie sua nova senha</h2>
+        <p className="mt-2 text-sm leading-6 text-muted-foreground">Escolha uma senha que você ainda não usa em outros serviços.</p>
       </div>
 
       <form onSubmit={handleSubmit} noValidate className="space-y-5">
@@ -90,12 +90,12 @@ export default function ResetPasswordForm() {
           onToggle={() => setShowPassword(value => !value)}
         />
 
-        <div id="password-requirements" className="grid gap-2 rounded-xl border border-[#292B34] bg-[#15161B] p-4 sm:grid-cols-3">
+        <div id="password-requirements" className="grid gap-2 rounded-md border border-border bg-surface p-4 sm:grid-cols-3">
           {requisitos.map(requisito => {
             const passed = requisito.test(password)
             return (
-              <span key={requisito.label} className={`flex items-center gap-2 text-[11px] ${passed ? 'text-emerald-300' : 'text-[#898B95]'}`}>
-                <span className={`flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full border ${passed ? 'border-emerald-400/30 bg-emerald-400/10' : 'border-[#3A3C46]'}`}>
+              <span key={requisito.label} className={`flex items-center gap-2 text-[11px] ${passed ? 'text-emerald-300' : 'text-muted-foreground'}`}>
+                <span className={`flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full border ${passed ? 'border-emerald-400/30 bg-emerald-400/10' : 'border-border'}`}>
                   {passed ? <Check size={10} /> : null}
                 </span>
                 {requisito.label}
@@ -118,14 +118,14 @@ export default function ResetPasswordForm() {
           onToggle={() => setShowPassword(value => !value)}
         />
 
-        <Button type="submit" disabled={loading} size="lg" className="mt-2 h-12 w-full rounded-xl text-[15px]">
+        <Button type="submit" disabled={loading} size="lg" className="mt-2 h-12 w-full rounded-md text-[15px]">
           {loading ? <LoaderCircle size={17} className="animate-spin motion-reduce:animate-none" /> : <LockKeyhole size={17} />}
           {loading ? 'Salvando…' : 'Salvar e continuar'}
           {!loading ? <ArrowRight size={17} /> : null}
         </Button>
       </form>
 
-      <p className="mt-6 text-center text-[11px] leading-5 text-[#858792]">
+      <p className="mt-6 text-center text-[11px] leading-5 text-muted-foreground">
         Se o link tiver expirado, solicite uma nova recuperação na tela de login.
       </p>
     </div>
@@ -153,9 +153,9 @@ function PasswordField({
 }) {
   return (
     <div>
-      <label htmlFor={id} className="mb-2 block text-xs font-bold text-[#BFC0C7]">{label}</label>
+      <label htmlFor={id} className="mb-2 block text-xs font-bold text-foreground">{label}</label>
       <div className="relative">
-        <LockKeyhole aria-hidden size={16} className="pointer-events-none absolute left-3.5 top-1/2 z-10 -translate-y-1/2 text-[#686A75]" />
+        <LockKeyhole aria-hidden size={16} className="pointer-events-none absolute left-3.5 top-1/2 z-10 -translate-y-1/2 text-muted-foreground" />
         <Input
           id={id}
           name={id}
@@ -166,14 +166,14 @@ function PasswordField({
           aria-invalid={!!error}
           aria-describedby={describedBy}
           placeholder="••••••••"
-          className="h-12 bg-[#191A20] pl-10 pr-12"
+          className="h-12 bg-elevated pl-10 pr-12"
         />
         <button
           type="button"
           onClick={onToggle}
           aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
           aria-pressed={showPassword}
-          className="absolute inset-y-0 right-0 flex w-12 items-center justify-center text-[#72747F] transition-colors hover:text-[#F4F4F0]"
+          className="absolute inset-y-0 right-0 flex w-12 items-center justify-center text-muted-foreground transition-colors hover:text-foreground"
         >
           {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
         </button>

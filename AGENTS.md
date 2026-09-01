@@ -63,6 +63,7 @@ Não existe um único `main.ts`: o App Router monta o sistema a partir destes po
 | `npm run lint` | ESLint flat config (`next lint` **não existe** no Next 16) |
 | `npm test` | Testes de loteamento, `limparEnunciado`, validação da IA e SSRF |
 | `npm run avaliar -- <arquivo.pdf> [--questoes]` | Roda os prompts reais contra um documento de verdade, sem servidor nem banco |
+| `npm run screenshots` | Atualiza os prints em `.github/screenshots/`; exige o dev server e credenciais de uma conta de demonstração autorizada |
 
 **Rodar um teste isolado** (não há runner; são scripts Node autônomos):
 
@@ -244,10 +245,12 @@ export default async function AlgoPage() {
 
 ## UI e design
 
-Identidade **"Meia-noite & Azul-caneta"**. Tokens em `app/globals.css`: tema claro em `:root`, escuro em `html.dark`.
+Identidade **"Papel de Prova"**: marfim, tinta, areia e vermelho de revisão. Tokens em `app/globals.css`: tema claro em `:root`, escuro em `html.dark`.
 
-- Use os tokens semânticos (`bg-background`, `bg-surface`, `bg-elevated`, `text-foreground`, `text-muted`, `text-muted-foreground`, `border-border`). Hex cru só para o azul da marca.
-- **Contraste WCAG AA é requisito.** O azul `#4A72E8` rende só 4.32:1 com texto branco: sólido com texto branco usa `#4064D8` (5.21:1) e reserva `#4A72E8` para o hover; azul **como texto** usa `#A8BCF8` (10.1:1 no escuro). Está documentado em `components/ui/button.tsx` — respeite.
+- Use os tokens semânticos (`bg-background`, `bg-surface`, `bg-elevated`, `text-foreground`, `text-muted`, `text-muted-foreground`, `border-border`, `brand`, `brand-solid`, `brand-soft`). Hex cru só em arte estática que não recebe CSS, como Open Graph e ícone.
+- **Contraste WCAG AA é requisito.** Use os tokens `brand`, `brand-solid` e `brand-soft`, nunca um vermelho cru no componente. `#9C2F25` sobre o papel rende 6.22:1; `#B33A2B` com branco rende 5.90:1; no tema escuro, `brand` vira `#E39B86` (7.10:1). Está documentado em `components/ui/button.tsx` — respeite.
+- Evite estética genérica de IA: sem neon, glow, glassmorphism, blobs luminosos, grids tecnológicos ou gradientes de marca. A linguagem é editorial: linhas de folha, bordas secas, sombras deslocadas e tipografia Newsreader + Archivo.
+- Gere os prints públicos do README com `scripts/capturar-screenshots.mjs`. Use `SCREENSHOT_PUBLIC_ONLY=1` para login + landing; telas internas só podem usar uma conta de demonstração autorizada para publicação.
 - Classes sempre via `cn()` (`lib/utils.ts`). Variantes de componente com `cva`.
 - Ícones: `lucide-react`. Componentes novos de UI: shadcn/ui em `components/ui/` (config em `components.json`, alias `@/`).
 - **Motion respeita `prefers-reduced-motion`**: use `useMotion()` para escolher a variante, e `@media (prefers-reduced-motion: reduce)` nas animações CSS.

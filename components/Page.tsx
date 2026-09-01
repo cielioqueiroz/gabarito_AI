@@ -22,7 +22,7 @@ export default function Page({ children, title, headerRight }: Props) {
   return (
     <>
       {/* Header — sem borda dura: hairline viva no lugar */}
-      <header className="h-14 flex-shrink-0 bg-background/85 backdrop-blur-sm sticky top-0 z-10">
+      <header className="h-14 flex-shrink-0 border-b border-border bg-background sticky top-0 z-10">
         <div className={`${coluna} relative h-full flex items-center justify-between`}>
           <div aria-hidden className="divider-live absolute bottom-0 left-6 right-6" />
           <div className="flex items-center gap-3">
@@ -45,7 +45,7 @@ export default function Page({ children, title, headerRight }: Props) {
               onClick={shortcuts.show}
               aria-label="Ver atalhos de teclado"
               title="Atalhos (?)"
-              className="hidden md:inline-flex p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-elevated cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4A72E8]"
+              className="hidden md:inline-flex p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-elevated cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
             >
               <Keyboard size={16} />
             </button>

@@ -1,134 +1,77 @@
 import { ImageResponse } from 'next/og'
 
-export const runtime     = 'edge'
-export const alt         = 'gabarito_AI — console de estudos para concursos públicos'
-export const size        = { width: 1200, height: 630 }
+export const runtime = 'edge'
+export const alt = 'gabarito_AI — transforme o edital em plano de estudos'
+export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 
-// Every element with more than one child MUST declare display:flex — Satori
-// (next/og) throws "failed to pipe response" otherwise, yielding an empty PNG.
-
-// Dois chips em azul-caneta puxam o olho para o que o produto faz de único; os
-// outros dois ficam neutros. O banner vive como miniatura, então nada aqui usa
-// tom abaixo de ~4.5:1 — o #4A72E8 como texto (4.13:1) sumia no thumbnail.
-const chips = [
-  { label: 'Plano de estudos',   bg: '#1B2542', border: '#4A72E866', text: '#A8BCF8' },
-  { label: 'Flashcards Leitner', bg: '#1B2542', border: '#4A72E866', text: '#A8BCF8' },
-  { label: 'Questões com IA',    bg: '#1F1F28', border: '#34343F99', text: '#9C9CA6' },
-  { label: 'Upload de edital',   bg: '#1F1F28', border: '#34343F99', text: '#9C9CA6' },
+const itens = [
+  ['01', 'edital lido e organizado'],
+  ['02', 'plano no ritmo da prova'],
+  ['03', 'revisão antes de esquecer'],
 ]
 
 export default function Image() {
-
   return new ImageResponse(
     (
-      <div
-        style={{
-          width: '100%',
-          height: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          background: '#101014',
-          padding: '80px',
-          position: 'relative',
-        }}
-      >
-        {/* subtle grid */}
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            display: 'flex',
-            backgroundImage:
-              'linear-gradient(#26262F 1px, transparent 1px), linear-gradient(90deg, #26262F 1px, transparent 1px)',
-            backgroundSize: '48px 48px',
-            opacity: 0.28,
-          }}
-        />
-        {/* blue glow */}
-        <div
-          style={{
-            position: 'absolute',
-            top: -140,
-            left: -100,
-            width: 560,
-            height: 560,
-            display: 'flex',
-            background: 'radial-gradient(circle, #4A72E822 0%, transparent 70%)',
-          }}
-        />
-        {/* top accent line */}
-        <div
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            height: 3,
-            display: 'flex',
-            background: 'linear-gradient(90deg, transparent, #4A72E8, #A8BCF8, transparent)',
-          }}
-        />
-
-        {/* logo row */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 24, marginBottom: 48 }}>
-          <div
-            style={{
-              width: 92,
-              height: 92,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderRadius: 22,
-              background: 'linear-gradient(135deg, #1F1F28, #101014)',
-              border: '1px solid #26262F',
-              boxShadow: '0 0 48px #4A72E833',
-            }}
-          >
-            <svg width="56" height="56" viewBox="0 0 64 64" fill="none">
-              <path d="M18 33.5 L28 43 L47 21.5" stroke="#4A72E8" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" />
-              <rect x="18" y="49" width="16" height="3.5" rx="1.75" fill="#4A72E8" />
-            </svg>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'baseline' }}>
-            <div style={{ display: 'flex', fontFamily: 'monospace', fontSize: 64, fontWeight: 800, color: '#F4F4F0', letterSpacing: -2 }}>gabarito</div>
-            <div style={{ display: 'flex', fontFamily: 'monospace', fontSize: 64, fontWeight: 800, color: '#4A72E8', letterSpacing: -2 }}>_AI</div>
-          </div>
+      <div style={{ width: '100%', height: '100%', display: 'flex', background: '#F2EBDD', color: '#24211D', padding: '58px 64px', position: 'relative' }}>
+        <div style={{ position: 'absolute', inset: 0, display: 'flex', backgroundImage: 'repeating-linear-gradient(0deg, transparent 0, transparent 43px, #D8CDB8 44px)', opacity: 0.38 }} />
+        <div style={{ position: 'absolute', top: 0, bottom: 0, left: 42, width: 2, display: 'flex', background: '#B33A2B55' }} />
+        <div style={{ position: 'absolute', top: 24, right: 28, display: 'flex', fontFamily: 'monospace', fontSize: 13, letterSpacing: 3, color: '#6F665A' }}>
+          EDIÇÃO 2026 / CONCURSOS
         </div>
 
-        {/* headline */}
-        <div style={{ display: 'flex', fontSize: 30, color: '#9C9CA6', lineHeight: 1.45, maxWidth: 900, marginBottom: 20 }}>
-          Suba o edital em PDF e a IA monta seu plano de estudos, flashcards e questões comentadas.
-        </div>
-
-        {/* subline */}
-        <div style={{ display: 'flex', fontFamily: 'monospace', fontSize: 17, color: '#8A8A94', letterSpacing: 3, textTransform: 'uppercase', marginBottom: 44 }}>
-          Console de estudos para concursos públicos
-        </div>
-
-        {/* feature chips */}
-        <div style={{ display: 'flex', gap: 16 }}>
-          {chips.map(c => (
-            <div
-              key={c.label}
-              style={{
-                display: 'flex',
-                background: c.bg,
-                border: `1px solid ${c.border}`,
-                color: c.text,
-                borderRadius: 12,
-                padding: '12px 20px',
-                fontSize: 17,
-                fontFamily: 'monospace',
-              }}
-            >
-              {c.label}
+        <div style={{ width: 690, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', zIndex: 1 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+            <div style={{ width: 58, height: 58, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#B33A2B', border: '2px solid #7C241D', boxShadow: '5px 5px 0 #24211D' }}>
+              <svg width="35" height="35" viewBox="0 0 64 64" fill="none">
+                <path d="M18 33.5 L28 43 L47 21.5" stroke="#FFFDF7" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" />
+                <rect x="18" y="49" width="16" height="3.5" rx="1.75" fill="#FFFDF7" />
+              </svg>
             </div>
-          ))}
+            <div style={{ display: 'flex', alignItems: 'baseline', fontFamily: 'monospace', fontSize: 34, fontWeight: 800, letterSpacing: -2 }}>
+              <span>gabarito</span><span style={{ color: '#9C2F25' }}>_AI</span>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <div style={{ display: 'flex', fontFamily: 'serif', fontSize: 74, fontWeight: 700, lineHeight: 0.96, letterSpacing: -3 }}>O edital vira plano.</div>
+            <div style={{ display: 'flex', marginTop: 11, fontFamily: 'serif', fontSize: 74, fontWeight: 700, lineHeight: 0.96, letterSpacing: -3, color: '#6F665A' }}>O plano vira rotina.</div>
+            <div style={{ width: 276, height: 11, display: 'flex', marginTop: 18, marginLeft: 286, background: '#B33A2B', transform: 'rotate(-1.5deg)' }} />
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14, fontFamily: 'monospace', fontSize: 16, color: '#625B51', letterSpacing: 1 }}>
+            <span style={{ color: '#9C2F25', fontWeight: 700 }}>PDF ENTRA</span><span>→</span><span>PLANO · QUESTÕES · FLASHCARDS · PODCAST</span>
+          </div>
+        </div>
+
+        <div style={{ width: 350, height: 486, marginLeft: 'auto', marginTop: 14, display: 'flex', flexDirection: 'column', background: '#FFFDF7', border: '2px solid #24211D', boxShadow: '10px 10px 0 #CFC2AB', transform: 'rotate(1.5deg)', padding: '28px 28px 24px', zIndex: 1 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: 18, borderBottom: '1px solid #CFC2AB', fontFamily: 'monospace', fontSize: 13, color: '#6F665A', letterSpacing: 2 }}>
+            <span>DOSSIÊ DE ESTUDO</span><span style={{ color: '#9C2F25' }}>01/01</span>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', marginTop: 27 }}>
+            <div style={{ display: 'flex', fontSize: 15, color: '#6F665A' }}>Analista Judiciário</div>
+            <div style={{ display: 'flex', marginTop: 4, fontFamily: 'serif', fontSize: 34, fontWeight: 700, lineHeight: 1.05 }}>Plano em ação</div>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 18, marginTop: 34 }}>
+            {itens.map(([numero, texto], index) => (
+              <div key={numero} style={{ display: 'flex', alignItems: 'center', gap: 13 }}>
+                <div style={{ width: 31, height: 31, display: 'flex', alignItems: 'center', justifyContent: 'center', border: `2px solid ${index < 2 ? '#9C2F25' : '#CFC2AB'}`, background: index < 2 ? '#EAD2C7' : '#FFFDF7', fontFamily: 'monospace', fontSize: 12, color: index < 2 ? '#7C241D' : '#6F665A' }}>{numero}</div>
+                <span style={{ fontSize: 16, color: index < 2 ? '#24211D' : '#6F665A' }}>{texto}</span>
+              </div>
+            ))}
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', marginTop: 'auto', paddingTop: 20, borderTop: '1px solid #CFC2AB' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'monospace', fontSize: 12, color: '#6F665A' }}>
+              <span>PROGRESSO DO EDITAL</span><span style={{ color: '#9C2F25' }}>64%</span>
+            </div>
+            <div style={{ height: 8, display: 'flex', marginTop: 9, background: '#E8DECB' }}>
+              <div style={{ width: '64%', display: 'flex', background: '#B33A2B' }} />
+            </div>
+          </div>
         </div>
       </div>
     ),
-    { ...size }
+    { ...size },
   )
 }

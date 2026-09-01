@@ -91,7 +91,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       value={{ coluna, menuAberto: sidebarOpen, abrirMenu: () => setSidebarOpen(true), botaoMenu: openerRef }}
     >
       <div className="flex h-screen bg-background overflow-hidden">
-        <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[200] focus:bg-[#3556C4] focus:text-white focus:px-3 focus:py-1.5 focus:rounded-md focus:text-sm">
+        <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[200] focus:bg-brand-solid focus:text-white focus:px-3 focus:py-1.5 focus:rounded-md focus:text-sm">
           Pular para o conteúdo
         </a>
         {/* Desktop sidebar — flutuante, com respiro das bordas */}
@@ -108,7 +108,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2 }}
-                className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+                className="absolute inset-0 bg-ink/65"
                 onClick={() => setSidebarOpen(false)}
               />
               <motion.div
@@ -152,10 +152,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           <footer className={`${coluna} relative flex-shrink-0 h-10 flex items-center justify-between`}>
             <div aria-hidden className="divider-live absolute top-0 left-6 right-6" />
             <span className="font-mono text-[10px] font-bold tracking-tight text-muted">
-              gabarito<span className="text-[#4A72E8]">_AI</span>
+              gabarito<span className="text-brand">_AI</span>
             </span>
             <span className="hidden sm:flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#4A72E8] animate-pulse" />
+              <span className="h-1.5 w-1.5 rounded-full bg-brand animate-pulse" />
               estudando com IA
             </span>
             <a
@@ -165,7 +165,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               className="group font-mono text-[10px] tracking-tight text-muted-foreground transition-colors hover:text-foreground"
               title="Portfólio de Cielio Queiroz"
             >
-              © {new Date().getFullYear()} <span className="font-bold text-[#A8BCF8] group-hover:text-[#F4F4F0] transition-colors">Cielio Queiroz</span>
+              © {new Date().getFullYear()} <span className="font-bold text-brand group-hover:text-foreground transition-colors">Cielio Queiroz</span>
             </a>
           </footer>
         </div>

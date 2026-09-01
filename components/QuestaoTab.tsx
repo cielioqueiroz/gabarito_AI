@@ -94,7 +94,7 @@ export default function QuestaoTab({ disciplinas, questoes, topicos = [] }: Prop
               onClick={() => setOrigem(o.key)}
               className={cn(
                 'rounded-full px-3 py-1 text-xs font-semibold transition-all duration-150 cursor-pointer',
-                origem === o.key ? 'bg-[#3556C4] text-white' : 'bg-elevated text-muted hover:bg-border'
+                origem === o.key ? 'bg-brand-solid text-white' : 'bg-elevated text-muted hover:bg-border'
               )}
             >
               {o.label}
@@ -113,9 +113,9 @@ export default function QuestaoTab({ disciplinas, questoes, topicos = [] }: Prop
               'rounded-full px-3 py-1 text-xs font-semibold transition-all duration-150 cursor-pointer capitalize',
               dificuldade === d
                 ? d === 'facil'   ? 'bg-emerald-600 text-white'
-                : d === 'medio'   ? 'bg-[#3556C4] text-white'
+                : d === 'medio'   ? 'bg-brand-solid text-white'
                 : d === 'dificil' ? 'bg-red-600 text-white'
-                : 'bg-[#3556C4] text-white'
+                : 'bg-brand-solid text-white'
                 : 'bg-elevated text-muted hover:bg-border'
             )}
           >
@@ -130,7 +130,7 @@ export default function QuestaoTab({ disciplinas, questoes, topicos = [] }: Prop
           onClick={() => setSelectedDisc(null)}
           className={cn(
             'rounded-full px-3 py-1 text-xs font-semibold transition-all duration-150 cursor-pointer',
-            !selectedDisc ? 'bg-[#3556C4] text-white' : 'bg-elevated text-muted hover:bg-border'
+            !selectedDisc ? 'bg-brand-solid text-white' : 'bg-elevated text-muted hover:bg-border'
           )}
         >
           Todas ({questoes.length})
@@ -141,7 +141,7 @@ export default function QuestaoTab({ disciplinas, questoes, topicos = [] }: Prop
             onClick={() => setSelectedDisc(disc.id)}
             className={cn(
               'rounded-full px-3 py-1 text-xs font-semibold transition-all duration-150 cursor-pointer',
-              selectedDisc === disc.id ? 'bg-[#3556C4] text-white' : 'bg-elevated text-muted hover:bg-border'
+              selectedDisc === disc.id ? 'bg-brand-solid text-white' : 'bg-elevated text-muted hover:bg-border'
             )}
           >
             {disc.nome} ({questoes.filter(q => q.disciplina_id === disc.id).length})
@@ -217,7 +217,7 @@ function QuestaoCard({ questao, index, state, onSelect }: { questao: Questao; in
 
   function altClass(alt: Alternativa) {
     const base = 'flex items-start gap-3 w-full rounded-lg px-3 py-2.5 text-sm text-left transition-all duration-150 '
-    if (!revealed) return base + 'border border-border hover:border-[#4A72E8]/40 hover:bg-[#4A72E8]/5 cursor-pointer'
+    if (!revealed) return base + 'border border-border hover:border-brand/40 hover:bg-brand/5 cursor-pointer'
     if (alt.letra === correta) return base + 'border border-emerald-500 bg-emerald-500/10 text-emerald-400 cursor-default'
     if (alt.letra === selected) return base + 'border border-red-500 bg-red-500/10 text-red-400 cursor-default'
     return base + 'border border-elevated text-muted-foreground cursor-default'

@@ -66,8 +66,8 @@ export default function ConfiguracoesClient({ email, initialName }: Props) {
             <Card>
               <CardHeader>
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-[#4A72E8]/10 flex items-center justify-center">
-                    <User size={16} className="text-[#4A72E8]" />
+                  <div className="w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center">
+                    <User size={16} className="text-brand" />
                   </div>
                   <div>
                     <CardTitle>Perfil</CardTitle>
@@ -115,8 +115,8 @@ export default function ConfiguracoesClient({ email, initialName }: Props) {
             <Card>
               <CardHeader>
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-[#4A72E8]/10 flex items-center justify-center">
-                    <Palette size={16} className="text-[#4A72E8]" />
+                  <div className="w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center">
+                    <Palette size={16} className="text-brand" />
                   </div>
                   <div>
                     <CardTitle>Aparência</CardTitle>
@@ -131,21 +131,21 @@ export default function ConfiguracoesClient({ email, initialName }: Props) {
                     onClick={() => theme === 'light' && toggle()}
                     className={`relative rounded-xl border-2 p-4 cursor-pointer transition-all duration-150 text-left ${
                       theme === 'dark'
-                        ? 'border-[#4A72E8] bg-[#4A72E8]/5'
-                        : 'border-border hover:border-[#4A72E8]/40'
+                        ? 'border-brand bg-brand/5'
+                        : 'border-border hover:border-brand/40'
                     }`}
                   >
-                    <div className="w-full aspect-video rounded-lg bg-[#0F1117] mb-3 overflow-hidden p-2">
-                      <div className="h-2 w-16 rounded-full bg-[#2A2D3E] mb-2" />
-                      <div className="h-1.5 w-full rounded-full bg-[#1C1F2E]" />
-                      <div className="h-1.5 w-3/4 rounded-full bg-[#1C1F2E] mt-1" />
+                    <div className="w-full aspect-video rounded-lg bg-background mb-3 overflow-hidden p-2">
+                      <div className="h-2 w-16 rounded-full bg-border mb-2" />
+                      <div className="h-1.5 w-full rounded-full bg-surface" />
+                      <div className="h-1.5 w-3/4 rounded-full bg-surface mt-1" />
                     </div>
                     <div className="flex items-center gap-2">
                       <Moon size={14} className="text-muted" />
                       <span className="text-sm font-medium text-foreground">Modo escuro</span>
                     </div>
                     {theme === 'dark' && (
-                      <div className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full bg-[#4A72E8] flex items-center justify-center">
+                      <div className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full bg-brand flex items-center justify-center">
                         <Check size={11} className="text-white" />
                       </div>
                     )}
@@ -156,8 +156,8 @@ export default function ConfiguracoesClient({ email, initialName }: Props) {
                     onClick={() => theme === 'dark' && toggle()}
                     className={`relative rounded-xl border-2 p-4 cursor-pointer transition-all duration-150 text-left ${
                       theme === 'light'
-                        ? 'border-[#4A72E8] bg-[#4A72E8]/5'
-                        : 'border-border hover:border-[#4A72E8]/40'
+                        ? 'border-brand bg-brand/5'
+                        : 'border-border hover:border-brand/40'
                     }`}
                   >
                     <div className="w-full aspect-video rounded-lg bg-white mb-3 overflow-hidden p-2 border border-slate-100">
@@ -170,7 +170,7 @@ export default function ConfiguracoesClient({ email, initialName }: Props) {
                       <span className="text-sm font-medium text-foreground">Modo claro</span>
                     </div>
                     {theme === 'light' && (
-                      <div className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full bg-[#4A72E8] flex items-center justify-center">
+                      <div className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full bg-brand flex items-center justify-center">
                         <Check size={11} className="text-white" />
                       </div>
                     )}

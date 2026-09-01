@@ -29,11 +29,11 @@ export default function ConcursoCard({ concurso, topicoTotal, topicoEstudados, f
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -8 }}
         whileHover={{ y: -4, transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] } }}
-        className="group card-sheen bg-surface rounded-xl border border-border p-5 transition-[border-radius,box-shadow,border-color] duration-300 ease-out hover:rounded-2xl hover:border-[#4A72E8]/45 hover:shadow-[0_18px_40px_-20px_rgba(0,0,0,0.75),0_8px_30px_-12px_rgba(74,114,232,0.28)]"
+        className="group card-sheen rounded-lg border border-border bg-surface p-5 transition-[box-shadow,border-color,transform] duration-200 ease-out hover:-translate-y-0.5 hover:border-brand hover:shadow-[4px_4px_0_var(--c-border)]"
       >
         <div className="flex items-start justify-between mb-4">
           <Link href={`/concurso/${concurso.id}`} className="flex-1 min-w-0 cursor-pointer">
-            <h2 className="font-bold text-foreground text-base leading-tight tracking-tight truncate group-hover:text-[#4A72E8] transition-colors duration-150">
+            <h2 className="font-bold text-foreground text-base leading-tight tracking-tight truncate group-hover:text-brand transition-colors duration-150">
               {concurso.nome}
             </h2>
             <div className="flex flex-wrap gap-2 mt-2">
@@ -57,7 +57,7 @@ export default function ConcursoCard({ concurso, topicoTotal, topicoEstudados, f
         <Link href={`/concurso/${concurso.id}`} className="flex items-center justify-between gap-4 cursor-pointer">
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-xs text-muted">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#4A72E8]" />
+              <span className="h-1.5 w-1.5 rounded-full bg-brand" />
               <span><span className="font-semibold text-foreground">{topicoEstudados}</span><span className="text-muted-foreground">/{topicoTotal} tópicos no plano</span></span>
             </div>
             <div className="flex items-center gap-2 text-xs text-muted">

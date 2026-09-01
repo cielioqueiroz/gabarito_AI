@@ -71,15 +71,15 @@ export default function Sidebar({ onMobileClose }: Props) {
   }
 
   return (
-    <aside className="flex flex-col h-full w-60 bg-gradient-to-b from-white to-[#ECECE6] dark:from-[#15151B] dark:to-[#111117] md:rounded-2xl md:border md:border-black/[0.07] dark:md:border-white/[0.06] shadow-[0_16px_40px_-24px_rgba(0,0,0,0.28)] dark:shadow-[0_20px_50px_-22px_rgba(0,0,0,0.9),inset_0_1px_0_rgba(255,255,255,0.04)]">
+    <aside className="flex h-full w-60 flex-col bg-surface md:rounded-lg md:border md:border-border md:shadow-[4px_4px_0_var(--c-border)]">
       {/* Logo */}
       <div className="h-14 flex items-center px-5 flex-shrink-0">
         <Link href="/" className="flex items-center gap-2 font-mono text-base font-bold text-foreground tracking-tight">
-          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#4A72E8] shadow-[inset_0_1px_0_rgba(255,255,255,0.4),0_2px_8px_-2px_rgba(74,114,232,0.5)]">
+          <span className="flex h-7 w-7 items-center justify-center rounded-sm bg-brand-solid shadow-[2px_2px_0_var(--c-ink)]">
             <PenLine size={14} className="text-white" />
           </span>
-          gabarito<span className="text-[#4A72E8]">_AI</span>
-          <span className="inline-block w-1.5 h-3.5 bg-[#4A72E8] ml-0.5 align-middle animate-blink" />
+          gabarito<span className="text-brand">_AI</span>
+          <span className="inline-block w-1.5 h-3.5 bg-brand ml-0.5 align-middle animate-blink" />
         </Link>
       </div>
       <div aria-hidden className="mx-4 h-px bg-gradient-to-r from-transparent via-black/10 dark:via-white/10 to-transparent flex-shrink-0" />
@@ -98,14 +98,14 @@ export default function Sidebar({ onMobileClose }: Props) {
               className={cn(
                 'group relative flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150',
                 active
-                  ? 'text-foreground bg-[#4A72E8]/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]'
+                  ? 'text-foreground bg-brand/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]'
                   : 'text-muted hover:text-foreground hover:bg-elevated hover:translate-x-0.5'
               )}
             >
               {active && (
                 <motion.div
                   layoutId="sidebar-active"
-                  className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-6 bg-[#4A72E8] rounded-full shadow-[0_0_10px_rgba(74,114,232,0.6)]"
+                  className="absolute left-0 top-1/2 h-6 w-[3px] -translate-y-1/2 bg-brand"
                   transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                 />
               )}
@@ -113,7 +113,7 @@ export default function Sidebar({ onMobileClose }: Props) {
                 size={16}
                 className={cn(
                   'flex-shrink-0 transition-colors',
-                  active ? 'text-[#4A72E8]' : 'text-muted-foreground group-hover:text-muted'
+                  active ? 'text-brand' : 'text-muted-foreground group-hover:text-muted'
                 )}
               />
               <motion.span
@@ -124,7 +124,7 @@ export default function Sidebar({ onMobileClose }: Props) {
                 {item.label}
               </motion.span>
               {item.badge && badges[item.badge] > 0 && (
-                <span className="ml-auto font-mono text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-[#4A72E8] text-[#FFFFFF] shadow-[0_0_10px_rgba(74,114,232,0.35)]" aria-label={`${badges[item.badge]} pendentes`}>
+                <span className="ml-auto rounded-full bg-brand-solid px-1.5 py-0.5 font-mono text-[10px] font-bold text-[#FFFFFF]" aria-label={`${badges[item.badge]} pendentes`}>
                   {badges[item.badge]}
                 </span>
               )}
@@ -142,8 +142,8 @@ export default function Sidebar({ onMobileClose }: Props) {
         >
           <motion.div animate={{ rotate: theme === 'dark' ? 0 : 180 }} transition={{ duration: 0.3 }}>
             {theme === 'dark'
-              ? <Sun  size={16} className="flex-shrink-0 text-muted-foreground group-hover:text-[#4A72E8] transition-colors" />
-              : <Moon size={16} className="flex-shrink-0 text-muted-foreground group-hover:text-[#4A72E8] transition-colors" />
+              ? <Sun  size={16} className="flex-shrink-0 text-muted-foreground group-hover:text-brand transition-colors" />
+              : <Moon size={16} className="flex-shrink-0 text-muted-foreground group-hover:text-brand transition-colors" />
             }
           </motion.div>
           {theme === 'dark' ? 'Modo claro' : 'Modo escuro'}

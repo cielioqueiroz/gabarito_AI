@@ -4,14 +4,14 @@
 
 # gabarito_AI
 
-**Console de estudos para concursos públicos, alimentado por inteligência artificial.**
+**O edital vira plano. O plano vira rotina.**
 
-Suba o edital em PDF → a IA monta seu plano, flashcards, questões comentadas, resumos e até podcast.
+Envie um edital ou prova → receba plano, questões reais, flashcards, resumos e revisões organizadas.
 
 [![Next.js](https://img.shields.io/badge/Next.js_16-0D1512?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://nextjs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
 [![Supabase](https://img.shields.io/badge/Supabase-RLS-3FCF8E?style=for-the-badge&logo=supabase&logoColor=white)](https://supabase.com)
-[![Gemini](https://img.shields.io/badge/Google_Gemini-IA-4A72E8?style=for-the-badge&logo=googlegemini&logoColor=white)](https://ai.google.dev)
+[![Gemini](https://img.shields.io/badge/Google_Gemini-IA-B33A2B?style=for-the-badge&logo=googlegemini&logoColor=white)](https://ai.google.dev)
 [![Tailwind](https://img.shields.io/badge/Tailwind_v4-CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
 [![MIT](https://img.shields.io/badge/Licen%C3%A7a-MIT-F4F4F0?style=for-the-badge)](LICENSE)
 
@@ -55,7 +55,7 @@ Feito por um concurseiro, para concurseiros. Projeto aberto (MIT), roda inteiro 
 | 🔁 | **Revisão do Dia** | Sessão diária com todos os cards vencidos, cruzando todos os concursos |
 | 📊 | **Estatísticas** | KPIs de acerto, gráfico dos últimos 7 dias e desempenho por disciplina |
 | ⌨️ | **Atalhos** | `Espaço` vira o card · `1/J` errei · `2/K` acertei · `U` desfazer |
-| 🔐 | **Login social** | E-mail/senha, Google e GitHub (PKCE via Supabase Auth) |
+| 🔐 | **Acesso seguro** | E-mail/senha ou Google, com PKCE via Supabase Auth |
 | 📱 | **PWA + responsivo** | Instalável em mobile/desktop, dark/light sem FOUC |
 
 <div align="center">
@@ -69,7 +69,7 @@ Feito por um concurseiro, para concurseiros. Projeto aberto (MIT), roda inteiro 
     <td align="center"><img src=".github/screenshots/estatisticas.png" alt="Estatísticas de desempenho" width="460"/><br/><sub>Acertos, evolução e desempenho por disciplina</sub></td>
   </tr>
   <tr>
-    <td align="center"><img src=".github/screenshots/login.png" alt="Tela de login com Google e GitHub" width="460"/><br/><sub>Login social (Google · GitHub) com fundo Three.js</sub></td>
+    <td align="center"><img src=".github/screenshots/login.png" alt="Tela de login editorial do gabarito_AI" width="460"/><br/><sub>Acesso por e-mail ou Google na identidade editorial Papel de Prova</sub></td>
     <td align="center"><img src=".github/screenshots/mobile.png" alt="App em tela de celular" width="200"/><br/><sub>PWA instalável, responsivo</sub></td>
   </tr>
   <tr>
@@ -219,8 +219,8 @@ gabarito_AI/
 │   ├── concurso/[id]/          # Detalhes do concurso (plano, flashcards, questões, resumos)
 │   ├── revisao/                # Revisão do Dia (Leitner cross-concurso)
 │   ├── estatisticas/           # KPIs + gráfico 7 dias + desempenho por disciplina
-│   └── login/                  # Login/signup/forgot + OAuth + Three.js
-├── components/                 # UI (shadcn/ui + Framer Motion + Three.js)
+│   └── login/                  # Login/signup/forgot + Google OAuth
+├── components/                 # UI editorial (shadcn/ui + Framer Motion)
 │   └── NovoConcursoForm.tsx    # Formulário único de criação + progresso das 2 fases
 ├── lib/
 │   ├── anthropic.ts            # Cliente Gemini (nome legado) — saída estruturada + cadeia de modelos
@@ -261,9 +261,9 @@ flowchart LR
 
     style C5 fill:#22C55E,color:#fff
     style C1 fill:#C9D7FA,color:#101014
-    style C2 fill:#A8BCF8,color:#101014
-    style C3 fill:#4A72E8,color:#fff
-    style C4 fill:#3556C4,color:#fff
+    style C2 fill:#E0B8A9,color:#24211D
+    style C3 fill:#C96B55,color:#24211D
+    style C4 fill:#9C2F25,color:#fff
 ```
 
 Cards da caixa 4+ contam como **dominados** no cálculo de progresso.
@@ -278,8 +278,8 @@ Cards da caixa 4+ contam como **dominados** no cálculo de progresso.
 | Banco | **Supabase** — PostgreSQL + Auth (PKCE) + Row Level Security |
 | IA | **Google Gemini** — saída estruturada, leitura nativa de PDF/imagem, cadeia de modelos com fallback |
 | Voz | **Microsoft Edge TTS** — neural pt-BR, sem chave, sem custo |
-| Estilo | **Tailwind CSS v4** + shadcn/ui — identidade "Meia-noite & Azul-caneta" |
-| Motion | **Framer Motion** + **Three.js** (partículas com parallax) |
+| Estilo | **Tailwind CSS v4** + shadcn/ui — identidade editorial "Papel de Prova" |
+| Motion | **Framer Motion** — transições com suporte a `prefers-reduced-motion` |
 | Linguagem | **TypeScript** strict |
 | Deploy | **Vercel** — push na `main` = deploy |
 
@@ -313,12 +313,12 @@ npm test           # testes do loteamento de disciplinas
 npm run build      # build de produção
 ```
 
-> **Já tem o banco de uma versão anterior?** Rode também `supabase/migrations/20260814_ingestao_documentos.sql`. Ele adiciona as colunas que a importação de provas usa (`questoes.origem`, `numero`, `topico`, `disciplinas.peso`, `concursos.fonte`) e é idempotente — rodar duas vezes não quebra nada.
+> **Já tem o banco de uma versão anterior?** Aplique, em ordem, as migrations ainda não executadas de `supabase/migrations/`. Elas são idempotentes e o `supabase/schema.sql` permanece como referência completa do estado atual.
 
 <details>
 <summary><b>🔐 Login social (opcional)</b></summary>
 
-1. Crie um OAuth Client no **Google Cloud** e/ou um OAuth App no **GitHub** com callback:
+1. Crie um OAuth Client no **Google Cloud** com callback:
    `https://<projeto>.supabase.co/auth/v1/callback`
 2. Ative os providers em **Supabase → Authentication → Sign In / Providers** colando Client ID + Secret.
 3. Em **URL Configuration → Redirect URLs**, adicione `http://localhost:3000/**` e sua URL de produção com `/**`.
@@ -375,7 +375,7 @@ Todas as rotas exigem sessão autenticada, checam ownership antes de chamar a IA
 
 Feito com ☕ e método por **[Cielio Queiroz](https://cielioqueiroz.github.io/)**
 
-[![Portfolio](https://img.shields.io/badge/Portf%C3%B3lio-cielioqueiroz.github.io-4A72E8?style=for-the-badge&logo=githubpages&logoColor=white)](https://cielioqueiroz.github.io/)
+[![Portfolio](https://img.shields.io/badge/Portf%C3%B3lio-cielioqueiroz.github.io-B33A2B?style=for-the-badge&logo=githubpages&logoColor=white)](https://cielioqueiroz.github.io/)
 [![GitHub](https://img.shields.io/badge/GitHub-cielioqueiroz-101014?style=for-the-badge&logo=github)](https://github.com/cielioqueiroz)
 
 Licença **MIT** — use, modifique e distribua livremente.

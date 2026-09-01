@@ -81,7 +81,7 @@ export default function ConcursosClient({ stats }: { stats: ConcursoStat[] }) {
               <BookOpen size={22} className="text-muted-foreground" />
             </div>
             <p className="text-muted-foreground text-sm mb-4">Nenhum concurso cadastrado ainda.</p>
-            <button onClick={() => setShowForm(true)} className="text-[#4A72E8] text-sm font-semibold hover:text-[#4A72E8] transition-colors cursor-pointer">
+            <button onClick={() => setShowForm(true)} className="text-brand text-sm font-semibold hover:text-brand transition-colors cursor-pointer">
               Criar o primeiro concurso →
             </button>
           </motion.div>

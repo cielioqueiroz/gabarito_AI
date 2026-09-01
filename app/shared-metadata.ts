@@ -15,12 +15,12 @@ export const ogImage = {
   url: '/opengraph-image',
   width: 1200,
   height: 630,
-  alt: 'gabarito_AI — console de estudos para concursos públicos',
+  alt: 'gabarito_AI — transforme o edital em plano de estudos',
 }
 
 export const twitterImage = {
   url: '/twitter-image',
   width: 1200,
   height: 630,
-  alt: 'gabarito_AI — console de estudos para concursos públicos',
+  alt: 'gabarito_AI — transforme o edital em plano de estudos',
 }

@@ -46,18 +46,7 @@ export default function BancasMarquee() {
         Feito para as bancas que mais caem
       </p>
 
-      {/* Faixa escura contínua — sem bordas nem cantos: o fundo (paleta do
-          projeto: surface → carvão profundo) dissolve nas laterais via
-          .band-fade, começando transparente até o tom cheio e sumindo no fim. */}
-      <div
-        className="band-fade relative w-full overflow-hidden py-7"
-        style={{ background: 'linear-gradient(to bottom, #17171D, #0E0E13)' }}
-      >
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0"
-          style={{ background: 'radial-gradient(ellipse 60% 90% at 50% 0%, rgba(74,114,232,0.10), transparent 70%)' }}
-        />
+      <div className="band-fade relative w-full overflow-hidden border-y border-border bg-elevated py-7">
         <div className="marquee-viewport relative w-full overflow-hidden">
           {/* track duplicada: -50% = exatamente um ciclo → loop perfeito */}
           <div className="marquee-track gap-4 pr-4">

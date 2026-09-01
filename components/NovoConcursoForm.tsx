@@ -302,7 +302,7 @@ export default function NovoConcursoForm({ onCreated, onCancel }: Props) {
                   disabled={ocupado}
                   className={`rounded-md px-2 py-2 text-sm font-medium transition-all duration-150 cursor-pointer disabled:cursor-not-allowed ${
                     tipo === opt.key
-                      ? 'bg-[#4A72E8] text-white shadow-sm'
+                      ? 'bg-brand-solid text-white shadow-sm'
                       : 'text-muted-foreground hover:text-foreground'
                   }`}
                 >
@@ -325,15 +325,15 @@ export default function NovoConcursoForm({ onCreated, onCancel }: Props) {
               className={`w-full rounded-lg border-2 border-dashed px-4 py-5 text-center transition-all duration-150 ${
                 ocupado ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'
               } ${
-                arrastando ? 'border-[#4A72E8] bg-[#4A72E8]/10'
-                  : file ? 'border-[#4A72E8]/50 bg-[#4A72E8]/5'
-                  : 'border-border hover:border-[#4A72E8]/30 hover:bg-elevated'
+                arrastando ? 'border-brand bg-brand/10'
+                  : file ? 'border-brand/50 bg-brand/5'
+                  : 'border-border hover:border-brand/30 hover:bg-elevated'
               }`}
             >
               {file ? (
                 <div className="flex items-center justify-center gap-2">
-                  <Icone size={14} className="text-[#4A72E8] flex-shrink-0" />
-                  <span className="text-sm text-[#4A72E8] font-medium truncate max-w-xs">{file.name}</span>
+                  <Icone size={14} className="text-brand flex-shrink-0" />
+                  <span className="text-sm text-brand font-medium truncate max-w-xs">{file.name}</span>
                   <span className="font-mono text-[10px] text-dimmed">{(file.size / 1024 / 1024).toFixed(1)} MB</span>
                   {!ocupado && (
                     <button
@@ -366,7 +366,7 @@ export default function NovoConcursoForm({ onCreated, onCancel }: Props) {
             <FieldError>{fileError}</FieldError>
 
             {file && !fileError && (
-              <p className="text-[11px] text-[#4A72E8] mt-1.5 flex items-start gap-1.5">
+              <p className="text-[11px] text-brand mt-1.5 flex items-start gap-1.5">
                 <Sparkles size={12} className="mt-0.5 flex-shrink-0" />
                 <span>
                   {tipo === 'prova'
@@ -460,7 +460,7 @@ function Progresso({ etapa, progresso, temArquivo }: {
       animate={{ opacity: 1, y: 0 }}
       role="status"
       aria-live="polite"
-      className="rounded-lg border border-[#4A72E8]/25 bg-[#4A72E8]/5 p-3 space-y-2"
+      className="rounded-lg border border-brand/25 bg-brand/5 p-3 space-y-2"
     >
       {etapas.map((e, i) => {
         const feita = i < atual
@@ -468,7 +468,7 @@ function Progresso({ etapa, progresso, temArquivo }: {
         // A terceira etapa só existe quando é prova; antes disso fica escondida.
         if (e.id === 'questoes' && atual < 2) return null
         return (
-          <div key={e.id} className={`flex items-center gap-2 text-sm ${ativa ? 'text-[#4A72E8] font-medium' : feita ? 'text-muted' : 'text-dimmed'}`}>
+          <div key={e.id} className={`flex items-center gap-2 text-sm ${ativa ? 'text-brand font-medium' : feita ? 'text-muted' : 'text-dimmed'}`}>
             {feita ? <Check size={14} className="flex-shrink-0" />
               : ativa ? <Loader2 size={14} className="animate-spin flex-shrink-0" />
               : <span className="w-3.5" />}
@@ -484,9 +484,9 @@ function Progresso({ etapa, progresso, temArquivo }: {
       })}
 
       {etapa === 'questoes' && progresso.total > 0 && (
-        <div className="h-1 rounded-full bg-[#4A72E8]/15 overflow-hidden">
+        <div className="h-1 rounded-full bg-brand/15 overflow-hidden">
           <motion.div
-            className="h-full bg-[#4A72E8]"
+            className="h-full bg-brand"
             initial={{ width: 0 }}
             animate={{ width: `${pct}%` }}
             transition={{ duration: 0.3 }}

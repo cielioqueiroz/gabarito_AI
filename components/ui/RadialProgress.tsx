@@ -13,7 +13,7 @@ interface Props {
 
 const STOPS: Record<string, [string, string]> = {
   emerald: ['#4ADE80', '#22C55E'],   // domínio / sucesso (verde)
-  cyan:    ['#A8BCF8', '#4A72E8'],    // meta do plano (ouro)
+  cyan:    ['var(--c-brand)', 'var(--c-brand-solid)'], // meta do plano
 }
 
 export function RadialProgress({ value, max, size = 66, stroke = 6, gradient = 'emerald', label }: Props) {
@@ -34,7 +34,7 @@ export function RadialProgress({ value, max, size = 66, stroke = 6, gradient = '
               <stop offset="100%" stopColor={to} />
             </linearGradient>
           </defs>
-          <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="rgba(51,65,85,0.45)" strokeWidth={stroke} />
+          <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--c-border)" strokeWidth={stroke} />
           <circle
             cx={size / 2} cy={size / 2} r={r} fill="none"
             stroke={`url(#${uid})`} strokeWidth={stroke} strokeLinecap="round"

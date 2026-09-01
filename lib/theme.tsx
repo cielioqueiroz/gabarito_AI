@@ -5,7 +5,7 @@ import { createContext, useContext, useState } from 'react'
 type Theme = 'dark' | 'light'
 
 const ThemeContext = createContext<{ theme: Theme; toggle: () => void }>({
-  theme: 'dark',
+  theme: 'light',
   toggle: () => {},
 })
 
@@ -18,7 +18,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   // dentro de um efeito que dependia do próprio estado — renderização em
   // cascata sem nenhum ganho.
   const [theme, setTheme] = useState<Theme>(() => {
-    if (typeof document === 'undefined') return 'dark'
+    if (typeof document === 'undefined') return 'light'
     return document.documentElement.classList.contains('dark') ? 'dark' : 'light'
   })
 

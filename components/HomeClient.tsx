@@ -96,7 +96,7 @@ export default function HomeClient({ stats, userEmail, userName }: Props) {
         >
           {[
             { label: 'Concursos',         value: stats.length,   color: 'text-foreground', icon: BookOpen, iconCls: 'text-slate-300 bg-slate-500/10 border-slate-500/20' },
-            { label: 'Tópicos estudados', value: totalTopicos,   color: 'text-[#4A72E8]',   icon: Target,   iconCls: 'text-[#4A72E8] bg-[#4A72E8]/10 border-[#4A72E8]/20' },
+            { label: 'Tópicos estudados', value: totalTopicos,   color: 'text-brand',   icon: Target,   iconCls: 'text-brand bg-brand/10 border-brand/20' },
             { label: 'Cards dominados',   value: totalDominados, color: 'text-emerald-400', icon: Award,   iconCls: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' },
           ].map((s) => {
             const Icon = s.icon
@@ -147,7 +147,7 @@ export default function HomeClient({ stats, userEmail, userName }: Props) {
             <EmptyIllustration variant="books" className="mb-5 text-muted-foreground" />
             <h3 className="font-semibold text-foreground text-base mb-1">Comece pelo edital</h3>
             <p className="text-muted-foreground text-sm mb-4 max-w-sm mx-auto">Suba o PDF do edital e a IA organiza tudo — disciplinas, tópicos, flashcards e questões.</p>
-            <button onClick={() => setShowForm(true)} className="inline-flex items-center gap-2 text-[#4A72E8] text-sm font-semibold hover:text-[#4A72E8] transition-colors cursor-pointer">
+            <button onClick={() => setShowForm(true)} className="inline-flex items-center gap-2 text-brand text-sm font-semibold hover:text-brand transition-colors cursor-pointer">
               Criar o primeiro concurso →
             </button>
           </motion.div>

@@ -55,7 +55,7 @@ export function Dialog({ open, onClose, title, description, children, className,
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.15 }}
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            className="absolute inset-0 bg-ink/55"
             onClick={onClose}
           />
           <motion.div
@@ -65,7 +65,7 @@ export function Dialog({ open, onClose, title, description, children, className,
             exit={{ opacity: 0, y: 4, scale: 0.98 }}
             transition={{ duration: 0.18 }}
             className={cn(
-              'relative w-full max-w-md bg-surface rounded-2xl border border-border shadow-2xl',
+              'relative w-full max-w-md bg-surface rounded-lg border border-border shadow-[6px_6px_0_var(--c-ink)]',
               className
             )}
           >
@@ -73,7 +73,7 @@ export function Dialog({ open, onClose, title, description, children, className,
               <button
                 onClick={onClose}
                 aria-label="Fechar"
-                className="absolute top-3 right-3 p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-elevated cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4A72E8]"
+                className="absolute top-3 right-3 p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-elevated cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
               >
                 <X size={14} />
               </button>

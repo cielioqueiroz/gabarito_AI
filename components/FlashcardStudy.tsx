@@ -168,7 +168,7 @@ export default function FlashcardStudy({ cards, discNameOf, onAnswer, onExit, on
           </span>
           <div className="flex-1 bg-elevated rounded-full h-1 overflow-hidden">
             <motion.div
-              className="h-full bg-[#4A72E8] rounded-full"
+              className="h-full bg-brand rounded-full"
               initial={{ width: 0 }}
               animate={{ width: `${progress}%` }}
               transition={{ duration: reduce ? 0.1 : 0.4, ease: 'easeOut' }}
@@ -239,7 +239,7 @@ export default function FlashcardStudy({ cards, discNameOf, onAnswer, onExit, on
 function CardFace({ side, text, discNome, hint }: { side: 'front' | 'back'; text: string; discNome: string; hint?: string }) {
   return (
     <div
-      className={`absolute inset-0 bg-surface rounded-2xl border border-border flex flex-col items-center justify-center p-6 hover:border-[#3D4158] hover:shadow-xl hover:shadow-black/20 transition-colors select-none [backface-visibility:hidden]`}
+      className={`absolute inset-0 bg-surface rounded-2xl border border-border flex flex-col items-center justify-center p-6 hover:border-border hover:shadow-xl hover:shadow-black/20 transition-colors select-none [backface-visibility:hidden]`}
       style={side === 'back' ? { transform: 'rotateY(180deg)' } : undefined}
     >
       <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-3">

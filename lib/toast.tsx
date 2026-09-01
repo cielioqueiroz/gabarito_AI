@@ -30,8 +30,8 @@ const ToastContext = createContext<ToastContextValue | null>(null)
 const CONFIG: Record<ToastType, { icon: typeof Info; accent: string; iconColor: string }> = {
   success: { icon: CheckCircle2,  accent: 'bg-emerald-500', iconColor: 'text-emerald-500' },
   error:   { icon: XCircle,       accent: 'bg-red-500',     iconColor: 'text-red-500' },
-  warning: { icon: AlertTriangle, accent: 'bg-[#4A72E8]',   iconColor: 'text-[#4A72E8]' },
-  info:    { icon: Info,          accent: 'bg-blue-500',    iconColor: 'text-blue-500' },
+  warning: { icon: AlertTriangle, accent: 'bg-brand',   iconColor: 'text-brand' },
+  info:    { icon: Info,          accent: 'bg-brand-solid', iconColor: 'text-brand' },
 }
 
 const DURATION = 4000
@@ -77,7 +77,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
                 animate={{ opacity: 1, x: 0, scale: 1 }}
                 exit={{ opacity: 0, x: 40, scale: 0.9, transition: { duration: 0.15 } }}
                 transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                className="pointer-events-auto relative overflow-hidden rounded-xl border border-border bg-surface shadow-lg shadow-black/20 backdrop-blur-sm"
+                className="pointer-events-auto relative overflow-hidden rounded-lg border border-border bg-surface shadow-[3px_3px_0_var(--c-border)]"
               >
                 <div className="flex items-start gap-3 p-3.5 pr-9">
                   <Icon size={18} className={`${iconColor} flex-shrink-0 mt-0.5`} />
