@@ -154,6 +154,7 @@ Schemas *pequenos e locais* das rotas de geração (flashcards, questões, resum
 10. **`questoes.correta` e `questoes.explicacao` nunca saem no payload da página.** O `select` da página de concurso lista as colunas explicitamente. A resposta só é revelada por `/api/responder`, depois que o usuário escolhe.
 11. **Chave da IA vai no header `x-goog-api-key`**, nunca em query string (vazaria em log de proxy).
 12. Security headers (CSP, HSTS, COOP/CORP…) ficam em `next.config.ts`. Adicionar origem externa exige mexer na CSP **e** justificar.
+    - **`script-src 'unsafe-inline'` é decisão consciente, não pendência.** Trocar por nonce exige, no Next 16, renderização dinâmica em **todas** as páginas (desliga estático/ISR, mata cache de CDN, sobe custo e é incompatível com PPR) — ver `node_modules/next/dist/docs/01-app/02-guides/content-security-policy.md`. Em troca não há ganho real hoje: não existe sink de HTML/`dangerouslySetInnerHTML` com conteúdo do usuário (o Markdown da IA é renderizado por um renderer React próprio em `components/ResumoTab.tsx`, com escape do JSX). Se um dia entrar um sink de HTML, reabra essa decisão.
 
 ---
 
