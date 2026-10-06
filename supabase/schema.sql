@@ -275,6 +275,11 @@ create index if not exists respostas_user_id_idx on respostas (user_id);
 create index if not exists respostas_questao_id_idx on respostas (questao_id);
 create index if not exists respostas_respondido_em_idx on respostas (respondido_em);
 
+-- Invariante: no máximo uma linha por (usuário, questão). /api/responder faz
+-- ler-e-gravar; este índice único é a garantia no banco. A limpeza das linhas
+-- antigas duplicadas fica na migration correspondente, fora do schema.
+create unique index if not exists respostas_user_questao_idx on respostas (user_id, questao_id);
+
 -- ─── Resumos ──────────────────────────────────────────────────────────────────
 -- Bloco idempotente: pode rodar só ele no SQL Editor se as outras tabelas já existem.
 create table if not exists resumos (

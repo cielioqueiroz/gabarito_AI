@@ -30,9 +30,24 @@ export async function POST(req: NextRequest) {
   const correta = String(questao.correta).trim().toUpperCase()
   const acertou = letra === correta
 
-  const { error: insertErr } = await auth.supabase
-    .from('respostas').insert({ user_id: auth.userId, questao_id: questao.id, acertou })
-  if (insertErr) {
+  // Uma linha por (usuário, questão): o estado de "respondida" vivia só no
+  // client, então recarregar a página inseria outra linha e inflava as
+  // estatísticas. Aqui: se já há resposta, atualiza resultado e data; senão,
+  // insere. Não usa ON CONFLICT para não depender do índice único já existir.
+  const agora = new Date().toISOString()
+  const { data: existente } = await auth.supabase
+    .from('respostas')
+    .select('id')
+    .eq('user_id', auth.userId)
+    .eq('questao_id', questao.id)
+    .order('respondido_em', { ascending: false })
+    .limit(1)
+    .maybeSingle()
+
+  const { error: persistErr } = existente
+    ? await auth.supabase.from('respostas').update({ acertou, respondido_em: agora }).eq('id', existente.id)
+    : await auth.supabase.from('respostas').insert({ user_id: auth.userId, questao_id: questao.id, acertou, respondido_em: agora })
+  if (persistErr) {
     return NextResponse.json({ error: 'Erro ao salvar resposta' }, { status: 500 })
   }
 
