@@ -4,6 +4,9 @@ import { requireAuth, checkRateLimit, assertDisciplinaOwnership, readJsonObject 
 export const runtime = 'nodejs'
 
 const MAX_LINES = 500
+// Mesmo teto dos campos gerados pela IA (lib/geracao.ts MAX_TEXTO): as colunas
+// frente/verso são `text` sem limite no banco, então o corte vive aqui.
+const MAX_CARD_CHARS = 5000
 
 export async function POST(req: NextRequest) {
   const auth = await requireAuth()
@@ -28,7 +31,7 @@ export async function POST(req: NextRequest) {
       const parts = l.includes('\t') ? l.split('\t') : l.split(';')
       const [frente, verso] = parts
       return frente?.trim() && verso?.trim()
-        ? { disciplina_id: disciplinaId, frente: frente.trim(), verso: verso.trim(), box: 1, prox_revisao: new Date().toISOString() }
+        ? { disciplina_id: disciplinaId, frente: frente.trim().slice(0, MAX_CARD_CHARS), verso: verso.trim().slice(0, MAX_CARD_CHARS), box: 1, prox_revisao: new Date().toISOString() }
         : null
     })
     .filter(Boolean)
