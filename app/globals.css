@@ -126,8 +126,15 @@ h1, h2 { font-family: var(--font-display), system-ui, sans-serif; }
   0%   { background-position: -200% 0; }
   100% { background-position:  200% 0; }
 }
+/* Sheen sobre a base bg-elevated do Skeleton. Usa os tokens do tema (não um
+   cinza-azulado cru) para ler como papel claro no tema claro e tinta no escuro. */
 .animate-shimmer {
-  background: linear-gradient(90deg, rgba(31,31,40,0.5) 25%, rgba(38,38,47,0.6) 50%, rgba(31,31,40,0.5) 75%);
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--c-elevated) 70%, transparent) 25%,
+    color-mix(in srgb, var(--c-border) 55%, transparent) 50%,
+    color-mix(in srgb, var(--c-elevated) 70%, transparent) 75%
+  );
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite linear;
 }
