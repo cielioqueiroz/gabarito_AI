@@ -117,7 +117,7 @@ export function PwaPrompt() {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-foreground">Instalar app</p>
-                <p className="text-xs text-muted-foreground mt-0.5">Estude offline com atalho na tela inicial.</p>
+                <p className="text-xs text-muted-foreground mt-0.5">Acesso rápido, direto da tela inicial.</p>
                 <div className="flex gap-2 mt-3">
                   <Button size="sm" onClick={doInstall}>Instalar</Button>
                   <Button size="sm" variant="ghost" onClick={dismissInstall}>Depois</Button>
