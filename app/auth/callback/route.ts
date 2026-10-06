@@ -1,5 +1,10 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { logger } from '@/lib/logger'
+
+// Mensagem única mostrada ao usuário. O detalhe do provedor/Supabase fica no log
+// do servidor — refletido na query string, vazava texto interno na URL e na tela.
+const ERRO_GENERICO = 'Não foi possível concluir o acesso. Tente novamente.'
 
 // OAuth (Google) and email links (confirmação de cadastro, recuperação de
 // senha) all use Supabase's PKCE flow: the provider redirects back here with a
@@ -16,8 +21,8 @@ export async function GET(request: Request) {
   const error = searchParams.get('error')
   const errorDescription = searchParams.get('error_description')
   if (error) {
-    const msg = encodeURIComponent(errorDescription || error)
-    return NextResponse.redirect(`${origin}/login?error=${msg}`)
+    logger.warn('auth-callback', 'provider-error', { err: String(errorDescription || error).slice(0, 160) })
+    return NextResponse.redirect(`${origin}/login?error=${encodeURIComponent(ERRO_GENERICO)}`)
   }
 
   if (code) {
@@ -33,8 +38,8 @@ export async function GET(request: Request) {
       const safeNext = next.startsWith('/') ? next : '/'
       return NextResponse.redirect(`${base}${safeNext}`)
     }
-    const msg = encodeURIComponent(exchangeError.message)
-    return NextResponse.redirect(`${origin}/login?error=${msg}`)
+    logger.warn('auth-callback', 'exchange-error', { err: exchangeError.message.slice(0, 160) })
+    return NextResponse.redirect(`${origin}/login?error=${encodeURIComponent(ERRO_GENERICO)}`)
   }
 
   return NextResponse.redirect(`${origin}/login?error=${encodeURIComponent('Link inválido ou expirado.')}`)
