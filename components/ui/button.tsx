@@ -3,8 +3,8 @@ import { Slot } from '@radix-ui/react-slot'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 
-/* O vermelho de revisão sólido (#B33A2B) mantém 5.9:1 com texto branco.
-   Para texto e foco, `brand` troca de tom entre papel claro e carbono escuro. */
+/* O cobalto sólido (#27408B) rende ~8.5:1 com texto branco sobre o papel claro.
+   Para texto e foco, `brand` troca de tom entre papel claro e tinta escura. */
 const buttonVariants = cva(
   'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-semibold ring-offset-background transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 cursor-pointer active:translate-y-px [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
   {

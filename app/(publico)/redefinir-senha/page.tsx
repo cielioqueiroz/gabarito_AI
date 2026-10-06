@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
-import { ArrowLeft, Check, PenLine, ShieldCheck } from 'lucide-react'
+import { ArrowLeft, Check, ShieldCheck } from 'lucide-react'
+import { Logomark, Wordmark } from '@/components/Logo'
 import ResetPasswordForm from './ResetPasswordForm'
 
 export const metadata: Metadata = {
@@ -35,12 +36,10 @@ export default function RedefinirSenhaPage() {
         <section className="flex min-w-0 flex-col px-5 pb-10 pt-5 sm:px-10 sm:pt-8 lg:px-14 lg:py-10 xl:px-20">
           <header className="flex items-center justify-between">
             <Link href="/sobre" className="group inline-flex items-center gap-3" aria-label="gabarito_AI — página inicial">
-              <span className="flex h-10 w-10 items-center justify-center rounded-sm bg-brand-solid text-white shadow-[3px_3px_0_var(--c-ink)] transition-transform duration-200 group-hover:-rotate-2">
-                <PenLine size={18} strokeWidth={2.2} />
+              <span className="flex h-10 w-10 items-center justify-center rounded-md border border-border bg-surface text-foreground shadow-[3px_3px_0_var(--c-ink)] transition-transform duration-200 group-hover:-rotate-2">
+                <Logomark size={22} />
               </span>
-              <span className="font-mono text-[15px] font-bold tracking-[-0.03em]">
-                gabarito<span className="text-brand">_AI</span>
-              </span>
+              <Wordmark size="md" />
             </Link>
 
             <Link

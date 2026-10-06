@@ -5,6 +5,7 @@ import {
   Upload, ArrowRight, Check, Layers, Repeat, Terminal,
 } from 'lucide-react'
 import BancasMarquee from '@/components/BancasMarquee'
+import { Wordmark } from '@/components/Logo'
 import { ogImage, twitterImage } from '@/app/shared-metadata'
 
 export const metadata: Metadata = {
@@ -82,9 +83,8 @@ export default function SobrePage() {
       {/* ── Floating nav ── */}
       <header className="sticky top-4 z-50 px-4">
         <nav className="mx-auto flex h-14 max-w-3xl items-center justify-between rounded-full border border-border bg-surface px-3 pl-5 shadow-[3px_3px_0_var(--c-border)]">
-          <Link href="/sobre" className="font-mono text-sm font-bold tracking-tight">
-            gabarito<span className="text-brand">_AI</span>
-            <span className="ml-0.5 inline-block h-3.5 w-1.5 translate-y-0.5 bg-brand animate-blink" />
+          <Link href="/sobre" aria-label="gabarito_AI — início">
+            <Wordmark size="md" />
           </Link>
           <div className="hidden items-center gap-6 sm:flex">
             <a href="#como-funciona" className="text-sm text-muted transition-colors hover:text-foreground">Como funciona</a>

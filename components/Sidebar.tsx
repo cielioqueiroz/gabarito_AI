@@ -8,9 +8,10 @@ import { useTheme } from '@/lib/theme'
 import { createClient } from '@/lib/supabase/client'
 import { cn } from '@/lib/utils'
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
+import { Logomark, Wordmark } from '@/components/Logo'
 import {
   LayoutDashboard, BookOpen, CalendarCheck,
-  BarChart3, Settings, Sun, Moon, LogOut, PenLine,
+  BarChart3, Settings, Sun, Moon, LogOut,
 } from 'lucide-react'
 
 interface Props { onMobileClose?: () => void }
@@ -76,12 +77,11 @@ export default function Sidebar({ onMobileClose }: Props) {
     <aside className="flex h-full w-60 flex-col bg-surface md:rounded-lg md:border md:border-border md:shadow-[4px_4px_0_var(--c-border)]">
       {/* Logo */}
       <div className="h-14 flex items-center px-5 flex-shrink-0">
-        <Link href="/" className="flex items-center gap-2 font-mono text-base font-bold text-foreground tracking-tight">
-          <span className="flex h-7 w-7 items-center justify-center rounded-sm bg-brand-solid shadow-[2px_2px_0_var(--c-ink)]">
-            <PenLine size={14} className="text-white" />
+        <Link href="/" className="flex items-center gap-2.5 text-foreground" aria-label="gabarito_AI — início">
+          <span className="flex h-7 w-7 items-center justify-center rounded-md border border-border bg-surface shadow-[2px_2px_0_var(--c-ink)]">
+            <Logomark size={16} />
           </span>
-          gabarito<span className="text-brand">_AI</span>
-          <span className="inline-block w-1.5 h-3.5 bg-brand ml-0.5 align-middle animate-blink" />
+          <Wordmark size="md" />
         </Link>
       </div>
       <div aria-hidden className="mx-4 h-px bg-gradient-to-r from-transparent via-black/10 dark:via-white/10 to-transparent flex-shrink-0" />

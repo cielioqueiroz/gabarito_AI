@@ -246,13 +246,15 @@ export default async function AlgoPage() {
 
 ## UI e design
 
-Identidade **"Papel de Prova"**: marfim, tinta, areia e vermelho de revisão. Tokens em `app/globals.css`: tema claro em `:root`, escuro em `html.dark`.
+Identidade **"Grafite & Cobalto"**: papel frio, grafite e cobalto de tinta. Editorial e afiado — o acento é um azul-tinta profundo (`#27408B`), nunca um azul-tech saturado nem o vermelho antigo. Tokens em `app/globals.css`: tema claro em `:root`, escuro em `html.dark`.
 
-O tema escuro é o padrão inicial. A escolha salva em `gabarito-theme-v2` continua prevalecendo para quem alternar manualmente; a chave foi versionada para não herdar o antigo claro padrão como se fosse escolha explícita.
+O tema **claro é o padrão inicial** (fiel ao conceito de papel). A escolha salva em `gabarito-theme-v3` prevalece para quem alternar manualmente; a chave foi versionada (v2 → v3) para não herdar o antigo escuro-padrão como se fosse escolha explícita.
+
+O símbolo e o wordmark vivem em `components/Logo.tsx` (`Logomark` = a bolha do cartão-resposta; `Wordmark` = `gabarito●AI`). Reúse-os — não re-renderize o nome inline.
 
 - Use os tokens semânticos (`bg-background`, `bg-surface`, `bg-elevated`, `text-foreground`, `text-muted`, `text-muted-foreground`, `border-border`, `brand`, `brand-solid`, `brand-soft`). Hex cru só em arte estática que não recebe CSS, como Open Graph e ícone.
-- **Contraste WCAG AA é requisito.** Use os tokens `brand`, `brand-solid` e `brand-soft`, nunca um vermelho cru no componente. `#9C2F25` sobre o papel rende 6.22:1; `#B33A2B` com branco rende 5.90:1; no tema escuro, `brand` vira `#E39B86` (7.10:1). Está documentado em `components/ui/button.tsx` — respeite.
-- Evite estética genérica de IA: sem neon, glow, glassmorphism, blobs luminosos, grids tecnológicos ou gradientes de marca. A linguagem é editorial: linhas de folha, bordas secas, sombras deslocadas e tipografia Newsreader + Archivo.
+- **Contraste WCAG AA é requisito.** Use os tokens `brand`, `brand-solid` e `brand-soft`, nunca um azul cru no componente. O cobalto `#27408B` rende ~8.5:1 sobre o papel e com texto branco no botão; no tema escuro, `brand` vira `#8FB0F2` (claro, para contrastar com a tinta) e `brand-solid` vira `#3B5BBF`. Está documentado em `components/ui/button.tsx` — respeite.
+- Evite estética genérica de IA: sem neon, glow, glassmorphism, blobs luminosos, grids tecnológicos ou gradientes de marca. A linguagem é editorial: linhas de folha, bordas secas, sombras deslocadas e tipografia **Instrument Serif** (voz/títulos) + **IBM Plex Sans** (interface) + **IBM Plex Mono** (metadados).
 - Gere os prints públicos do README com `scripts/capturar-screenshots.mjs`. Use `SCREENSHOT_PUBLIC_ONLY=1` para login + landing; telas internas só podem usar uma conta de demonstração autorizada para publicação.
 - Classes sempre via `cn()` (`lib/utils.ts`). Variantes de componente com `cva`.
 - Ícones: `lucide-react`. Componentes novos de UI: shadcn/ui em `components/ui/` (config em `components.json`, alias `@/`).

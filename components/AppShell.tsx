@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useRef, useState } from 'react'
 import { useSelectedLayoutSegment } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import Sidebar from './Sidebar'
+import { Wordmark } from './Logo'
 import { useMotion } from '@/lib/motion'
 import { KeyboardShortcutsDialog } from './KeyboardShortcutsDialog'
 import { PwaPrompt } from './PwaPrompt'
@@ -151,9 +152,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           {/* Footer — vivo: hairline animada + pulso de status + crédito do autor */}
           <footer className={`${coluna} relative flex-shrink-0 h-10 flex items-center justify-between`}>
             <div aria-hidden className="divider-live absolute top-0 left-6 right-6" />
-            <span className="font-mono text-[10px] font-bold tracking-tight text-muted">
-              gabarito<span className="text-brand">_AI</span>
-            </span>
+            <Wordmark size="sm" />
             <span className="hidden sm:flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
               <span className="h-1.5 w-1.5 rounded-full bg-brand animate-pulse" />
               estudando com IA

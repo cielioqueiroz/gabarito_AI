@@ -1,13 +1,16 @@
 import type { Metadata, Viewport } from 'next'
-import { Archivo, IBM_Plex_Mono, Newsreader } from 'next/font/google'
+import { IBM_Plex_Sans, IBM_Plex_Mono, Instrument_Serif } from 'next/font/google'
 import { ThemeProvider } from '@/lib/theme'
 import { ToastProvider } from '@/lib/toast'
 import { MotionProvider } from '@/lib/motion'
 import { ShortcutsProvider } from '@/lib/shortcuts'
 import './globals.css'
 
-const archivo = Archivo({ variable: '--font-sans-c', subsets: ['latin'] })
-const newsreader = Newsreader({ variable: '--font-display', subsets: ['latin'] })
+// Identidade "Grafite & Cobalto": serifa fina editorial (voz) + sans técnica
+// (interface) + mono (metadados). Os nomes das variáveis são mantidos para que
+// globals.css e os componentes não precisem mudar as referências de fonte.
+const plexSans = IBM_Plex_Sans({ variable: '--font-sans-c', subsets: ['latin'], weight: ['400', '500', '600', '700'] })
+const instrumentSerif = Instrument_Serif({ variable: '--font-display', subsets: ['latin'], weight: '400' })
 const plexMono = IBM_Plex_Mono({ variable: '--font-mono-c', subsets: ['latin'], weight: ['400', '500', '600'] })
 
 export const metadata: Metadata = {
@@ -48,18 +51,21 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: '#24211D',
+  themeColor: '#EFEEEA',
   width: 'device-width',
   initialScale: 1,
 }
 
-const themeInitScript = `(function(){var t='dark';try{t=localStorage.getItem('gabarito-theme-v2')||'dark'}catch(e){}document.documentElement.classList.toggle('dark',t==='dark')})();`
+// Padrão agora é claro (identidade editorial/papel). Chave versionada para v3:
+// quem tinha o escuro-padrão antigo (v2) não herda essa escolha como se fosse
+// explícita; só prevalece a alternância que o usuário de fato tiver salvado.
+const themeInitScript = `(function(){var t='light';try{t=localStorage.getItem('gabarito-theme-v3')||'light'}catch(e){}document.documentElement.classList.toggle('dark',t==='dark')})();`
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
       lang="pt-BR"
-      className={`${archivo.variable} ${newsreader.variable} ${plexMono.variable} h-full antialiased`}
+      className={`${plexSans.variable} ${instrumentSerif.variable} ${plexMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <head>

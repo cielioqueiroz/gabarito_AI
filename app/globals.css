@@ -21,34 +21,35 @@
   --color-ink:               var(--c-ink);
 }
 
-/* ── Identidade "Papel de prova": marfim, tinta, areia e vermelho de revisão. */
+/* ── Identidade "Grafite & Cobalto": papel frio, grafite e cobalto de tinta.
+   Editorial, afiado — o acento é um azul-tinta profundo, não um azul-tech. */
 :root {
-  --c-bg:          #F2EBDD;
-  --c-surface:     #FFFDF7;
-  --c-elevated:    #E8DECB;
-  --c-border:      #CFC2AB;
-  --c-text:        #24211D;
-  --c-muted:       #625B51;
-  --c-dimmed:      #6F665A;
-  --c-brand:       #9C2F25;
-  --c-brand-solid: #B33A2B;
-  --c-brand-soft:  #EAD2C7;
-  --c-paper:       #F2EBDD;
-  --c-ink:         #24211D;
+  --c-bg:          #EFEEEA;
+  --c-surface:     #F8F8F6;
+  --c-elevated:    #E4E3DD;
+  --c-border:      #D5D4CE;
+  --c-text:        #1E1F22;
+  --c-muted:       #55565C;
+  --c-dimmed:      #6B6C73;
+  --c-brand:       #27408B;
+  --c-brand-solid: #27408B;
+  --c-brand-soft:  #DCE3F2;
+  --c-paper:       #EFEEEA;
+  --c-ink:         #1E1F22;
 }
 html.dark {
-  --c-bg:          #24211D;
-  --c-surface:     #2D2924;
-  --c-elevated:    #39332C;
-  --c-border:      #554B40;
-  --c-text:        #F2EBDD;
-  --c-muted:       #C9BDAB;
-  --c-dimmed:      #B2A694;
-  --c-brand:       #E39B86;
-  --c-brand-solid: #B33A2B;
-  --c-brand-soft:  #4A302A;
-  --c-paper:       #F2EBDD;
-  --c-ink:         #24211D;
+  --c-bg:          #1A1B1E;
+  --c-surface:     #222327;
+  --c-elevated:    #2B2D31;
+  --c-border:      #3A3C42;
+  --c-text:        #ECEBE6;
+  --c-muted:       #B7B7BC;
+  --c-dimmed:      #9A9AA1;
+  --c-brand:       #8FB0F2;
+  --c-brand-solid: #3B5BBF;
+  --c-brand-soft:  #27304A;
+  --c-paper:       #EFEEEA;
+  --c-ink:         #1E1F22;
 }
 
 /* ── Global cursor ── */
@@ -189,7 +190,7 @@ h1, h2 { font-family: var(--font-display), system-ui, sans-serif; }
 .hl-mark {
   color: var(--c-brand);
   padding-bottom: 0.14em;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 8' preserveAspectRatio='none'%3E%3Cpath d='M2 5.5 Q 30 2.5, 60 5 T 118 4' fill='none' stroke='%23B33A2B' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 8' preserveAspectRatio='none'%3E%3Cpath d='M2 5.5 Q 30 2.5, 60 5 T 118 4' fill='none' stroke='%2327408B' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: 0 100%;
   background-size: 100% 0.16em;
