@@ -19,6 +19,30 @@ export function Logomark({ size = 20, className }: { size?: number; className?: 
   )
 }
 
+// Marcador-bolha: a mesma bolha do cartão-resposta, em miniatura, para marcar
+// itens de lista e acentos. O anel segue a cor do contexto (currentColor); o
+// centro é cobalto (ou verde, para "domínio/dominado"). Vira a assinatura gráfica
+// recorrente da identidade no lugar de bolinhas genéricas.
+export function BubbleMark({
+  size = 11,
+  filled = true,
+  tone = 'brand',
+  className,
+}: {
+  size?: number
+  filled?: boolean
+  tone?: 'brand' | 'emerald'
+  className?: string
+}) {
+  const center = tone === 'emerald' ? 'fill-emerald-600 dark:fill-emerald-400' : 'fill-brand'
+  return (
+    <svg width={size} height={size} viewBox="0 0 12 12" fill="none" aria-hidden="true" className={cn('flex-shrink-0', className)}>
+      <circle cx="6" cy="6" r="5" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      {filled && <circle cx="6" cy="6" r="2.4" className={center} />}
+    </svg>
+  )
+}
+
 const WORD = { sm: 'text-sm', md: 'text-xl', lg: 'text-3xl' }
 const DOT = { sm: 'h-[5px] w-[5px]', md: 'h-[7px] w-[7px]', lg: 'h-2.5 w-2.5' }
 const TAG = { sm: 'text-[8px]', md: 'text-[9px]', lg: 'text-[11px]' }

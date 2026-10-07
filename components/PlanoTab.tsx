@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ChevronRight, Sparkles } from 'lucide-react'
+import { ChevronRight, Sparkles, Zap } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { useToast } from '@/lib/toast'
 import { Button } from '@/components/ui/button'
@@ -192,7 +192,7 @@ export default function PlanoTab({ disciplinas, topicos: initialTopicos, concurs
                 <motion.div animate={{ rotate: isOpen ? 90 : 0 }} transition={{ duration: 0.2 }}>
                   <ChevronRight size={14} className="text-muted-foreground flex-shrink-0" />
                 </motion.div>
-                <span className="font-semibold text-foreground text-sm truncate text-left">{disc.nome}</span>
+                <span className="font-display text-lg text-foreground truncate text-left">{disc.nome}</span>
               </div>
               <div className="flex items-center gap-3 ml-3 flex-shrink-0">
                 <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
@@ -262,7 +262,7 @@ function ImportEditalForm({ value, onChange, onSubmit, onStream, onCancel, loadi
               {loading ? 'Gerando plano…' : 'Gerar plano com IA'}
             </Button>
             <Button type="button" variant="secondary" onClick={onStream} disabled={loading || !value.trim()}>
-              ⚡ Preview streaming
+              <Zap size={13} /> Preview streaming
             </Button>
             <Button type="button" variant="outline" onClick={onCancel}>Cancelar</Button>
           </div>

@@ -7,6 +7,7 @@ import { Trash2 } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
 import { RadialProgress } from '@/components/ui/RadialProgress'
+import { BubbleMark } from '@/components/Logo'
 import type { Concurso } from '@/types'
 
 interface Props {
@@ -33,7 +34,7 @@ export default function ConcursoCard({ concurso, topicoTotal, topicoEstudados, f
       >
         <div className="flex items-start justify-between mb-4">
           <Link href={`/concurso/${concurso.id}`} className="flex-1 min-w-0 cursor-pointer">
-            <h2 className="font-bold text-foreground text-base leading-tight tracking-tight truncate group-hover:text-brand transition-colors duration-150">
+            <h2 className="font-display text-xl text-foreground leading-tight tracking-tight truncate group-hover:text-brand transition-colors duration-150">
               {concurso.nome}
             </h2>
             <div className="flex flex-wrap gap-2 mt-2">
@@ -57,11 +58,11 @@ export default function ConcursoCard({ concurso, topicoTotal, topicoEstudados, f
         <Link href={`/concurso/${concurso.id}`} className="flex items-center justify-between gap-4 cursor-pointer">
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-xs text-muted">
-              <span className="h-1.5 w-1.5 rounded-full bg-brand" />
+              <BubbleMark size={12} tone="brand" className="text-border" />
               <span><span className="font-semibold text-foreground">{topicoEstudados}</span><span className="text-muted-foreground">/{topicoTotal} tópicos no plano</span></span>
             </div>
             <div className="flex items-center gap-2 text-xs text-muted">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+              <BubbleMark size={12} tone="emerald" className="text-border" />
               <span><span className="font-semibold text-foreground">{flashcardDominados}</span><span className="text-muted-foreground">/{flashcardTotal} cards dominados</span></span>
             </div>
           </div>

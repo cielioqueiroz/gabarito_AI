@@ -11,20 +11,15 @@ export function EmptyIllustration({ variant = 'books', className }: Props) {
 
 const books = (
   <svg viewBox="0 0 200 160" className="w-full h-auto max-w-[220px] mx-auto">
-    <defs>
-      <linearGradient id="bookg1" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stopColor="var(--c-brand)" stopOpacity="0.6" />
-        <stop offset="100%" stopColor="var(--c-brand)" stopOpacity="0.1" />
-      </linearGradient>
-    </defs>
     <rect x="30" y="110" width="140" height="4" rx="2" fill="currentColor" opacity="0.3"/>
     <g transform="translate(50 40)">
-      <rect x="0" y="0" width="30" height="70" rx="3" fill="url(#bookg1)" stroke="var(--c-brand)" strokeOpacity="0.4"/>
-      <rect x="35" y="10" width="30" height="60" rx="3" fill="url(#bookg1)" stroke="var(--c-brand)" strokeOpacity="0.5"/>
-      <rect x="70" y="5"  width="30" height="65" rx="3" fill="url(#bookg1)" stroke="var(--c-brand)" strokeOpacity="0.4"/>
+      <rect x="0" y="0" width="30" height="70" rx="3" fill="var(--c-brand)" fillOpacity="0.1" stroke="var(--c-brand)" strokeOpacity="0.45"/>
+      <rect x="35" y="10" width="30" height="60" rx="3" fill="var(--c-brand)" fillOpacity="0.14" stroke="var(--c-brand)" strokeOpacity="0.55"/>
+      <rect x="70" y="5"  width="30" height="65" rx="3" fill="var(--c-brand)" fillOpacity="0.1" stroke="var(--c-brand)" strokeOpacity="0.45"/>
     </g>
-    <circle cx="150" cy="55" r="6" fill="var(--c-brand)" opacity="0.8"/>
-    <circle cx="160" cy="45" r="3" fill="var(--c-brand)" opacity="0.5"/>
+    {/* a bolha do cartão-resposta como acento */}
+    <circle cx="152" cy="52" r="10" fill="none" stroke="var(--c-brand)" strokeWidth="2" strokeOpacity="0.5"/>
+    <circle cx="152" cy="52" r="4.5" fill="var(--c-brand)" opacity="0.85"/>
   </svg>
 )
 

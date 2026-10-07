@@ -61,15 +61,23 @@ export default function ConcursoDetail({ concurso, disciplinas, topicos, flashca
   return (
     <Page title={concurso.nome} headerRight={headerRight}>
       <div>
-        {/* Meta badges */}
-        <div className="flex flex-wrap gap-2 mb-6">
-          {concurso.cargo && <Badge variant="secondary">{concurso.cargo}</Badge>}
-          {concurso.banca && <Badge variant="outline">{concurso.banca}</Badge>}
-          {concurso.ano   && <Badge variant="outline">{concurso.ano}</Badge>}
+        {/* Hero editorial: sobrelinha mono + nome do concurso em serifa */}
+        <div className="mb-7">
+          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground mb-2">
+            {[concurso.banca, concurso.ano].filter(Boolean).join(' · ') || 'Plano de estudos'}
+          </p>
+          <h1 className="font-display text-3xl leading-[1.04] text-foreground sm:text-4xl">{concurso.nome}</h1>
+          {(concurso.cargo || concurso.banca || concurso.ano) && (
+            <div className="flex flex-wrap gap-2 mt-3">
+              {concurso.cargo && <Badge variant="secondary">{concurso.cargo}</Badge>}
+              {concurso.banca && <Badge variant="outline">{concurso.banca}</Badge>}
+              {concurso.ano   && <Badge variant="outline">{concurso.ano}</Badge>}
+            </div>
+          )}
         </div>
 
-        {/* Progress stats */}
-        <div className="grid grid-cols-2 gap-4 mb-6">
+        {/* Progress stats — coluna do plano mais larga (ritmo editorial) */}
+        <div className="grid grid-cols-1 gap-4 mb-7 sm:grid-cols-[1.5fr_1fr]">
           <Card>
             <CardContent className="pt-4">
               <ProgressBar value={estudados} max={totalTopicos} color="blue" label="Plano de estudos" showPercent />
