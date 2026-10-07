@@ -7,7 +7,7 @@ const BASE_URL = process.env.SCREENSHOT_BASE_URL || 'http://localhost:3000'
 const EMAIL = process.env.SCREENSHOT_EMAIL
 const PASSWORD = process.env.SCREENSHOT_PASSWORD
 const PUBLIC_ONLY = process.env.SCREENSHOT_PUBLIC_ONLY === '1'
-const SCREENSHOT_THEME = process.env.SCREENSHOT_THEME || 'dark'
+const SCREENSHOT_THEME = process.env.SCREENSHOT_THEME || 'light'
 const CHROME_PATH = process.env.CHROME_PATH || 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'
 const OUTPUT_DIR = resolve('.github/screenshots')
 const PORT = 9333
@@ -155,7 +155,7 @@ try {
 
   await navigate('/login')
   await evaluate(`
-    localStorage.setItem('gabarito-theme-v2', ${JSON.stringify(SCREENSHOT_THEME)})
+    localStorage.setItem('gabarito-theme-v3', ${JSON.stringify(SCREENSHOT_THEME)})
     document.documentElement.classList.toggle('dark', ${JSON.stringify(SCREENSHOT_THEME)} === 'dark')
     location.reload()
   `)
