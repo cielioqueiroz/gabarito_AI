@@ -11,7 +11,7 @@ Envie um edital ou prova → receba plano, questões reais, flashcards, resumos 
 [![Next.js](https://img.shields.io/badge/Next.js_16-0D1512?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://nextjs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
 [![Supabase](https://img.shields.io/badge/Supabase-RLS-3FCF8E?style=for-the-badge&logo=supabase&logoColor=white)](https://supabase.com)
-[![Gemini](https://img.shields.io/badge/Google_Gemini-IA-B33A2B?style=for-the-badge&logo=googlegemini&logoColor=white)](https://ai.google.dev)
+[![Gemini](https://img.shields.io/badge/Google_Gemini-IA-27408B?style=for-the-badge&logo=googlegemini&logoColor=white)](https://ai.google.dev)
 [![Tailwind](https://img.shields.io/badge/Tailwind_v4-CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
 [![MIT](https://img.shields.io/badge/Licen%C3%A7a-MIT-F4F4F0?style=for-the-badge)](LICENSE)
 
@@ -56,7 +56,7 @@ Feito por um concurseiro, para concurseiros. Projeto aberto (MIT), roda inteiro 
 | 📊 | **Estatísticas** | KPIs de acerto, gráfico dos últimos 7 dias e desempenho por disciplina |
 | ⌨️ | **Atalhos** | `Espaço` vira o card · `1/J` errei · `2/K` acertei · `U` desfazer |
 | 🔐 | **Acesso seguro** | E-mail/senha ou Google, com PKCE via Supabase Auth |
-| 📱 | **PWA + responsivo** | Instalável em mobile/desktop, tema escuro por padrão e alternância sem FOUC |
+| 📱 | **PWA + responsivo** | Instalável em mobile/desktop, tema claro por padrão e alternância sem FOUC |
 
 <div align="center">
 <table>
@@ -69,7 +69,7 @@ Feito por um concurseiro, para concurseiros. Projeto aberto (MIT), roda inteiro 
     <td align="center"><img src=".github/screenshots/estatisticas.png" alt="Estatísticas de desempenho" width="460"/><br/><sub>Acertos, evolução e desempenho por disciplina</sub></td>
   </tr>
   <tr>
-    <td align="center"><img src=".github/screenshots/login.png" alt="Tela de login editorial do gabarito_AI" width="460"/><br/><sub>Acesso por e-mail ou Google na identidade editorial Papel de Prova</sub></td>
+    <td align="center"><img src=".github/screenshots/login.png" alt="Tela de login editorial do gabarito_AI" width="460"/><br/><sub>Acesso por e-mail ou Google na identidade editorial Grafite &amp; Cobalto</sub></td>
     <td align="center"><img src=".github/screenshots/mobile.png" alt="App em tela de celular" width="200"/><br/><sub>PWA instalável, responsivo</sub></td>
   </tr>
   <tr>
@@ -259,11 +259,11 @@ flowchart LR
     C4 -.->|errou| C1
     C5 -.->|errou| C1
 
-    style C5 fill:#22C55E,color:#fff
-    style C1 fill:#C9D7FA,color:#101014
-    style C2 fill:#E0B8A9,color:#24211D
-    style C3 fill:#C96B55,color:#24211D
-    style C4 fill:#9C2F25,color:#fff
+    style C1 fill:#DCE3F2,color:#1E1F22
+    style C2 fill:#A9C0E8,color:#1E1F22
+    style C3 fill:#5E82C4,color:#fff
+    style C4 fill:#27408B,color:#fff
+    style C5 fill:#1D9E75,color:#fff
 ```
 
 Cards da caixa 4+ contam como **dominados** no cálculo de progresso.
@@ -278,7 +278,7 @@ Cards da caixa 4+ contam como **dominados** no cálculo de progresso.
 | Banco | **Supabase** — PostgreSQL + Auth (PKCE) + Row Level Security |
 | IA | **Google Gemini** — saída estruturada, leitura nativa de PDF/imagem, cadeia de modelos com fallback |
 | Voz | **Microsoft Edge TTS** — neural pt-BR, sem chave, sem custo |
-| Estilo | **Tailwind CSS v4** + shadcn/ui — identidade editorial "Papel de Prova" |
+| Estilo | **Tailwind CSS v4** + shadcn/ui — identidade editorial "Grafite & Cobalto" |
 | Motion | **Framer Motion** — transições com suporte a `prefers-reduced-motion` |
 | Linguagem | **TypeScript** strict |
 | Deploy | **Vercel** — push na `main` = deploy |
@@ -375,7 +375,7 @@ Todas as rotas exigem sessão autenticada, checam ownership antes de chamar a IA
 
 Feito com ☕ e método por **[Cielio Queiroz](https://cielioqueiroz.github.io/)**
 
-[![Portfolio](https://img.shields.io/badge/Portf%C3%B3lio-cielioqueiroz.github.io-B33A2B?style=for-the-badge&logo=githubpages&logoColor=white)](https://cielioqueiroz.github.io/)
+[![Portfolio](https://img.shields.io/badge/Portf%C3%B3lio-cielioqueiroz.github.io-27408B?style=for-the-badge&logo=githubpages&logoColor=white)](https://cielioqueiroz.github.io/)
 [![GitHub](https://img.shields.io/badge/GitHub-cielioqueiroz-101014?style=for-the-badge&logo=github)](https://github.com/cielioqueiroz)
 
 Licença **MIT** — use, modifique e distribua livremente.
