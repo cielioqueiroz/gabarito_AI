@@ -160,7 +160,7 @@ export default function QuestaoTab({ disciplinas, questoes, topicos = [] }: Prop
               </div>
               <div>
                 <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">Corretas</span>
-                <p className="font-bold text-emerald-400 text-lg leading-none mt-0.5">{correct}</p>
+                <p className="font-bold text-emerald-600 dark:text-emerald-400 text-lg leading-none mt-0.5">{correct}</p>
               </div>
               <div>
                 <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">Taxa</span>
@@ -218,8 +218,8 @@ function QuestaoCard({ questao, index, state, onSelect }: { questao: Questao; in
   function altClass(alt: Alternativa) {
     const base = 'flex items-start gap-3 w-full rounded-lg px-3 py-2.5 text-sm text-left transition-all duration-150 '
     if (!revealed) return base + 'border border-border hover:border-brand/40 hover:bg-brand/5 cursor-pointer'
-    if (alt.letra === correta) return base + 'border border-emerald-500 bg-emerald-500/10 text-emerald-400 cursor-default'
-    if (alt.letra === selected) return base + 'border border-red-500 bg-red-500/10 text-red-400 cursor-default'
+    if (alt.letra === correta) return base + 'border border-emerald-500 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 cursor-default'
+    if (alt.letra === selected) return base + 'border border-red-500 bg-red-500/10 text-red-600 dark:text-red-400 cursor-default'
     return base + 'border border-elevated text-muted-foreground cursor-default'
   }
 
@@ -261,7 +261,7 @@ function QuestaoCard({ questao, index, state, onSelect }: { questao: Questao; in
           )}
 
           {revealed && correta && (
-            <div className={cn('mt-3 flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest', acertou ? 'text-emerald-400' : 'text-red-400')}>
+            <div className={cn('mt-3 flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest', acertou ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400')}>
               {acertou
                 ? <><svg className="w-3.5 h-3.5" viewBox="0 0 16 16" fill="currentColor"><path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/></svg>Correto!</>
                 : <><svg className="w-3.5 h-3.5" viewBox="0 0 16 16" fill="currentColor"><path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/></svg>Errado — correta: {correta}</>

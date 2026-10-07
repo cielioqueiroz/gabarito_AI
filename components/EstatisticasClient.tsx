@@ -87,7 +87,7 @@ export default function EstatisticasClient({ respostas: allResp, disciplinaStats
           </CardContent></Card>
           <Card><CardContent className="pt-4 pb-4">
             <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5">Acertos</p>
-            <p className="text-2xl font-bold text-emerald-500">{corretas}</p>
+            <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-500">{corretas}</p>
           </CardContent></Card>
           <Card><CardContent className="pt-4 pb-4">
             <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5">Taxa</p>

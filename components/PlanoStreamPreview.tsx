@@ -99,7 +99,7 @@ export function PlanoStreamPreview({ concursoId, texto, onComplete, onCancel }: 
           <Button onClick={start} className="w-full"><Sparkles size={14} /> Iniciar preview</Button>
         )}
 
-        {error && <p className="text-sm text-red-500">{error}</p>}
+        {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
 
         {(running || disciplinas.length > 0) && (
           <div className="space-y-2 max-h-80 overflow-y-auto">

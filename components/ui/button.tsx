@@ -11,7 +11,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:     'bg-brand-solid text-[#FFFFFF] font-bold shadow-[2px_2px_0_var(--c-ink)] hover:brightness-110',
-        destructive: 'bg-rose-500/10 text-rose-400 border border-rose-500/20 hover:bg-rose-500/20',
+        destructive: 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 hover:bg-rose-500/20',
         outline:     'border border-border bg-transparent text-muted hover:bg-elevated hover:text-foreground hover:border-border',
         secondary:   'bg-elevated text-muted hover:bg-border hover:text-foreground shadow-[0_2px_8px_-4px_rgba(0,0,0,0.5)]',
         ghost:       'text-muted hover:bg-elevated hover:text-foreground',

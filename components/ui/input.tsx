@@ -23,7 +23,7 @@ const FieldError = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<H
       <p
         ref={ref}
         role="alert"
-        className={cn('flex items-center gap-1 text-[11px] text-red-500 mt-1', className)}
+        className={cn('flex items-center gap-1 text-[11px] text-red-600 dark:text-red-400 mt-1', className)}
         {...props}
       >
         <svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor" className="flex-shrink-0">

@@ -28,7 +28,7 @@ export default function RevisaoClient({ flashcards: initial, disciplinaMap }: Pr
         <div className="py-8 text-center">
           <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: 'spring', stiffness: 200 }}>
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 mb-6">
-              <svg className="w-8 h-8 text-emerald-400" viewBox="0 0 16 16" fill="currentColor">
+              <svg className="w-8 h-8 text-emerald-600 dark:text-emerald-400" viewBox="0 0 16 16" fill="currentColor">
                 <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
               </svg>
             </div>

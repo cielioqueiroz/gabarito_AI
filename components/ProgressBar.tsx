@@ -24,7 +24,7 @@ const colorText: Record<string, string> = {
   blue:    'text-brand',
   cyan:    'text-brand',
   indigo:  'text-brand',
-  emerald: 'text-emerald-400',
+  emerald: 'text-emerald-600 dark:text-emerald-400',
   amber:   'text-brand',
 }
 

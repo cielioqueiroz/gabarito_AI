@@ -54,7 +54,7 @@ export function FlashcardManualDialog({ open, onClose, disciplinaId, disciplinaN
             placeholder="Ex: Remédio constitucional que protege o direito de ir e vir…"
           />
         </div>
-        {error && <p className="text-sm text-red-500">{error}</p>}
+        {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
         <div className="flex gap-2 justify-end pt-2">
           <Button type="button" variant="outline" onClick={onClose}>Cancelar</Button>
           <Button type="submit" disabled={busy}>{busy ? 'Criando…' : 'Criar card'}</Button>

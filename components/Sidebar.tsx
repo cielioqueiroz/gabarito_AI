@@ -162,9 +162,9 @@ export default function Sidebar({ onMobileClose }: Props) {
 
         <button
           onClick={() => setSignOutOpen(true)}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-muted hover:bg-rose-500/10 hover:text-rose-400 transition-all duration-150 cursor-pointer group"
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-muted hover:bg-rose-500/10 hover:text-rose-600 dark:hover:text-rose-400 transition-all duration-150 cursor-pointer group"
         >
-          <LogOut size={16} className="flex-shrink-0 text-muted-foreground group-hover:text-rose-400 transition-colors" />
+          <LogOut size={16} className="flex-shrink-0 text-muted-foreground group-hover:text-rose-600 dark:group-hover:text-rose-400 transition-colors" />
           Sair
         </button>
       </div>
