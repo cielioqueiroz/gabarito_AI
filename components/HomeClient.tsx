@@ -70,17 +70,20 @@ export default function HomeClient({ stats, userEmail, userName }: Props) {
     <Page title="Dashboard" headerRight={headerRight}>
       <div>
 
-        {/* Greeting */}
+        {/* Greeting — abertura editorial: sobrelinha mono + nome em serifa */}
         <motion.div
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
-          className="mb-6"
+          className="mb-8"
         >
-          <h2 className="text-xl font-bold text-foreground">
-            Olá, {firstName} 👋
+          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground mb-2">
+            Painel de estudos
+          </p>
+          <h2 className="font-display text-4xl leading-[1.04] text-foreground sm:text-5xl">
+            Olá, {firstName}<span className="text-brand">.</span>
           </h2>
-          <p className="text-sm text-muted mt-0.5">
+          <p className="text-sm text-muted mt-2">
             {stats.length === 0
               ? 'Comece adicionando seu primeiro concurso.'
               : `Você tem ${stats.length} concurso${stats.length > 1 ? 's' : ''} cadastrado${stats.length > 1 ? 's' : ''}.`}
@@ -95,9 +98,9 @@ export default function HomeClient({ stats, userEmail, userName }: Props) {
           className="grid grid-cols-3 gap-3 sm:gap-4 mb-8"
         >
           {[
-            { label: 'Concursos',         value: stats.length,   color: 'text-foreground', icon: BookOpen, iconCls: 'text-slate-300 bg-slate-500/10 border-slate-500/20' },
+            { label: 'Concursos',         value: stats.length,   color: 'text-foreground', icon: BookOpen, iconCls: 'text-muted bg-elevated border-border' },
             { label: 'Tópicos estudados', value: totalTopicos,   color: 'text-brand',   icon: Target,   iconCls: 'text-brand bg-brand/10 border-brand/20' },
-            { label: 'Cards dominados',   value: totalDominados, color: 'text-emerald-400', icon: Award,   iconCls: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' },
+            { label: 'Cards dominados',   value: totalDominados, color: 'text-emerald-600 dark:text-emerald-400', icon: Award,   iconCls: 'text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border-emerald-500/20' },
           ].map((s) => {
             const Icon = s.icon
             return (
