@@ -10,13 +10,6 @@ export const t = {
     loading: 'Carregando…',
     retry: 'Tente novamente.',
   },
-  dashboard: {
-    title: 'Dashboard',
-    greeting: (name: string) => `Olá, ${name}`,
-    empty: 'Comece adicionando seu primeiro concurso.',
-    countConcursos: (n: number) => `Você tem ${n} concurso${n > 1 ? 's' : ''} cadastrado${n > 1 ? 's' : ''}.`,
-    stats: { concursos: 'Concursos', topicos: 'Tópicos estudados', cards: 'Cards dominados' },
-  },
   concurso: {
     novo: 'Novo concurso',
     nome: 'Nome',

@@ -25,12 +25,10 @@ export function Logomark({ size = 20, className }: { size?: number; className?: 
 // recorrente da identidade no lugar de bolinhas genéricas.
 export function BubbleMark({
   size = 11,
-  filled = true,
   tone = 'brand',
   className,
 }: {
   size?: number
-  filled?: boolean
   tone?: 'brand' | 'emerald'
   className?: string
 }) {
@@ -38,7 +36,7 @@ export function BubbleMark({
   return (
     <svg width={size} height={size} viewBox="0 0 12 12" fill="none" aria-hidden="true" className={cn('flex-shrink-0', className)}>
       <circle cx="6" cy="6" r="5" fill="none" stroke="currentColor" strokeWidth="1.5" />
-      {filled && <circle cx="6" cy="6" r="2.4" className={center} />}
+      <circle cx="6" cy="6" r="2.4" className={center} />
     </svg>
   )
 }
