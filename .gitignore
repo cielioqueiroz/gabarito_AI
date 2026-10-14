@@ -44,5 +44,6 @@ next-env.d.ts
 CLAUDE.md
 docs/
 gabarito-briefing.md
+.claude/
 
 .vercel
